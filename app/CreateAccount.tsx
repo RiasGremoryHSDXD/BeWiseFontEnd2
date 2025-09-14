@@ -96,8 +96,6 @@ export default function CreateAccount() {
             onChangeText={(text) => {
               setEmail(text.trim().toLocaleLowerCase())
               clearFieldError('email')
-              setEmail(text);
-              clearFieldError("email");
             }}
           />
           {errorFields.email && (

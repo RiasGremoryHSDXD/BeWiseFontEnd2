@@ -1,5 +1,3 @@
-import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,7 +6,6 @@ import LogIn from "./LogIn";
 
 export default function Index() {
   const [userExistAcc, setUserExistAcc] = useState(false);
-  const tasks = useQuery(api.tasks.get);
 
   return (
     <View className="flex-1 bg-[#FFFFFF]">
