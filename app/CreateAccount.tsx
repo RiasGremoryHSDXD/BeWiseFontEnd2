@@ -1,47 +1,48 @@
-import { api } from '@/convex/_generated/api'
-import { useMutation, useQuery } from 'convex/react'
-import { useState } from 'react'
-import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { api } from "@/convex/_generated/api";
+import { useMutation, useQuery } from "convex/react";
+import { useState } from "react";
+import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateAccount() {
-  const [user_name, setUserName] = useState<string>("")
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  const [user_name, setUserName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [errorFields, setErrorFields] = useState<{
-    user_name: boolean,
-    email: boolean,
-    password: boolean
+    user_name: boolean;
+    email: boolean;
+    password: boolean;
   }>({
     user_name: false,
     email: false,
-    password: false
-  })
-  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false)
-  const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false)
+    password: false,
+  });
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
 
-  const createAccount = useMutation(api.authentication.createAcc)
+  const createAccount = useMutation(api.authentication.createAcc);
   const emailValidation = useQuery(api.authentication.validatedEmailExist, {
-    email})
+    email,
+  });
 
   const handleSignUp = async () => {
     // Reset error states
     const newErrorFields = {
       user_name: !user_name,
       email: !email,
-      password: !password
-    }
-    
-    setErrorFields(newErrorFields)
+      password: !password,
+    };
 
-    if(!user_name || !email || !password) {
+    setErrorFields(newErrorFields);
+
+    if (!user_name || !email || !password) {
       return;
     }
 
-    if(emailValidation === undefined) return
+    if (emailValidation === undefined) return;
 
-    if(emailValidation) {
-      setEmailAlreadyExist(true)
-      return
+    if (emailValidation) {
+      setEmailAlreadyExist(true);
+      return;
     }
 
     await createAccount({ user_name, email, password });
@@ -51,86 +52,87 @@ export default function CreateAccount() {
     setPassword("");
     setErrorFields({ user_name: false, email: false, password: false });
     setShowSuccessModal(true);
-  }
+  };
 
   const clearFieldError = (field: string) => {
     if (errorFields[field as keyof typeof errorFields]) {
-      setErrorFields(prev => ({
+      setErrorFields((prev) => ({
         ...prev,
-        [field]: false
-      }))
+        [field]: false,
+      }));
     }
-  }
+  };
 
   return (
     <>
-      <View className="flex gap-10">
+      <View className="flex gap-8">
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.user_name 
-                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
-                : 'border border-gray-200'
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.user_name ? "border border-red-500" : ""
             }`}
-            placeholder='Name'
-            placeholderTextColor={errorFields.user_name ? '#ef4444' : '#9ca3af'}
+            placeholder="Name"
+            placeholderTextColor={errorFields.user_name ? "#ef4444" : ""}
             value={user_name}
             onChangeText={(text) => {
-              setUserName(text)
-              clearFieldError('user_name')
+              setUserName(text);
+              clearFieldError("user_name");
             }}
           />
           {errorFields.user_name && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">Name is required</Text>
+            <Text className="text-red-500 text-sm ml-2 ">Name is required</Text>
           )}
         </View>
 
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.email 
-                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
-                : 'border border-gray-200'
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.email ? "border border-red-500" : ""
             }`}
-            placeholder="Email"
-            placeholderTextColor={errorFields.email ? '#ef4444' : '#9ca3af'}
+            placeholder="Email Address"
+            placeholderTextColor={errorFields.email ? "#ef4444" : ""}
             keyboardType="email-address"
             value={email}
             onChangeText={(text) => {
               setEmail(text.trim().toLocaleLowerCase())
               clearFieldError('email')
+              setEmail(text);
+              clearFieldError("email");
             }}
           />
           {errorFields.email && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">Email is required</Text>
+            <Text className="text-red-500 text-sm ml-2 ">
+              Email is required
+            </Text>
           )}
         </View>
 
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.password 
-                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
-                : 'border border-gray-200'
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.password ? "border border-red-500" : ""
             }`}
             placeholder="Password"
-            placeholderTextColor={errorFields.password ? '#ef4444' : '#9ca3af'}
+            placeholderTextColor={errorFields.password ? "#ef4444" : ""}
             secureTextEntry={true}
             value={password}
             onChangeText={(text) => {
-              setPassword(text)
-              clearFieldError('password')
+              setPassword(text);
+              clearFieldError("password");
             }}
           />
           {errorFields.password && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">Password is required</Text>
+            <Text className="text-red-500 text-sm ml-2 ">
+              Password is required
+            </Text>
           )}
         </View>
 
         <TouchableOpacity
-          className="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
-          onPress={handleSignUp}>
-          <Text className='text-2xl text-black font-medium'>Sign Up</Text>
+          className="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"
+          onPress={handleSignUp}
+        >
+          <Text className="text-2xl text-black/60 font-medium">Sign Up</Text>
         </TouchableOpacity>
       </View>
 
@@ -148,18 +150,22 @@ export default function CreateAccount() {
               <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
                 <Text className="text-green-600 text-4xl">✓</Text>
               </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">Success!</Text>
+              <Text className="text-2xl font-bold text-gray-800 mb-2">
+                Success!
+              </Text>
               <Text className="text-gray-600 text-center text-base leading-6">
                 Your account has been created successfully. Welcome aboard!
               </Text>
             </View>
-            
+
             {/* Action Button */}
             <TouchableOpacity
               className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
               onPress={() => setShowSuccessModal(false)}
             >
-              <Text className="text-white text-lg font-semibold text-center">Continue</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Continue
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -178,22 +184,26 @@ export default function CreateAccount() {
               <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
                 <Text className="text-red-600 text-4xl">X</Text>
               </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">Email already used!</Text>
+              <Text className="text-2xl font-bold text-gray-800 mb-2">
+                Email already used!
+              </Text>
               <Text className="text-gray-600 text-center text-base leading-6">
                 The email is already exist, Try difference email
               </Text>
             </View>
-            
+
             {/* Action Button */}
             <TouchableOpacity
               className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
               onPress={() => setEmailAlreadyExist(false)}
             >
-              <Text className="text-white text-lg font-semibold text-center">Continue</Text>
+              <Text className="text-white text-lg font-semibold text-center">
+                Continue
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </>
-  )
+  );
 }
