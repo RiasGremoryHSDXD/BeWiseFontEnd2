@@ -22,3 +22,18 @@ export const createAcc = mutation(
         password
     })
 })
+
+export const validateLogInCredentials = query( async ({db}, {email, password}) => {
+    const user = await db
+    .query("authentication_tbl")
+    .filter((q) => 
+        q.and(
+            q.eq(q.field("email"), email),
+            q.eq(q.field("password"), password)
+        ))
+    .first()
+
+    if(!user) return { success:false, reason: "email_not_found"}
+
+    return { success: true}
+})

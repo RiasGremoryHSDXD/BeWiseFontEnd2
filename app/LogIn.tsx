@@ -1,28 +1,139 @@
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { useState } from "react";
+import { Alert, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function LogIn() {
-  return (
-    <View className="flex gap-10">
-      <TextInput
-        className='text-xl bg-white px-[15px] py-[15px] rounded-2xl'
-        placeholder="Email"
-        keyboardType="email-address"
-      />
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [logInError, setLogInError] = useState<boolean>(false)
+  const [errorFields, setErrorFields] = useState<{
+    email: boolean,
+    password: boolean
+  }>({
+    email: false,
+    password: false
+  })
 
-      <TextInput
-        className='text-xl bg-white px-[15px] py-[15px] rounded-xl'
-        placeholder="Password"
-        secureTextEntry={true}
-      />        
+  const logInCredentialsValidation = useQuery(api.authentication.validateLogInCredentials,
+    { email, password }
+  )
+
+  const handleSignIn = async () => {
+    // Reset error states
+    const newErrorFields = {
+      email: !email,
+      password: !password
+    }
+
+    setErrorFields(newErrorFields)
+
+    if (!email || !password) return
+    if (logInCredentialsValidation === undefined) return
+
+    if(!logInCredentialsValidation.success){
+      Alert.alert("Log in Failed", "Email not found. Please check or create an account")
+      return
+    }
+
+    Alert.alert("Login successfully", "Welcome back!")
+  }
+
+  const clearFieldError = (field: string) => {
+    if (errorFields[field as keyof typeof errorFields]) {
+      setErrorFields(prev => ({
+        ...prev,
+        [field]: false
+      }))
+    }
+  }
+
+  return (
+    <>
+      <View className="flex gap-10">
+        <View>
+          <TextInput
+            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
+              errorFields.email 
+                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
+                : 'border border-gray-200'
+            }`}
+            placeholder="Email"
+            placeholderTextColor={errorFields.email ? '#ef4444' : '#9ca3af'}
+            keyboardType="email-address"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text.trim().toLowerCase())
+              clearFieldError('email')
+            }}
+          />
+          {errorFields.email && (
+            <Text className="text-red-500 text-sm mt-1 ml-2">Email is required</Text>
+          )}
+        </View>
+
+        <View>
+          <TextInput
+            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
+              errorFields.password 
+                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
+                : 'border border-gray-200'
+            }`}
+            placeholder="Password"
+            placeholderTextColor={errorFields.password ? '#ef4444' : '#9ca3af'}
+            secureTextEntry={true}
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text)
+              clearFieldError('password')
+            }}
+          />
+          {errorFields.password && (
+            <Text className="text-red-500 text-sm mt-1 ml-2">Password is required</Text>
+          )}
+        </View>
+
         <View className="flex items-end">
-            <Text>Forgot password?</Text>
+          <Text>Forgot password?</Text>
         </View>
 
         <TouchableOpacity
-            className="bg-[#36978C] flex items-center w-1/2 py-4  self-center rounded-[100px]"
-            onPress={() => Alert.alert("Button Pressed", "You clicked WEW!")}>
-            <Text className="text-2xl text-black font-medium">Log In</Text>
+          className="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
+          onPress={handleSignIn}>
+          <Text className="text-2xl text-black font-medium">Log In</Text>
         </TouchableOpacity>
-    </View>
-  );
+      </View>
+
+      {/* Login Error Modal */}
+      <Modal
+        visible={logInError}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setLogInError(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
+            {/* Error Icon */}
+            <View className="items-center mb-4">
+              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
+                <Text className="text-red-600 text-4xl">✕</Text>
+              </View>
+              <Text className="text-2xl font-bold text-gray-800 mb-2">Login Failed!</Text>
+              <Text className="text-gray-600 text-center text-base leading-6">
+                Invalid email or password. Please check your credentials and try again.
+              </Text>
+            </View>
+            
+            {/* Action Button */}
+            <TouchableOpacity
+              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
+              onPress={() => setLogInError(false)}
+            >
+              <Text className="text-white text-lg font-semibold text-center">Try Again</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
+  )
 }
