@@ -1,7 +1,7 @@
 import { api } from '@/convex/_generated/api'
 import { useMutation, useQuery } from 'convex/react'
 import { useState } from 'react'
-import { Alert, Text, TextInput, TouchableOpacity, View, Modal } from 'react-native'
+import { Modal, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 export default function CreateAccount() {
   const [user_name, setUserName] = useState<string>("")
@@ -97,7 +97,7 @@ export default function CreateAccount() {
             keyboardType="email-address"
             value={email}
             onChangeText={(text) => {
-              setEmail(text)
+              setEmail(text.trim().toLocaleLowerCase())
               clearFieldError('email')
             }}
           />

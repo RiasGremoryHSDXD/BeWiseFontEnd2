@@ -22,4 +22,3 @@ export const createAcc = mutation(
         password
     })
 })
-
