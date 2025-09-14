@@ -65,16 +65,14 @@ export default function CreateAccount() {
 
   return (
     <>
-      <View className="flex gap-10">
+      <View className="flex gap-8">
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.user_name
-                ? "border-2 border-red-500 shadow-md shadow-red-200"
-                : "border border-gray-200"
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.user_name ? "border border-red-500" : ""
             }`}
             placeholder="Name"
-            placeholderTextColor={errorFields.user_name ? "#ef4444" : "#9ca3af"}
+            placeholderTextColor={errorFields.user_name ? "#ef4444" : ""}
             value={user_name}
             onChangeText={(text) => {
               setUserName(text);
@@ -82,21 +80,17 @@ export default function CreateAccount() {
             }}
           />
           {errorFields.user_name && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">
-              Name is required
-            </Text>
+            <Text className="text-red-500 text-sm ml-2 ">Name is required</Text>
           )}
         </View>
 
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.email
-                ? "border-2 border-red-500 shadow-md shadow-red-200"
-                : "border border-gray-200"
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.email ? "border border-red-500" : ""
             }`}
-            placeholder="Email"
-            placeholderTextColor={errorFields.email ? "#ef4444" : "#9ca3af"}
+            placeholder="Email Address"
+            placeholderTextColor={errorFields.email ? "#ef4444" : ""}
             keyboardType="email-address"
             value={email}
             onChangeText={(text) => {
@@ -105,7 +99,7 @@ export default function CreateAccount() {
             }}
           />
           {errorFields.email && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">
+            <Text className="text-red-500 text-sm ml-2 ">
               Email is required
             </Text>
           )}
@@ -113,13 +107,11 @@ export default function CreateAccount() {
 
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.password
-                ? "border-2 border-red-500 shadow-md shadow-red-200"
-                : "border border-gray-200"
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.password ? "border border-red-500" : ""
             }`}
             placeholder="Password"
-            placeholderTextColor={errorFields.password ? "#ef4444" : "#9ca3af"}
+            placeholderTextColor={errorFields.password ? "#ef4444" : ""}
             secureTextEntry={true}
             value={password}
             onChangeText={(text) => {
@@ -128,17 +120,17 @@ export default function CreateAccount() {
             }}
           />
           {errorFields.password && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">
+            <Text className="text-red-500 text-sm ml-2 ">
               Password is required
             </Text>
           )}
         </View>
 
         <TouchableOpacity
-          className="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
+          className="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"
           onPress={handleSignUp}
         >
-          <Text className="text-2xl text-black font-medium">Sign Up</Text>
+          <Text className="text-2xl text-black/60 font-medium">Sign Up</Text>
         </TouchableOpacity>
       </View>
 
