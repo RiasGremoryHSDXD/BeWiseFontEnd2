@@ -51,45 +51,46 @@ export default function LogIn() {
   return (
     <>
       <View className="flex gap-10">
-        <View>
+
+<View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.email 
-                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
-                : 'border border-gray-200'
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.email ? "border border-red-500" : ""
             }`}
-            placeholder="Email"
-            placeholderTextColor={errorFields.email ? '#ef4444' : '#9ca3af'}
+            placeholder="Email Address"
+            placeholderTextColor={errorFields.email ? "#ef4444" : ""}
             keyboardType="email-address"
             value={email}
             onChangeText={(text) => {
-              setEmail(text.trim().toLowerCase())
+              setEmail(text.trim().toLocaleLowerCase())
               clearFieldError('email')
             }}
           />
           {errorFields.email && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">Email is required</Text>
+            <Text className="text-red-500 text-sm ml-2 ">
+              Email is required
+            </Text>
           )}
         </View>
 
         <View>
           <TextInput
-            className={`text-xl bg-white px-[15px] py-[15px] rounded-2xl ${
-              errorFields.password 
-                ? 'border-2 border-red-500 shadow-md shadow-red-200' 
-                : 'border border-gray-200'
+            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+              errorFields.password ? "border border-red-500" : ""
             }`}
             placeholder="Password"
-            placeholderTextColor={errorFields.password ? '#ef4444' : '#9ca3af'}
+            placeholderTextColor={errorFields.password ? "#ef4444" : ""}
             secureTextEntry={true}
             value={password}
             onChangeText={(text) => {
-              setPassword(text)
-              clearFieldError('password')
+              setPassword(text);
+              clearFieldError("password");
             }}
           />
           {errorFields.password && (
-            <Text className="text-red-500 text-sm mt-1 ml-2">Password is required</Text>
+            <Text className="text-red-500 text-sm ml-2 ">
+              Password is required
+            </Text>
           )}
         </View>
 
