@@ -18,13 +18,17 @@ export default function CreateAccount() {
   });
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
+  const [emailNotValid, setEmailNotValid] = useState<boolean>(false)
 
   const createAccount = useMutation(api.authentication.createAcc);
   const emailValidation = useQuery(api.authentication.validatedEmailExist, {
     email,
   });
 
+  const validEmailRegex = /^[A-Za-z0-9._%+-]+@(gmail\.com|email\.com)$/
+
   const handleSignUp = async () => {
+
     // Reset error states
     const newErrorFields = {
       user_name: !user_name,
@@ -39,6 +43,11 @@ export default function CreateAccount() {
     }
 
     if (emailValidation === undefined) return;
+
+    if(!validEmailRegex.test(email)){
+      setEmailNotValid(true)
+      return
+    }
 
     if (emailValidation) {
       setEmailAlreadyExist(true);
@@ -149,10 +158,10 @@ export default function CreateAccount() {
                 <Text className="text-green-600 text-4xl">✓</Text>
               </View>
               <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Success!
+                Account Created
               </Text>
               <Text className="text-gray-600 text-center text-base leading-6">
-                Your account has been created successfully. Welcome aboard!
+                Your account was created successfully. Welcome!
               </Text>
             </View>
 
@@ -168,7 +177,8 @@ export default function CreateAccount() {
           </View>
         </View>
       </Modal>
-
+      
+      {/* Email Address Is Used Modal */}
       <Modal
         visible={emailAlreadyExist}
         transparent={true}
@@ -183,10 +193,10 @@ export default function CreateAccount() {
                 <Text className="text-red-600 text-4xl">X</Text>
               </View>
               <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Email already used!
+                Email already used
               </Text>
               <Text className="text-gray-600 text-center text-base leading-6">
-                The email is already exist, Try difference email
+                Please use a different email address.
               </Text>
             </View>
 
@@ -194,6 +204,41 @@ export default function CreateAccount() {
             <TouchableOpacity
               className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
               onPress={() => setEmailAlreadyExist(false)}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Continue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Email Address Invalid Format Modal */}
+      <Modal
+        visible={emailNotValid}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setEmailNotValid(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
+            {/* Wrong Icon */}
+            <View className="items-center mb-4">
+              <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
+                <Text className="text-red-600 text-4xl">X</Text>
+              </View>
+              <Text className="text-2xl font-bold text-gray-800 mb-2">
+                Invalid Email
+              </Text>
+              <Text className="text-gray-600 text-center text-base leading-6">
+                Please enter a valid email address.
+              </Text>
+            </View>
+
+            {/* Action Button */}
+            <TouchableOpacity
+              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
+              onPress={() => setEmailNotValid(false)}
             >
               <Text className="text-white text-lg font-semibold text-center">
                 Continue
