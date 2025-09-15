@@ -32,7 +32,7 @@ export default function LogIn() {
     if (logInCredentialsValidation === undefined) return
 
     if(!logInCredentialsValidation.success){
-      Alert.alert("Log in Failed", "Email not found. Please check or create an account")
+      setLogInError(true)
       return
     }
 
@@ -51,8 +51,7 @@ export default function LogIn() {
   return (
     <>
       <View className="flex gap-10">
-
-<View>
+        <View>
           <TextInput
             className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
               errorFields.email ? "border border-red-500" : ""
@@ -135,6 +134,8 @@ export default function LogIn() {
           </View>
         </View>
       </Modal>
+
+      
     </>
   )
 }

@@ -206,7 +206,7 @@ export default function CreateAccount() {
               onPress={() => setEmailAlreadyExist(false)}
             >
               <Text className="text-white text-lg font-semibold text-center">
-                Continue
+                Try Again
               </Text>
             </TouchableOpacity>
           </View>
@@ -224,7 +224,7 @@ export default function CreateAccount() {
           <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
             {/* Wrong Icon */}
             <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
+              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
                 <Text className="text-red-600 text-4xl">X</Text>
               </View>
               <Text className="text-2xl font-bold text-gray-800 mb-2">
@@ -241,7 +241,7 @@ export default function CreateAccount() {
               onPress={() => setEmailNotValid(false)}
             >
               <Text className="text-white text-lg font-semibold text-center">
-                Continue
+                Try Again
               </Text>
             </TouchableOpacity>
           </View>
