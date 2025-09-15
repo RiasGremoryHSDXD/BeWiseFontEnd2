@@ -1,7 +1,8 @@
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("")
@@ -14,6 +15,8 @@ export default function LogIn() {
     email: false,
     password: false
   })
+
+  const router = useRouter()
 
   const logInCredentialsValidation = useQuery(api.authentication.validateLogInCredentials,
     { email, password }
@@ -36,7 +39,8 @@ export default function LogIn() {
       return
     }
 
-    Alert.alert("Login successfully", "Welcome back!")
+    router.replace("/tabs/home")
+    // Alert.alert("Login successfully", "Welcome back!")
   }
 
   const clearFieldError = (field: string) => {
