@@ -5,7 +5,7 @@ import CreateAccount from "./CreateAccount";
 import LogIn from "./LogIn";
 
 export default function Index() {
-  const [userExistAcc, setUserExistAcc] = useState(false);
+  const [userExistAcc, setUserExistAcc] = useState(true);
 
   return (
     <View className="flex-1 bg-[#FFFFFF]">
