@@ -1,4 +1,5 @@
 import { api } from "@/convex/_generated/api";
+import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -18,17 +19,22 @@ export default function CreateAccount() {
   });
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
-  const [emailNotValid, setEmailNotValid] = useState<boolean>(false)
+  const [emailNotValid, setEmailNotValid] = useState<boolean>(false);
 
   const createAccount = useMutation(api.authentication.createAcc);
   const emailValidation = useQuery(api.authentication.validatedEmailExist, {
     email,
   });
 
-  const validEmailRegex = /^[A-Za-z0-9._%+-]+@(gmail\.com|email\.com)$/
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePassword = () => {
+    setShowPassword((showPassword) => !showPassword);
+  };
+
+  const validEmailRegex = /^[A-Za-z0-9._%+-]+@(gmail\.com|email\.com)$/;
 
   const handleSignUp = async () => {
-
     // Reset error states
     const newErrorFields = {
       user_name: !user_name,
@@ -44,9 +50,9 @@ export default function CreateAccount() {
 
     if (emailValidation === undefined) return;
 
-    if(!validEmailRegex.test(email)){
-      setEmailNotValid(true)
-      return
+    if (!validEmailRegex.test(email)) {
+      setEmailNotValid(true);
+      return;
     }
 
     if (emailValidation) {
@@ -103,8 +109,8 @@ export default function CreateAccount() {
             keyboardType="email-address"
             value={email}
             onChangeText={(text) => {
-              setEmail(text.trim().toLocaleLowerCase())
-              clearFieldError('email')
+              setEmail(text.trim().toLocaleLowerCase());
+              clearFieldError("email");
             }}
           />
           {errorFields.email && (
@@ -114,20 +120,27 @@ export default function CreateAccount() {
           )}
         </View>
 
-        <View>
+        <View className="flex flex-row items-center justify-between bg-[#FAF7F0] rounded-3xl px-4">
           <TextInput
-            className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
+            className={`flex-1 ml-2 text-base py-5 ${
               errorFields.password ? "border border-red-500" : ""
             }`}
             placeholder="Password"
             placeholderTextColor={errorFields.password ? "#ef4444" : ""}
-            secureTextEntry={true}
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={(text) => {
               setPassword(text);
               clearFieldError("password");
             }}
           />
+          <TouchableOpacity onPress={togglePassword}>
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={25}
+              color="#000"
+            />
+          </TouchableOpacity>
           {errorFields.password && (
             <Text className="text-red-500 text-sm ml-2 ">
               Password is required
@@ -177,7 +190,7 @@ export default function CreateAccount() {
           </View>
         </View>
       </Modal>
-      
+
       {/* Email Address Is Used Modal */}
       <Modal
         visible={emailAlreadyExist}
