@@ -1,7 +1,7 @@
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-
+import LogOutBotton from "../LogOutBotton";
 
 export default function home() {
 
@@ -13,13 +13,21 @@ export default function home() {
   const currentSpent = 8000
   const currentBudget = 25000
   const percentageSpent = Math.round((currentSpent / currentBudget) * 100)
-
+  
+  
   return (
     <View className="flex-1 justify-center gap-y-6 items-center w-full h-full bg-[#81D8D0]">
 
+      <View
+        className="w-[90%]"
+      >
+        <LogOutBotton/>
+      </View>
+
+
       {/*Current Balance*/}
       <View
-        className="flex-[0.15] w-[90%] flex-row justify-between items-center px-4 bg-white rounded-lg"
+        className="flex-[0.15] w-[90%] flex-row justify-between items-center px-4 bg-white/30 rounded-3xl"
       >
         <View className="flex gap-y-2">
           <Text>Current Balance</Text>
