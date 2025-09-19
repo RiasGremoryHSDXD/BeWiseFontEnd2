@@ -15,7 +15,7 @@ export default function LogIn() {
     email: false,
     password: false
   })
-
+  
   const router = useRouter()
 
   const logInCredentialsValidation = useQuery(api.authentication.validateLogInCredentials,
@@ -32,6 +32,9 @@ export default function LogIn() {
     setErrorFields(newErrorFields)
 
     if (!email || !password) return
+
+    router.replace("/tabs/home")
+
     if (logInCredentialsValidation === undefined) return
 
     if(!logInCredentialsValidation.success){
@@ -39,7 +42,7 @@ export default function LogIn() {
       return
     }
 
-    router.replace("/tabs/home")
+    // router.replace("/tabs/home")
     // Alert.alert("Login successfully", "Welcome back!")
   }
 
