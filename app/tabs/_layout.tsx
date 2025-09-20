@@ -1,6 +1,7 @@
-import { Ionicons } from "@react-native-vector-icons/ionicons";
+import { Ionicons } from "@expo/vector-icons"; // fix import
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Tabs } from "expo-router";
+import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -8,6 +9,9 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 });
 
 export default function TabLayout() {
+  const [active, setActive] = useState(false);
+  const toggleClick = () => setActive((prev) => !prev);
+
   return (
     <ConvexProvider client={convex}>
       <Tabs
@@ -24,19 +28,12 @@ export default function TabLayout() {
             paddingTop: 10,
             elevation: 8,
             shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: -2,
-            },
+            shadowOffset: { width: 0, height: -2 },
             shadowOpacity: 0.1,
             shadowRadius: 8,
           },
-          tabBarItemStyle: {
-            paddingVertical: 5,
-          },
-          tabBarIconStyle: {
-            marginBottom: 0,
-          },
+          tabBarItemStyle: { paddingVertical: 5 },
+          tabBarIconStyle: { marginBottom: 0 },
         }}
       >
         <Tabs.Screen
@@ -45,11 +42,7 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ color }) => (
               <View style={styles.regularIconContainer}>
-                <Ionicons 
-                  name="home"
-                  size={28} 
-                  color={color} 
-                />
+                <Ionicons name="home" size={28} color={color} />
               </View>
             ),
           }}
@@ -59,13 +52,9 @@ export default function TabLayout() {
           name="income"
           options={{
             title: "",
-            tabBarIcon: ({ color}) => (
+            tabBarIcon: ({ color }) => (
               <View style={styles.regularIconContainer}>
-                <Ionicons 
-                  name="stats-chart"
-                  size={28} 
-                  color={color} 
-                />
+                <Ionicons name="stats-chart" size={28} color={color} />
               </View>
             ),
           }}
@@ -77,15 +66,17 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ focused }) => (
               <View style={styles.centerIconContainer}>
-                <View style={[
-                  styles.centerIconCircle, 
-                  { backgroundColor: "#81D8D0" }
-                ]}>
+                <View
+                  style={[
+                    styles.centerIconCircle,
+                    { backgroundColor: "#81D8D0" },
+                  ]}
+                >
                   <Image
                     source={require("../../assets/images/PigLogo.png")}
                     style={[
                       styles.centerIcon,
-                      { tintColor: focused ? "#36978C" : "#12312D" }
+                      { tintColor: focused ? "#36978C" : "#12312D" },
                     ]}
                     resizeMode="contain"
                   />
@@ -99,29 +90,21 @@ export default function TabLayout() {
           name="expenses"
           options={{
             title: "",
-            tabBarIcon: ({ color}) => (
+            tabBarIcon: ({ color }) => (
               <View style={styles.regularIconContainer}>
-                <Ionicons 
-                  name="pie-chart"
-                  size={28} 
-                  color={color} 
-                />
+                <Ionicons name="pie-chart" size={28} color={color} />
               </View>
             ),
           }}
         />
 
         <Tabs.Screen
-          name="history"
+          name="account"
           options={{
             title: "",
-            tabBarIcon: ({ color}) => (
+            tabBarIcon: ({ color }) => (
               <View style={styles.regularIconContainer}>
-                <Ionicons 
-                  name="time"
-                  size={28} 
-                  color={color} 
-                />
+                <Ionicons name="person" size={28} color={color} />
               </View>
             ),
           }}
@@ -133,29 +116,26 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   regularIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: 50,
     height: 50,
   },
   centerIconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
     top: -15,
   },
   centerIconCircle: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 4,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     borderWidth: 3,

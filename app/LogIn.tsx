@@ -14,23 +14,15 @@ export default function LogIn() {
     password: boolean;
   }>({
     email: false,
-<<<<<<< HEAD
     password: false,
   });
 
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-=======
-    password: false
-  })
-  
-  const router = useRouter()
->>>>>>> 10e8c5e2383199985897c062565cfb7195e02d18
 
   const togglePassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
-
-  const router = useRouter();
 
   const logInCredentialsValidation = useQuery(
     api.authentication.validateLogInCredentials,
@@ -47,6 +39,9 @@ export default function LogIn() {
     setErrorFields(newErrorFields);
 
     if (!email || !password) return;
+
+    router.replace("/tabs/home");
+
     if (logInCredentialsValidation === undefined) return;
 
     if (!logInCredentialsValidation.success) {
@@ -54,24 +49,6 @@ export default function LogIn() {
       return;
     }
 
-<<<<<<< HEAD
-    router.replace("../tabs/home");
-=======
-    setErrorFields(newErrorFields)
-
-    if (!email || !password) return
-
-    router.replace("/tabs/home")
-
-    if (logInCredentialsValidation === undefined) return
-
-    if(!logInCredentialsValidation.success){
-      setLogInError(true)
-      return
-    }
-
-    // router.replace("/tabs/home")
->>>>>>> 10e8c5e2383199985897c062565cfb7195e02d18
     // Alert.alert("Login successfully", "Welcome back!")
   };
 

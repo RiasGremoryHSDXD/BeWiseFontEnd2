@@ -1,21 +1,18 @@
-import { Ionicons } from '@react-native-vector-icons/ionicons';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Ionicons } from "@react-native-vector-icons/ionicons";
+import { useRouter } from "expo-router";
+import React from "react";
+import { TouchableOpacity } from "react-native";
 
 export default function LogOutBotton() {
+  const router = useRouter();
 
-    const router = useRouter()
-
-    const LogOutAccount = () => router.replace("/")
+  const LogOutAccount = () => router.replace("/");
   return (
     <TouchableOpacity
-        onPress={LogOutAccount}
+      className="bg-white self-start rounded-full p-2"
+      onPress={LogOutAccount}
     >
-        <Ionicons
-            name='person-circle-outline'
-            size={40}
-        />
+      <Ionicons name="person-circle-outline" size={35} />
     </TouchableOpacity>
-  )
+  );
 }
