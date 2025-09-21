@@ -30,12 +30,12 @@ export default defineSchema({
     }),
 
     income: defineTable({
-        userCredentials: v.id("userCredentials"),
+        userCredentialsID: v.id("userCredentials"),
         incomeName: v.string(),
         incomeCategory: v.union(
             v.literal("Work"),
             v.literal("Investment"),
-            v.literal("Saving"),
+            v.literal("Savings"),
             v.literal("Side Hustle"),
             v.literal("Other")
         ),

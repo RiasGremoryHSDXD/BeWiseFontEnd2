@@ -4,6 +4,7 @@ import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("");
@@ -45,6 +46,19 @@ export default function LogIn() {
     if (!logInCredentialsValidation.success) {
       setLogInError(true);
       return;
+    }
+
+    try{
+      await AsyncStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: logInCredentialsValidation.user?.id,
+          email: logInCredentialsValidation.user?.email,
+          username: logInCredentialsValidation.user?.username
+        })
+      )
+    } catch(error){
+      console.log("Error saving user: ", error)
     }
 
     router.replace("/tabs/home");

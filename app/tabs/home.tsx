@@ -1,11 +1,15 @@
 import { FontAwesome6, Foundation } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
-import { useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function home() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
+  const [userID, setUserID] = useState<string>("")
+  const [userEmail, setUserEmail] = useState<string>("")
+  const [userName, setUserName] = useState<string>("")
 
   const currentBalance = 25000;
   const income = 24000;
@@ -14,9 +18,34 @@ export default function home() {
   const currentBudget = 25000;
   const percentageSpent = Math.round((currentSpent / currentBudget) * 100);
 
+  useEffect( () => {
+    
+    const loadUserInfo = async () => {
+      try{
+        const storedUser = await AsyncStorage.getItem("user")
+        if(storedUser){
+          const user = JSON.parse(storedUser)
+
+          setUserID(user.id || "")
+          setUserEmail(user.email || "")
+          setUserName(user.username || "")
+        }
+      }catch(e){
+        Alert.alert('Error local storage', 'Error in retive Data in local Storage')
+      }
+    }
+
+    loadUserInfo();
+
+  }, [])
+
   return (
     <SafeAreaView className="flex-1 justify-center gap-5 items-center w-full bg-[#81D8D0]">
       <View className="w-[90%] mt-8"></View>
+
+      <Text>User ID: {userID}</Text>
+      <Text>User Email: {userEmail}</Text>
+      <Text>Username: {userName}</Text>
 
       {/*Current Balance*/}
       <View className="flex w-[90%] py-8 flex-row justify-between items-center px-5 bg-white/30 rounded-3xl">
