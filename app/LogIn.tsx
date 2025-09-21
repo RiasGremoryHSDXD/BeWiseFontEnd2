@@ -25,7 +25,7 @@ export default function LogIn() {
   };
 
   const logInCredentialsValidation = useQuery(
-    api.authentication.validateLogInCredentials,
+    api.functions.credentials.logInUser.logInUser,
     { email, password }
   );
 
@@ -40,14 +40,14 @@ export default function LogIn() {
 
     if (!email || !password) return;
 
-    router.replace("/tabs/home");
-
     if (logInCredentialsValidation === undefined) return;
 
     if (!logInCredentialsValidation.success) {
       setLogInError(true);
       return;
     }
+
+    router.replace("/tabs/home");
 
     // Alert.alert("Login successfully", "Welcome back!")
   };

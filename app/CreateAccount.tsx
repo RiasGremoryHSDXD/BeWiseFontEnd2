@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateAccount() {
-  const [user_name, setUserName] = useState<string>("");
+  const [username, setUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorFields, setErrorFields] = useState<{
@@ -21,9 +21,9 @@ export default function CreateAccount() {
   const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
   const [emailNotValid, setEmailNotValid] = useState<boolean>(false);
 
-  const createAccount = useMutation(api.authentication.createAcc);
-  const emailValidation = useQuery(api.authentication.validatedEmailExist, {
-    email,
+  const createAccount = useMutation(api.functions.credentials.insertNewUser.insertNewUser);
+  const emailValidation = useQuery(api.functions.credentials.validateUserEmail.validateUserEmail, {
+    email
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -37,14 +37,14 @@ export default function CreateAccount() {
   const handleSignUp = async () => {
     // Reset error states
     const newErrorFields = {
-      user_name: !user_name,
+      user_name: !username,
       email: !email,
       password: !password,
     };
 
     setErrorFields(newErrorFields);
 
-    if (!user_name || !email || !password) {
+    if (!username || !email || !password) {
       return;
     }
 
@@ -60,7 +60,7 @@ export default function CreateAccount() {
       return;
     }
 
-    await createAccount({ user_name, email, password });
+    await createAccount({ username, email, password });
 
     setUserName("");
     setEmail("");
@@ -88,7 +88,7 @@ export default function CreateAccount() {
             }`}
             placeholder="Name"
             placeholderTextColor={errorFields.user_name ? "#ef4444" : ""}
-            value={user_name}
+            value={username}
             onChangeText={(text) => {
               setUserName(text);
               clearFieldError("user_name");
