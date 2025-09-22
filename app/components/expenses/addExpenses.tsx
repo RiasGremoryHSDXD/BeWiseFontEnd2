@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useMutation } from 'convex/react';
 import { useEffect, useState } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import LoadingScreen from "../Loading";
 type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other"
 
 export default function addExpenses() {
@@ -16,6 +17,8 @@ export default function addExpenses() {
     const [amount, setAmount] = useState<string>("")
     const [datePaid, setDatePaid] = useState<Date | null>(null)
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [isProcessing, setIsProcessing] = useState(false)
 
     const insertNewExpensesRow = useMutation(api.functions.expenses.insertNewExpenses.insertNewExpenses)
 
@@ -35,12 +38,17 @@ export default function addExpenses() {
     }, [])
 
     const handleNewExpensesRecord = async () => {
+
+        if(loading || isProcessing) return
+        
+        setIsProcessing(true)
         try {
             if(!userCredentialsID || !expensesName || !amount || !datePaid){
                 Alert.alert("Missing Data", "Please fill out all field")
                 return
             }
 
+            setLoading(true)
             await insertNewExpensesRow({
                 userCredentialsID, 
                 expensesName,
@@ -49,10 +57,15 @@ export default function addExpenses() {
                 datePaid: datePaid.toISOString()
             })
 
+            setLoading(false)
+
             Alert.alert("Success", "Expenses record add successfully!")
         } catch (e) {
             Alert.alert("Error", "Failed to insert expenses record")
             console.error(e)
+        } finally{
+            setLoading(false)
+            setIsProcessing(false)
         }
     }
 
@@ -138,8 +151,10 @@ export default function addExpenses() {
         </View>
     
         <TouchableOpacity
+            activeOpacity={1}
             className='p-2 bg-red-400 rounded-lg flex items-center'
             onPress={handleNewExpensesRecord}
+            disabled={loading || isProcessing}
         >
             <Text
                 className='text-2xl font-semibold text-white'
@@ -147,6 +162,10 @@ export default function addExpenses() {
                 Add
             </Text>
         </TouchableOpacity>
+
+        {loading && (
+            <LoadingScreen/>
+        )}
     </View>
   )
 }

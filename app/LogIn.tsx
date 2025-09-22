@@ -1,10 +1,10 @@
 import { api } from "@/convex/_generated/api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("");
@@ -20,6 +20,10 @@ export default function LogIn() {
 
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  
+
 
   const togglePassword = () => {
     setShowPassword((showPassword) => !showPassword);
@@ -41,7 +45,13 @@ export default function LogIn() {
 
     if (!email || !password) return;
 
-    if (logInCredentialsValidation === undefined) return;
+    setLoading(true);
+
+
+    if (logInCredentialsValidation === undefined){
+      setLoading(false);
+      return
+    };
 
     if (!logInCredentialsValidation.success) {
       setLogInError(true);
@@ -57,13 +67,13 @@ export default function LogIn() {
           username: logInCredentialsValidation.user?.username
         })
       )
+
+      router.replace("/tabs/home");
     } catch(error){
       console.log("Error saving user: ", error)
+    } finally{
+      setLoading(false);
     }
-
-    router.replace("/tabs/home");
-
-    // Alert.alert("Login successfully", "Welcome back!")
   };
 
   const clearFieldError = (field: string) => {
@@ -133,6 +143,7 @@ export default function LogIn() {
         </View>
 
         <TouchableOpacity
+          activeOpacity={1}
           className="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
           onPress={handleSignIn}
         >
@@ -165,6 +176,7 @@ export default function LogIn() {
 
             {/* Action Button */}
             <TouchableOpacity
+              activeOpacity={1}
               className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
               onPress={() => setLogInError(false)}
             >
@@ -175,6 +187,14 @@ export default function LogIn() {
           </View>
         </View>
       </Modal>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <View className="absolute inset-0 flex  items-center">
+          <ActivityIndicator size={100} color="#36978C" />
+        </View>
+      )}
+
     </>
   );
 }
