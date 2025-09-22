@@ -13,7 +13,7 @@ export default function income() {
   const [savingIncome, setSavingIncome] = useState<number>(2000);
   const [sideHustleIncome, setSideHustleIncome] = useState<number>(9000);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [clickAddExpenses, setClickAddExpenses] = useState<boolean>(true)
+  const [clickAddExpenses, setClickAddExpenses] = useState<boolean>(false)
 
   return (
     <SafeAreaView className="flex-1 justify-center gap-5 items-center w-full  bg-[#81D8D0]">

@@ -1,9 +1,9 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
-import { Image, Text, TouchableOpacity, View, Modal } from "react-native";
+import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AddIncomeModal from "../components/income/addIncome"
+import AddIncomeModal from "../components/income/addIncome";
 
 export default function income() {
   const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(59000);
@@ -13,7 +13,7 @@ export default function income() {
   const [savingIncome, setSavingIncome] = useState<number>(2000);
   const [sideHustleIncome, setSideHustleIncome] = useState<number>(9000);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [clickAddIncome, setClickAddIncome] = useState<boolean>(true)
+  const [clickAddIncome, setClickAddIncome] = useState<boolean>(false)
 
   return (
     <SafeAreaView className="flex-1 justify-center gap-5 items-center w-full  bg-[#81D8D0]">

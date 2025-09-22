@@ -1,28 +1,21 @@
-import { View, Text, TextInput, Button, TouchableOpacity, Alert} from 'react-native'
-import { useState, useEffect } from 'react'
-import { Picker } from "@react-native-picker/picker";
-import DateTimePicker from "@react-native-community/datetimepicker"
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import type { Id } from "@/convex/_generated/dataModel";
-
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
+import { useMutation } from 'convex/react';
+import { useEffect, useState } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 type IncomeCategory = "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
 
 export default function addIncome() {
     
+    const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
     const [incomeName, setIncomeName] = useState<string>("")
-    const [incomeCategory, setIncomeCategory] = useState<string>("")
+    const [incomeCategoryValue, setIncomeCategoryValue] = useState<IncomeCategory>("Other")
     const [amount, setAmount] = useState<string>("")
     const [expectedPayOut, setExpectedPayOut] = useState<Date | null>(null)
-    const [selectedValue, setSelectedValue] = useState<IncomeCategory>("Other");
-    const [showPicker, setShowPicker] = useState<boolean>(false)
-
-    const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
-    const [userEmail, setUserEmail] = useState<string>("")
-    const [userName, setUserName] = useState<string>("")
+    const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
 
     const insertNewIncomeRow = useMutation(api.functions.income.insertNewIncome.insertNewIncome);
 
@@ -32,11 +25,9 @@ export default function addIncome() {
             const storedUser = await AsyncStorage.getItem("user")
             if(storedUser){
             const user = JSON.parse(storedUser)
-
             setUserCredentialsID(user.id || "")
-            setUserEmail(user.email || "")
-            setUserName(user.username || "")
             }
+
         }catch(e){
             Alert.alert('Error local storage', 'Error in retive Data in local Storage')
         }
@@ -55,7 +46,7 @@ const handleNewIncomeRecord = async () => {
     await insertNewIncomeRow({
       userCredentialsID,
       incomeName,
-      incomeCategory: selectedValue,
+      incomeCategory: incomeCategoryValue,
       amount: parseFloat(amount),
       expectedPayOut: expectedPayOut.toISOString(),
     });
@@ -88,8 +79,8 @@ const handleNewIncomeRecord = async () => {
             <Text>Category:</Text>
 
             <Picker
-                selectedValue={selectedValue}
-                onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                selectedValue={incomeCategoryValue}
+                onValueChange={(itemValue) => setIncomeCategoryValue(itemValue)}
             >
                 <Picker.Item label='Work' value='Work'/>
                 <Picker.Item label='Investment' value='Investment'/>
@@ -125,22 +116,26 @@ const handleNewIncomeRecord = async () => {
                 )}
             </View>
 
-            {showPicker && (
+            {showDatePicker && (
                 <DateTimePicker
                     value={expectedPayOut || new Date()}
                     mode='date'
                     display='default'
                     onChange={(event, selectedDate) => {
-                        setShowPicker(false)
+                        setShowDatePicker(false)
                         if(selectedDate) setExpectedPayOut(selectedDate)
                     }}
                 />
             )}
 
-            <Button 
-                title='Pick Date'
-                onPress={() => setShowPicker(true)}
-            />
+            <TouchableOpacity
+                className='flex items-center p-3 rounded-lg bg-blue-400'
+                onPress={() => setShowDatePicker(true)}
+            >
+                <Text
+                    className='text-white font-semibold'
+                >PICK DATE</Text>
+            </TouchableOpacity>
         </View>
 
         <TouchableOpacity
@@ -153,6 +148,7 @@ const handleNewIncomeRecord = async () => {
                 Add
             </Text>
         </TouchableOpacity>
+
     </View>
   )
 }
