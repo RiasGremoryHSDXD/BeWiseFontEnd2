@@ -67,7 +67,7 @@ export default function ExpensesList() {
   }
 
   return (
-    <View className="w-[90%] flex-1">
+    <View className="w-full flex-1">
         {isDeleting && <Loading/>}
       {selectExpensesList === undefined ? (
         <Text>Loading...</Text>
