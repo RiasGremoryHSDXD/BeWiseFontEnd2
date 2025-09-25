@@ -1,6 +1,10 @@
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@react-native-vector-icons/ionicons";
-import React, { useState } from "react";
-import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { useQuery } from "convex/react";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesList from "../components/expenses/expensesList";
@@ -8,7 +12,8 @@ import ExpensesList from "../components/expenses/expensesList";
 export default function income() {
   const [clickAddIncome, setClickAddIncome] = useState<boolean>(false);
 
-  // keep your separate state variables as you requested
+  // keep your separate state variables as you 
+  const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
   const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(59000);
   const [insuranceExpenses, setInsuranceExpeses] = useState<number>(29000)
   const [gameExpenses, setGameExpenses] = useState<number>(2000)
@@ -17,6 +22,31 @@ export default function income() {
   const [otherExpenses, setOtherExpenses] = useState<number>(900)
 
   const [toggleShowBalance, setToggleShowBalance] = useState<boolean>(true);
+
+  const totalExpenses = useQuery(
+    api.functions.expenses.totalExpenses.totalExpenses,
+    userCredentialsID ? { userCredentialsID } : "skip"
+  )
+  
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user")
+        if (storedUser) {
+          const user = JSON.parse(storedUser)
+          setUserCredentialsID(user.id || "")
+        }
+      } catch (error) {
+        Alert.alert('Error Local Storage [Income List]', 'Error retrieving data in local storage')
+      }
+    }
+
+    loadUserInfo()
+  }, [])
+
+  useEffect(() => {
+    if(totalExpenses !== undefined) setTotalMonthlyIncome(totalExpenses)
+  }, [totalExpenses])
 
   return (
     <SafeAreaView className="flex-1 w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
