@@ -120,33 +120,40 @@ export default function CreateAccount() {
           )}
         </View>
 
-        <View className="flex flex-row items-center justify-between bg-[#FAF7F0] rounded-3xl px-4">
-          <TextInput
-            className={`flex-1 ml-2 text-base py-5 ${
+        <View className="w-full">
+          <View
+            className={`flex flex-row items-center w-full px-4 py-2 rounded-3xl bg-[#FAF7F0] ${
               errorFields.password ? "border border-red-500" : ""
             }`}
-            placeholder="Password"
-            placeholderTextColor={errorFields.password ? "#ef4444" : ""}
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              clearFieldError("password");
-            }}
-          />
-          <TouchableOpacity onPress={togglePassword}>
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={25}
-              color="#000"
+          >
+            <TextInput
+              className="flex-1 text-base px-2 py-3"
+              placeholder="Password"
+              placeholderTextColor={errorFields.password ? "#ef4444" : ""}
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                clearFieldError("password");
+              }}
             />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={togglePassword}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={25}
+                color="#000"
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Error Message */}
           {errorFields.password && (
-            <Text className="text-red-500 text-sm ml-2 ">
+            <Text className="text-red-500 text-sm ml-2 mt-1">
               Password is required
             </Text>
           )}
         </View>
+
 
         <TouchableOpacity
           className="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"

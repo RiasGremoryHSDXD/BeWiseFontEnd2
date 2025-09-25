@@ -55,6 +55,7 @@ export default function LogIn() {
 
     if (!logInCredentialsValidation.success) {
       setLogInError(true);
+      setLoading(false)
       return;
     }
 
