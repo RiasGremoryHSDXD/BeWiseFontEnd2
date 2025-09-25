@@ -1,9 +1,9 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { useState } from "react";
 import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddIncomeModal from "../components/income/addIncome";
+import IncomeList from "../components/income/incomeList";
 
 export default function income() {
   const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(59000);
@@ -57,49 +57,55 @@ export default function income() {
       </View>
 
       {/*Income Categories */}
-      <View className="flex flex-1 bg-[#FAF7F0] px-8 py-5 gap-5 rounded-3xl w-[90%]">
-        {/* Head */}
-        <View>
-          <Text className="text-2xl font-medium">Income categories</Text>
+      <View className="flex flex-row justify-between   bg-[#FAF7F0] px-8 py-5 gap-5 rounded-3xl w-[90%] h-[40%]">
+        
+        <View
+          className="flex gap-y-2"
+        >
+          <View
+            className=" bg-gray-200 flex justify-center items-center pt-5 pb-5 pr-8 pl-8 rounded-xl"
+          >
+            <Text className="font-semibold">Work</Text>
+            <Text className="text-green-400">₱ 29,000</Text>
+          </View>
+
+          <View
+            className="bg-gray-200 flex justify-center items-center pt-5 pb-5 pr-8 pl-8 rounded-xl"
+          >
+            <Text className="font-semibold">Investments</Text>
+            <Text className="text-green-400">₱ 19,000</Text>
+          </View>
+
+
+          <View
+            className="bg-gray-200 flex justify-center items-center pt-5 pb-5 pr-8 pl-8 rounded-xl"
+          >
+            <Text className="font-semibold">Other</Text>
+            <Text className="text-green-400">₱ 900</Text>
+          </View>
         </View>
-        <TouchableOpacity className="border border-slate-500 bg-black/5 self-start rounded-lg py-7 px-14">
-          <FontAwesome6 name="plus" size={24} color="gray" />
-        </TouchableOpacity>
-        {/* Content */}
-        <View className="flex flex-col"></View>
+        
+        <View
+          className="flex gap-y-2"
+        >
+          <View
+            className="bg-gray-200 flex justify-center items-center pt-5 pb-5 pr-8 pl-8 rounded-xl"
+          >
+            <Text className="font-semibold">Savings</Text>
+            <Text className="text-green-400">₱ 2,000</Text>
+          </View>
+
+          <View
+            className="bg-gray-200 flex justify-center items-center pt-5 pb-5 pr-8 pl-8 rounded-xl"
+          >
+            <Text className="font-semibold">Side Hustle</Text>
+            <Text className="text-green-400">₱ 9,000</Text>
+          </View>
+        </View>
       </View>
 
       {/*Income Asset */}
-      <View className="flex flex-row bg-[#FAF7F0] items-center justify-between px-3 py-5 gap-3 w-[90%] rounded-3xl ">
-        {/* Left */}
-        <View>
-          <Text>Image</Text>
-        </View>
-
-        {/* Center */}
-        <View className="flex flex-col gap-2">
-          <View>
-            <Text>Main Salary</Text>
-          </View>
-          <View>
-            <Text>Work</Text>
-          </View>
-          <View>
-            <Text>Monthly</Text>
-          </View>
-        </View>
-
-        {/* Right */}
-        <View className="flex flex-col gap-2">
-          <View>
-            <Text>₱ 29,000</Text>
-          </View>
-          <View className="justify-between flex flex-row">
-            <Text>Rename</Text>
-            <Text>Delete</Text>
-          </View>
-        </View>
-      </View>
+      <IncomeList/>
 
       <Modal
         visible={clickAddIncome}
