@@ -13,7 +13,7 @@ export default function income() {
   const [savingIncome, setSavingIncome] = useState<number>(2000);
   const [sideHustleIncome, setSideHustleIncome] = useState<number>(9000);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [clickAddIncome, setClickAddIncome] = useState<boolean>(false)
+  const [clickAddIncome, setClickAddIncome] = useState<boolean>(false);
 
   return (
     <SafeAreaView className="flex-1 justify-center gap-5 items-center w-full  bg-[#81D8D0]">
@@ -62,11 +62,13 @@ export default function income() {
         <View>
           <Text className="text-2xl font-medium">Income categories</Text>
         </View>
-        <TouchableOpacity className="border border-slate-500 bg-black/5 self-start rounded-lg py-7 px-14">
-          <FontAwesome6 name="plus" size={24} color="gray" />
-        </TouchableOpacity>
         {/* Content */}
-        <View className="flex flex-col"></View>
+        <View className="gird gird-flow-col">
+          <View className="flex flex-col gap-2 p-2"></View>
+          <TouchableOpacity className="border border-slate-500 bg-black/5 self-start rounded-lg py-7 px-14">
+            <FontAwesome6 name="plus" size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/*Income Asset */}
@@ -107,28 +109,19 @@ export default function income() {
         animationType="fade"
         onRequestClose={() => setClickAddIncome(false)}
       >
-        <View
-          className="flex-1 bg-black/50 justify-center items-center"
-        >
-          <View
-            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
-          >
-            <AddIncomeModal/>
-
+        <View className="flex-1 bg-black/70 justify-center items-center">
+          <View className="flex gap-3 justify-center border border-[#36978C] items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
+            <AddIncomeModal />
+            <View className="border-b-2 border-dashed border-[#36978C] w-full mt-6" />
             <TouchableOpacity
-              className="p-2 mt-2 bg-green-400 rounded-lg"
+              className="p-2 mt-6 border border-green-800 rounded-lg"
               onPress={() => setClickAddIncome(false)}
             >
-              <Text
-                className="text-2xl font-bold text-white"
-              >
-                Close
-              </Text>
+              <Text className="text-2xl text-green-800 font-bold ">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
   );
 }
