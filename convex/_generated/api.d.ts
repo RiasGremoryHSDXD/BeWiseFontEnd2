@@ -19,6 +19,7 @@ import type * as functions_credentials_validateUserEmail from "../functions/cred
 import type * as functions_expenses_deleteExpenses from "../functions/expenses/deleteExpenses.js";
 import type * as functions_expenses_expensesList from "../functions/expenses/expensesList.js";
 import type * as functions_expenses_insertNewExpenses from "../functions/expenses/insertNewExpenses.js";
+import type * as functions_expenses_totalEachCategoryExpenses from "../functions/expenses/totalEachCategoryExpenses.js";
 import type * as functions_expenses_totalExpenses from "../functions/expenses/totalExpenses.js";
 import type * as functions_income_deleteIncome from "../functions/income/deleteIncome.js";
 import type * as functions_income_incomeList from "../functions/income/incomeList.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   "functions/expenses/deleteExpenses": typeof functions_expenses_deleteExpenses;
   "functions/expenses/expensesList": typeof functions_expenses_expensesList;
   "functions/expenses/insertNewExpenses": typeof functions_expenses_insertNewExpenses;
+  "functions/expenses/totalEachCategoryExpenses": typeof functions_expenses_totalEachCategoryExpenses;
   "functions/expenses/totalExpenses": typeof functions_expenses_totalExpenses;
   "functions/income/deleteIncome": typeof functions_income_deleteIncome;
   "functions/income/incomeList": typeof functions_income_incomeList;

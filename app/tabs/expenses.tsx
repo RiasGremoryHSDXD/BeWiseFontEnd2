@@ -27,6 +27,11 @@ export default function income() {
     api.functions.expenses.totalExpenses.totalExpenses,
     userCredentialsID ? { userCredentialsID } : "skip"
   )
+
+  const totalEachCategoryTotalExpenses = useQuery(
+    api.functions.expenses.totalEachCategoryExpenses.totalEachCategoryExpenses,
+    userCredentialsID ? { userCredentialsID } : 'skip'
+  )
   
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -47,6 +52,23 @@ export default function income() {
   useEffect(() => {
     if(totalExpenses !== undefined) setTotalMonthlyIncome(totalExpenses)
   }, [totalExpenses])
+
+  useEffect(() => {
+
+    if(totalEachCategoryTotalExpenses !== undefined){
+      setInsuranceExpeses(totalEachCategoryTotalExpenses.Insurance)
+      setBillExpenses(totalEachCategoryTotalExpenses.Bills)
+      setGameExpenses(totalEachCategoryTotalExpenses.Game)
+      setGroceryExpenses(totalEachCategoryTotalExpenses.Grocery)
+      setOtherExpenses(totalEachCategoryTotalExpenses.Other)
+    }
+  }, [totalEachCategoryTotalExpenses, 
+    totalEachCategoryTotalExpenses?.Insurance,
+    totalEachCategoryTotalExpenses?.Bills,
+    totalEachCategoryTotalExpenses?.Game,
+    totalEachCategoryTotalExpenses?.Grocery,
+    totalEachCategoryTotalExpenses?.Other
+  ])
 
   return (
     <SafeAreaView className="flex-1 w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
