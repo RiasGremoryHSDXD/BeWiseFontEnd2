@@ -17,7 +17,11 @@ import type * as functions_credentials_insertNewUser from "../functions/credenti
 import type * as functions_credentials_logInUser from "../functions/credentials/logInUser.js";
 import type * as functions_credentials_updateUserName from "../functions/credentials/updateUserName.js";
 import type * as functions_credentials_validateUserEmail from "../functions/credentials/validateUserEmail.js";
+import type * as functions_expenses_deleteExpenses from "../functions/expenses/deleteExpenses.js";
+import type * as functions_expenses_expensesList from "../functions/expenses/expensesList.js";
 import type * as functions_expenses_insertNewExpenses from "../functions/expenses/insertNewExpenses.js";
+import type * as functions_income_deleteIncome from "../functions/income/deleteIncome.js";
+import type * as functions_income_incomeList from "../functions/income/incomeList.js";
 import type * as functions_income_insertNewIncome from "../functions/income/insertNewIncome.js";
 
 /**
@@ -33,7 +37,11 @@ declare const fullApi: ApiFromModules<{
   "functions/credentials/logInUser": typeof functions_credentials_logInUser;
   "functions/credentials/updateUserName": typeof functions_credentials_updateUserName;
   "functions/credentials/validateUserEmail": typeof functions_credentials_validateUserEmail;
+  "functions/expenses/deleteExpenses": typeof functions_expenses_deleteExpenses;
+  "functions/expenses/expensesList": typeof functions_expenses_expensesList;
   "functions/expenses/insertNewExpenses": typeof functions_expenses_insertNewExpenses;
+  "functions/income/deleteIncome": typeof functions_income_deleteIncome;
+  "functions/income/incomeList": typeof functions_income_incomeList;
   "functions/income/insertNewIncome": typeof functions_income_insertNewIncome;
 }>;
 export declare const api: FilterApi<

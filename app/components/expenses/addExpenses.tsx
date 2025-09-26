@@ -2,25 +2,25 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
-import { useMutation } from "convex/react";
-import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+import { Picker } from '@react-native-picker/picker';
+import { useMutation } from 'convex/react';
+import { useEffect, useState } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import LoadingScreen from "../Loading";
+type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other"
 
 export default function addExpenses() {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
-  const [expensesName, setExpensesName] = useState<string>("");
-  const [expensesCategoryValue, setExpensesCategoryValue] =
-    useState<ExpensesCategory>("Other");
-  const [amount, setAmount] = useState<string>("");
-  const [datePaid, setDatePaid] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
-  const insertNewExpensesRow = useMutation(
-    api.functions.expenses.insertNewExpenses.insertNewExpenses
-  );
+    const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
+    const [expensesName, setExpensesName] = useState<string>("")
+    const [expensesCategoryValue, setExpensesCategoryValue] = useState<ExpensesCategory>("Other")
+    const [amount, setAmount] = useState<string>("")
+    const [datePaid, setDatePaid] = useState<Date | null>(null)
+    const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [isProcessing, setIsProcessing] = useState(false)
+
+    const insertNewExpensesRow = useMutation(api.functions.expenses.insertNewExpenses.insertNewExpenses)
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -36,25 +36,36 @@ export default function addExpenses() {
     loadUserInfo();
   }, []);
 
-  const handleNewExpensesRecord = async () => {
-    try {
-      if (!userCredentialsID || !expensesName || !amount || !datePaid) {
-        Alert.alert("Missing Data", "Please fill out all field");
-        return;
-      }
+    const handleNewExpensesRecord = async () => {
 
-      await insertNewExpensesRow({
-        userCredentialsID,
-        expensesName,
-        expensesCategory: expensesCategoryValue,
-        amount: parseFloat(amount),
-        datePaid: datePaid.toISOString(),
-      });
+        if(loading || isProcessing) return
+        
+        setIsProcessing(true)
+        try {
+            if(!userCredentialsID || !expensesName || !amount || !datePaid){
+                Alert.alert("Missing Data", "Please fill out all field")
+                return
+            }
 
-      Alert.alert("Success", "Expenses record add successfully!");
-    } catch (e) {
-      Alert.alert("Error", "Failed to insert expenses record");
-      console.error(e);
+            setLoading(true)
+            await insertNewExpensesRow({
+                userCredentialsID, 
+                expensesName,
+                expensesCategory: expensesCategoryValue, 
+                amount: parseFloat(amount),
+                datePaid: datePaid.toISOString()
+            })
+
+            setLoading(false)
+
+            Alert.alert("Success", "Expenses record add successfully!")
+        } catch (e) {
+            Alert.alert("Error", "Failed to insert expenses record")
+            console.error(e)
+        } finally{
+            setLoading(false)
+            setIsProcessing(false)
+        }
     }
   };
 
@@ -105,34 +116,45 @@ export default function addExpenses() {
 
           {datePaid && <Text>{datePaid.toDateString()}</Text>}
 
-          {showDatePicker && (
-            <DateTimePicker
-              value={datePaid || new Date()}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) setDatePaid(selectedDate);
-              }}
-            />
-          )}
-        </View>
-        <View className="gap-2">
-          <TouchableOpacity
-            className="flex items-center p-2 rounded-lg bg-blue-500"
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text className="text-white font-semibold">PICK DATE</Text>
-          </TouchableOpacity>
+                {showDatePicker && (
+                    <DateTimePicker 
+                        value={datePaid || new Date()}
+                        mode='date'
+                        display='default'
+                        onChange={(event, selectedDate) =>{ 
+                            setShowDatePicker(false)
+                            if(selectedDate) setDatePaid(selectedDate)
+                        }}
+                    />
+                )}
+            </View>
 
-          <TouchableOpacity
-            className="flex items-center p-2 rounded-lg bg-green-500 "
-            onPress={handleNewExpensesRecord}
-          >
-            <Text className="text-white font-semibold ">ADD</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+                className='flex items-center p-3 rounded-lg bg-blue-400'
+                onPress={() => setShowDatePicker(true)}
+            >
+                <Text
+                    className='text-white font-semibold'
+                >PICK DATE</Text>
+            </TouchableOpacity>
         </View>
-      </View>
+    
+        <TouchableOpacity
+            activeOpacity={1}
+            className='p-2 bg-red-400 rounded-lg flex items-center'
+            onPress={handleNewExpensesRecord}
+            disabled={loading || isProcessing}
+        >
+            <Text
+                className='text-2xl font-semibold text-white'
+            >
+                Add
+            </Text>
+        </TouchableOpacity>
+
+        {loading && (
+            <LoadingScreen/>
+        )}
     </View>
   );
 }

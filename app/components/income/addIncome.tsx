@@ -3,29 +3,26 @@ import type { Id } from "@/convex/_generated/dataModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
-import { useMutation } from "convex/react";
-import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-type IncomeCategory =
-  | "Work"
-  | "Investment"
-  | "Savings"
-  | "Side Hustle"
-  | "Other";
+import { useMutation } from 'convex/react';
+import { useEffect, useState } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import LoadingScreen from '../Loading';
+
+type IncomeCategory = "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
 
 export default function addIncome() {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
-  const [incomeName, setIncomeName] = useState<string>("");
-  const [incomeCategoryValue, setIncomeCategoryValue] =
-    useState<IncomeCategory>("Other");
-  const [amount, setAmount] = useState<string>("");
-  const [expectedPayOut, setExpectedPayOut] = useState<Date | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+    
+    const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
+    const [incomeName, setIncomeName] = useState<string>("")
+    const [incomeCategoryValue, setIncomeCategoryValue] = useState<IncomeCategory>("Other")
+    const [amount, setAmount] = useState<string>("")
+    const [expectedPayOut, setExpectedPayOut] = useState<Date | null>(null)
+    const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isProcessing, setIsProcessing] = useState(false)
 
-  const insertNewIncomeRow = useMutation(
-    api.functions.income.insertNewIncome.insertNewIncome
-  );
+
+    const insertNewIncomeRow = useMutation(api.functions.income.insertNewIncome.insertNewIncome);
 
   useEffect(() => {
     const loadUserInfo = async () => {
@@ -46,27 +43,39 @@ export default function addIncome() {
     loadUserInfo();
   }, []);
 
-  const handleNewIncomeRecord = async () => {
-    try {
-      if (!userCredentialsID || !incomeName || !amount || !expectedPayOut) {
-        Alert.alert("Missing data", "Please fill out all fields.");
-        return;
-      }
+    const handleNewIncomeRecord = async () => {
 
-      await insertNewIncomeRow({
-        userCredentialsID,
-        incomeName,
-        incomeCategory: incomeCategoryValue,
-        amount: parseFloat(amount),
-        expectedPayOut: expectedPayOut.toISOString(),
-      });
+        if(loading || isProcessing) return
+        setIsProcessing(true)
 
-      Alert.alert("Success", "Income record added successfully!");
-    } catch (e) {
-      Alert.alert("Error", "Failed to insert income record.");
-      console.error(e);
-    }
-  };
+        try {
+            if (!userCredentialsID || !incomeName || !amount || !expectedPayOut) {
+            Alert.alert("Missing data", "Please fill out all fields.");
+            return;
+            }
+
+            setLoading(true)
+
+            await insertNewIncomeRow({
+            userCredentialsID,
+            incomeName,
+            incomeCategory: incomeCategoryValue,
+            amount: parseFloat(amount),
+            expectedPayOut: expectedPayOut.toISOString(),
+            });
+
+            setLoading(false)
+
+            Alert.alert("Success", "Income record added successfully!");
+        } catch (e) {
+            Alert.alert("Error", "Failed to insert income record.");
+            console.error(e);
+        }finally{
+            setLoading(false)
+            setIsProcessing(false)
+        }
+    };
+
 
   return (
     <View className="flex gap-y-5 w-full">
@@ -134,14 +143,22 @@ export default function addIncome() {
             <Text className="text-white font-semibold">PICK DATE</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            className="flex items-center p-2 rounded-lg bg-green-500 "
+        <TouchableOpacity
+            activeOpacity={1}
+            className='p-2 bg-green-400 rounded-lg flex items-center'
             onPress={handleNewIncomeRecord}
-          >
-            <Text className="text-white font-semibold ">ADD</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            disabled={loading || isProcessing}
+        >
+            <Text
+                className='text-2xl font-bold text-white'
+            >
+                Add
+            </Text>
+        </TouchableOpacity>
+
+        {loading && (
+            <LoadingScreen/>
+        )}
     </View>
   );
 }

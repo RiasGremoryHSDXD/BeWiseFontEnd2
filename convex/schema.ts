@@ -27,7 +27,7 @@ export default defineSchema({
         ),
         amount: v.float64(),
         datePaid: v.string(),
-    }),
+    }).index("by_user", ["userCredentialsID"]),
 
     income: defineTable({
         userCredentialsID: v.id("userCredentials"),
@@ -41,5 +41,5 @@ export default defineSchema({
         ),
         amount: v.float64(),
         expectedPayOut: v.string()
-    })
+    }).index("by_user", ["userCredentialsID"])
 })

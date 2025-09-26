@@ -159,6 +159,7 @@ export default function CreateAccount() {
           )}
         </View>
 
+
         <TouchableOpacity
           className="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"
           onPress={handleSignUp}
