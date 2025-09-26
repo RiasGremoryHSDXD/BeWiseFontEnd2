@@ -1,20 +1,73 @@
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@react-native-vector-icons/ionicons";
-import React, { useState } from 'react';
-import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { useQuery } from "convex/react";
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AddIncomeModal from "../components/income/addIncome";
 import IncomeList from "../components/income/incomeList";
 
 export default function income() {
 
+  const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
   const [clickAddIncome, setClickAddIncome] = useState<boolean>(false)
-  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(59000);
-  const [workIncome, setWorkIncome] = useState<number>(29000);
-  const [investmentIncome, setInvestmentIncome] = useState<number>(19000);
-  const [otherIncome, setOtherIncome] = useState<number>(900);
-  const [savingIncome, setSavingIncome] = useState<number>(2000);
-  const [sideHustleIncome, setSideHustleIncome] = useState<number>(9000);
+  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
+  const [workIncome, setWorkIncome] = useState<number>(0);
+  const [investmentIncome, setInvestmentIncome] = useState<number>(0);
+  const [otherIncome, setOtherIncome] = useState<number>(0);
+  const [savingIncome, setSavingIncome] = useState<number>(0);
+  const [sideHustleIncome, setSideHustleIncome] = useState<number>(0);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
+
+  const totalIncome = useQuery(
+    api.functions.income.totalIncome.totalIncome,
+    userCredentialsID ? { userCredentialsID } : 'skip'
+  )
+
+  const totalEachCategoryTotalIncome = useQuery(
+    api.functions.income.totalEachCategoryIncome.totalEachCategoryIncome,
+    userCredentialsID ? { userCredentialsID } : 'skip'
+  )
+
+  useEffect(() => {
+
+    const loadUserInfo = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user")
+        if(storedUser){
+          const user = JSON.parse(storedUser)
+          setUserCredentialsID(user.id || "")
+        }
+      } catch (error) {
+        Alert.alert("Error Local Storage [income.tsx file]", 'Error retrieving data in local storage')
+      }
+    }
+
+    loadUserInfo()
+  }, [])
+
+  useEffect(() => {
+    if(totalIncome !== undefined) setTotalMonthlyIncome(totalIncome)
+  }, [totalIncome])
+
+  useEffect(() => {
+    if(totalEachCategoryTotalIncome !== undefined){
+      setWorkIncome(totalEachCategoryTotalIncome.Work)
+      setInvestmentIncome(totalEachCategoryTotalIncome.Investment)
+      setSavingIncome(totalEachCategoryTotalIncome.Savings)
+      setSideHustleIncome(totalEachCategoryTotalIncome["Side Hustle"])
+      setOtherIncome(totalEachCategoryTotalIncome.Other)
+    }
+  }, [
+    totalEachCategoryTotalIncome,
+    totalEachCategoryTotalIncome?.Work,
+    totalEachCategoryTotalIncome?.Investment,
+    totalEachCategoryTotalIncome?.Savings,
+    totalEachCategoryTotalIncome?.["Side Hustle"],
+    totalEachCategoryTotalIncome?.Other
+  ])
 
   return (
     <SafeAreaView
@@ -45,10 +98,10 @@ export default function income() {
         </View>
         <View className="flex gap-y-2 ">
           <View>
-            <Text className="text-xl text-[#676565]">Total Monthly Income</Text>
+            <Text className="text-xl font-semibold text-[#676565]">Total Monthly Income</Text>
           </View>
           <View className="flex flex-row justify-between">
-            <Text className="text-3xl text-[#FAF7F0]">
+            <Text className="text-3xl text-green-600">
               ₱ {toogleShowBalance ? totalMonthlyIncome : "****"}
             </Text>
 

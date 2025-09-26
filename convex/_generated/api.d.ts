@@ -24,6 +24,8 @@ import type * as functions_expenses_totalExpenses from "../functions/expenses/to
 import type * as functions_income_deleteIncome from "../functions/income/deleteIncome.js";
 import type * as functions_income_incomeList from "../functions/income/incomeList.js";
 import type * as functions_income_insertNewIncome from "../functions/income/insertNewIncome.js";
+import type * as functions_income_totalEachCategoryIncome from "../functions/income/totalEachCategoryIncome.js";
+import type * as functions_income_totalIncome from "../functions/income/totalIncome.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -45,6 +47,8 @@ declare const fullApi: ApiFromModules<{
   "functions/income/deleteIncome": typeof functions_income_deleteIncome;
   "functions/income/incomeList": typeof functions_income_incomeList;
   "functions/income/insertNewIncome": typeof functions_income_insertNewIncome;
+  "functions/income/totalEachCategoryIncome": typeof functions_income_totalEachCategoryIncome;
+  "functions/income/totalIncome": typeof functions_income_totalIncome;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

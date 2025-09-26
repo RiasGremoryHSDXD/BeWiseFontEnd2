@@ -10,16 +10,16 @@ import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesList from "../components/expenses/expensesList";
 
 export default function income() {
-  const [clickAddIncome, setClickAddIncome] = useState<boolean>(false);
+  const [clickAddExpense, setClickAddExpense] = useState<boolean>(false);
 
   // keep your separate state variables as you 
   const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
-  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(59000);
-  const [insuranceExpenses, setInsuranceExpeses] = useState<number>(29000)
-  const [gameExpenses, setGameExpenses] = useState<number>(2000)
-  const [billExpenses, setBillExpenses] = useState<number>(19000)
-  const [groceryExpenses, setGroceryExpenses] = useState<number>(9000)
-  const [otherExpenses, setOtherExpenses] = useState<number>(900)
+  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
+  const [insuranceExpenses, setInsuranceExpeses] = useState<number>(0)
+  const [gameExpenses, setGameExpenses] = useState<number>(0)
+  const [billExpenses, setBillExpenses] = useState<number>(0)
+  const [groceryExpenses, setGroceryExpenses] = useState<number>(0)
+  const [otherExpenses, setOtherExpenses] = useState<number>(0)
 
   const [toggleShowBalance, setToggleShowBalance] = useState<boolean>(true);
 
@@ -42,7 +42,7 @@ export default function income() {
           setUserCredentialsID(user.id || "")
         }
       } catch (error) {
-        Alert.alert('Error Local Storage [Income List]', 'Error retrieving data in local storage')
+        Alert.alert('Error Local Storage [expenses.tsx file]', 'Error retrieving data in local storage')
       }
     }
 
@@ -76,7 +76,7 @@ export default function income() {
       <View className="flex flex-[0.06] justify-end items-end">
         <TouchableOpacity
           className="bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black"
-          onPress={() => setClickAddIncome(true)}
+          onPress={() => setClickAddExpense(true)}
         >
           <Text className="text-base text-[#616161]">+ Add Expenses</Text>
         </TouchableOpacity>
@@ -93,11 +93,11 @@ export default function income() {
 
         <View className="flex gap-y-2">
           <View>
-            <Text className="text-xl text-[#676565]">Total Monthly Expenses</Text>
+            <Text className="text-xl font-semibold text-[#676565]">Total Monthly Expenses</Text>
           </View>
 
           <View className="flex flex-row justify-between items-center">
-            <Text className="text-3xl text-[#FAF7F0]">
+            <Text className="text-3xl text-red-600">
               ₱ {toggleShowBalance ? totalMonthlyIncome : "****"}
             </Text>
 
@@ -148,10 +148,10 @@ export default function income() {
 
       {/* Add Income Modal */}
       <Modal
-        visible={clickAddIncome}
+        visible={clickAddExpense}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setClickAddIncome(false)}
+        onRequestClose={() => setClickAddExpense(false)}
       >
         <View className="flex-1 bg-black/50 justify-center items-center">
           <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
@@ -159,7 +159,7 @@ export default function income() {
 
             <TouchableOpacity
               className="p-2 mt-2 bg-green-400 rounded-lg"
-              onPress={() => setClickAddIncome(false)}
+              onPress={() => setClickAddExpense(false)}
             >
               <Text className="text-2xl font-bold text-white">Close</Text>
             </TouchableOpacity>
