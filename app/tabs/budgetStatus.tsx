@@ -6,6 +6,7 @@ import {
 import React from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const currentBalance = 25000;
 const income = 24000;
 const expenses = 4000;

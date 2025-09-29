@@ -19,7 +19,7 @@ export default function home() {
       <View className="w-[90%] mt-8"></View>
 
       {/*Current Balance*/}
-      <View className="flex w-[90%] py-8 flex-row justify-between items-center px-5 bg-white/30 rounded-3xl">
+      <View className="flex w-[90%] py-8 flex-row justify-between items-center px-5 border border-white/50 bg-white/30 rounded-3xl">
         <View className="flex gap-y-2">
           <Text className="text-xl color-[#676565]">Current Balance</Text>
 

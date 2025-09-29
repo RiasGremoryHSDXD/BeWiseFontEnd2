@@ -42,7 +42,7 @@ export default function addIncome() {
       } catch (e) {
         Alert.alert(
           "Error local storage",
-          "Error in retive Data in local Storage"
+          "Error in relative Data in local Storage"
         );
       }
     };
@@ -83,12 +83,22 @@ export default function addIncome() {
   };
 
   return (
-    <View className="flex gap-y-5 w-full">
+    <View className="flex gap-y-3 w-full">
+      {/*Income Name View*/}
       <View>
-        {/*Income Category View*/}
-        <Text className="text-lg">Category:</Text>
+        <TextInput
+          className="border rounded-md"
+          placeholder="Income name"
+          value={incomeName}
+          onChangeText={(text) => setIncomeName(text)}
+        ></TextInput>
+      </View>
+
+      {/*Income Category View*/}
+      <View>
+        <Text>Category:</Text>
+
         <Picker
-          className="border"
           selectedValue={incomeCategoryValue}
           onValueChange={(itemValue) => setIncomeCategoryValue(itemValue)}
         >
@@ -99,22 +109,11 @@ export default function addIncome() {
           <Picker.Item label="Other" value="Other" />
         </Picker>
       </View>
-      {/*Income Name View*/}
-      <View className="gap-2">
-        <Text>Income Source:</Text>
-        <TextInput
-          className="border p-3 rounded-md"
-          placeholder="Income name"
-          value={incomeName}
-          onChangeText={(text) => setIncomeName(text)}
-        ></TextInput>
-      </View>
 
       {/* Amount */}
-      <View className="gap-2">
-        <Text className="font-normal">Amount:</Text>
+      <View>
         <TextInput
-          className="border p-3 rounded-md"
+          className="border rounded-md"
           placeholder="Amount"
           value={amount}
           onChangeText={(text) => setAmount(text)}
@@ -124,7 +123,7 @@ export default function addIncome() {
       {/* expectedPayOut */}
       <View className="flex gap-y-5">
         <View className="flex flex-row">
-          <Text className="font-medium">Expected Payout: </Text>
+          <Text>Expected Payout: </Text>
 
           {expectedPayOut && <Text>{expectedPayOut.toDateString()}</Text>}
         </View>
@@ -140,26 +139,25 @@ export default function addIncome() {
             }}
           />
         )}
-        <View className="gap-2">
-          <TouchableOpacity
-            className="flex items-center p-2 rounded-lg bg-blue-500"
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text className="text-white font-semibold">PICK DATE</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={1}
-            className="p-2 bg-green-400 rounded-lg flex items-center"
-            onPress={handleNewIncomeRecord}
-            disabled={loading || isProcessing}
-          >
-            <Text className="text-2xl font-bold text-white">Add</Text>
-          </TouchableOpacity>
-
-          {loading && <LoadingScreen />}
-        </View>
+        <TouchableOpacity
+          className="flex items-center p-3 rounded-lg bg-blue-400"
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text className="text-white font-semibold">PICK DATE</Text>
+        </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        activeOpacity={1}
+        className="p-2 bg-green-400 rounded-lg flex items-center"
+        onPress={handleNewIncomeRecord}
+        disabled={loading || isProcessing}
+      >
+        <Text className="text-2xl font-bold text-white">Add</Text>
+      </TouchableOpacity>
+
+      {loading && <LoadingScreen />}
     </View>
   );
 }
