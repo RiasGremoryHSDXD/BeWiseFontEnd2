@@ -11,8 +11,8 @@ export default defineSchema({
     budgetStatus: defineTable({
         userCredentials: v.id("userCredentials"),
         budgetStatusName: v.string(),
-        currentAmount: v.string(),
-        totalAmount: v.string()
+        currentAmount: v.float64(),
+        totalAmount: v.float64()
     }),
 
     expenses: defineTable({
@@ -27,6 +27,11 @@ export default defineSchema({
         ),
         amount: v.float64(),
         datePaid: v.string(),
+        frequency: v.union(
+            v.literal('OneTime'),
+            v.literal('Monthly')
+
+        )
     }).index("by_user", ["userCredentialsID"]),
 
     income: defineTable({
@@ -40,6 +45,16 @@ export default defineSchema({
             v.literal("Other")
         ),
         amount: v.float64(),
-        expectedPayOut: v.string()
+        expectedPayOut: v.string(),
+        frequency: v.union(
+            v.literal('OneTime'),
+            v.literal('Monthly')            
+        )
+    }).index("by_user", ["userCredentialsID"]),
+
+    balance: defineTable({
+        userCredentialsID: v.id('userCredentials'),
+        currentBalance: v.float64(),
+        lastUpdate: v.string()
     }).index("by_user", ["userCredentialsID"])
 })

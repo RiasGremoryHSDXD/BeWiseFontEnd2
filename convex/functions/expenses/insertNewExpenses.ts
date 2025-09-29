@@ -13,7 +13,11 @@ export const insertNewExpenses = mutation({
             v.literal("Other")
         ),
         amount: v.float64(),
-        datePaid: v.string()
+        datePaid: v.string(),
+        frequency: v.union(
+            v.literal('OneTime'),
+            v.literal('Monthly')
+        )
     },
 
     handler: async (ctx, args) => {
@@ -23,7 +27,8 @@ export const insertNewExpenses = mutation({
                 expensesName: args.expensesName,
                 expensesCategory: args.expensesCategory,
                 amount: args.amount,
-                datePaid: args.datePaid
+                datePaid: args.datePaid,
+                frequency: args.frequency
             })
     }
 })

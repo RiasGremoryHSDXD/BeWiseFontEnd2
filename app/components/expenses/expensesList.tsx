@@ -1,88 +1,98 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation, useQuery } from "convex/react";
-import React, { useEffect, useState } from "react";
+import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useMutation, useQuery } from 'convex/react'
+import React, { useEffect, useState } from 'react'
 import {
   Alert,
   Image,
+  Modal,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import Loading from "../Loading";
+} from 'react-native'
+import { Feather, FontAwesome5 } from '@expo/vector-icons'
+import Loading from '../Loading'
+import UpdateExpenses from './updateExpenses'
 
 export default function ExpensesList() {
   const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
-  const [isDeleting, setIsDeleing] = useState<boolean>(false);
+    useState<Id<'userCredentials'> | null>(null)
+  const [expensesID, setExpensesID] = useState<Id<'expenses'> | null>(null)
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
+  const [isUpdating, setIsUpdating] = useState<boolean>(false)
 
   const selectExpensesList = useQuery(
     api.functions.expenses.expensesList.expensesList,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
+    userCredentialsID ? { userCredentialsID } : 'skip'
+  )
+
+  const expenseInfoData = useQuery(
+    api.functions.expenses.expensesInfo.expenseInfo,
+    expensesID ? { expensesID } : 'skip'
+  )
 
   const deleteExpensesOnList = useMutation(
     api.functions.expenses.deleteExpenses.deleteExpenses
-  );
+  )
 
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem("user");
+        const storedUser = await AsyncStorage.getItem('user')
         if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
+          const user = JSON.parse(storedUser)
+          setUserCredentialsID(user.id || '')
         }
       } catch (error) {
         Alert.alert(
-          "Error Local Storage [Income List]",
-          "Error retrieving data in local storage"
-        );
+          'Error Local Storage [Expenses List]',
+          'Error retrieving data in local storage'
+        )
       }
-    };
+    }
 
-    loadUserInfo();
-  }, []);
+    loadUserInfo()
+  }, [])
 
   const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat("en-PH", {
+    return new Intl.NumberFormat('en-PH', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    }).format(amount)
+  }
 
-  const handleDeleteButton = (expensesID: Id<"expenses">) => {
-    Alert.alert(
-      "Confirm Delete",
-      "Are you sure you want to delete this expenses?",
-      [
-        {
-          text: "Cancel",
+  const handleDeleteButton = (expensesID: Id<'expenses'>) => {
+    Alert.alert('Confirm Delete', 'Are you sure you want to delete this expense?', [
+      {
+        text: 'Cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          try {
+            setIsDeleting(true)
+            await deleteExpensesOnList({ expensesID })
+          } catch (error) {
+            Alert.alert('Error', 'Failed to delete expense')
+          } finally {
+            setIsDeleting(false)
+          }
         },
-        {
-          text: "Yes",
-          onPress: async () => {
-            try {
-              setIsDeleing(true);
-              await deleteExpensesOnList({ expensesID: expensesID });
-            } catch (error) {
-              Alert.alert("Error", "Failed to delete income");
-            } finally {
-              setIsDeleing(false);
-            }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+      },
+    ])
+  }
+
+  const handleUpdateButton = async (expensesID: Id<'expenses'>) => {
+    setExpensesID(expensesID)
+    setIsUpdating(true)
+  }
 
   return (
     <View className="w-full flex-1">
       {isDeleting && <Loading />}
+
       {selectExpensesList === undefined ? (
         <Text>Loading...</Text>
       ) : (
@@ -93,18 +103,20 @@ export default function ExpensesList() {
         >
           {selectExpensesList.map((expenses) => (
             <View
-              className=" bg-white rounded-3xl h-20 p-4 w-full"
+              className="bg-white rounded-3xl h-20 p-4 w-full"
               key={expenses._id.toString()}
             >
               <View className="flex-row items-center justify-between h-full">
+                {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require("../../../assets/images/add_expenses_icon.png")}
+                    source={require('../../../assets/images/add_expenses_icon.png')}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
                 </View>
 
+                {/* Middle Content */}
                 <View className="px-3 justify-center items-center">
                   <Text className="text-lg font-semibold text-gray-800 mb-1">
                     {expenses.expensesName}
@@ -114,21 +126,20 @@ export default function ExpensesList() {
                   </Text>
                 </View>
 
+                {/* Right Side */}
                 <View className="items-end justify-between">
                   <Text className="text-lg font-bold text-red-600 mb-1">
                     ₱{formatAmount(expenses.amount)}
                   </Text>
-                  <View className="flex-row rounded-full px-2 gap-2 py-1 shadow-sm">
-                    <Feather name="edit" size={18} color="black" />
+                  <View className="flex-row rounded-full px-2 gap-4 py-1 shadow-sm">
+                    {/* Update Button */}
+                    <TouchableOpacity onPress={() => handleUpdateButton(expenses._id)}>
+                      <Feather name="edit" size={18} color="black" />
+                    </TouchableOpacity>
 
-                    <TouchableOpacity
-                      onPress={() => handleDeleteButton(expenses._id)}
-                    >
-                      <FontAwesome5
-                        name="trash-alt"
-                        size={17}
-                        color="#D90000"
-                      />
+                    {/* Delete Button */}
+                    <TouchableOpacity onPress={() => handleDeleteButton(expenses._id)}>
+                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -137,6 +148,45 @@ export default function ExpensesList() {
           ))}
         </ScrollView>
       )}
+
+      {/* Update Modal */}
+      <Modal
+        visible={isUpdating}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsUpdating(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-xl w-[94%] p-5 flex justify-center items-center">
+            {!expenseInfoData ? (
+              <View>
+                <Loading />
+                <Text>Loading...</Text>
+              </View>
+            ) : (
+              <UpdateExpenses
+                expensesID={expenseInfoData._id}
+                expensesName={expenseInfoData.expensesName}
+                expensesCategory={expenseInfoData.expensesCategory}
+                expensesAmount={expenseInfoData.amount}
+                expensesDatePaid={expenseInfoData.datePaid}
+                expensesFrequency={expenseInfoData.frequency}
+                onSuccessUpdate={() => {
+                  setIsUpdating(false)
+                  setExpensesID(null)
+                }}
+              />
+            )}
+
+            <TouchableOpacity
+              className="bg-red-400 w-full items-center p-2 mt-2 rounded-lg"
+              onPress={() => setIsUpdating(false)}
+            >
+              <Text className="font-semibold text-lg text-white">Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
-  );
+  )
 }

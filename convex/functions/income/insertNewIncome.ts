@@ -1,5 +1,5 @@
-import { mutation } from "../../_generated/server";
 import { v } from "convex/values";
+import { mutation } from "../../_generated/server";
 
 export const insertNewIncome = mutation({
     args: {
@@ -13,7 +13,11 @@ export const insertNewIncome = mutation({
             v.literal("Other")
         ),
         amount: v.float64(),
-        expectedPayOut: v.string()
+        expectedPayOut: v.string(),
+        frequency: v.union(
+            v.literal('OneTime'),
+            v.literal('Monthly')
+        )
     },
     handler: async (ctx, args) => {
         return await ctx.db
@@ -22,7 +26,8 @@ export const insertNewIncome = mutation({
                 incomeName: args.incomeName,
                 incomeCategory: args.incomeCategory,
                 amount: args.amount,
-                expectedPayOut: args.expectedPayOut
+                expectedPayOut: args.expectedPayOut,
+                frequency: args.frequency
         })
     }
 })
