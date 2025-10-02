@@ -60,7 +60,7 @@ export default function budgetStatus() {
               <Text className="text-xl font-medium">Insurance</Text>
             </View>
             <View className="flex flex-row gap-x-2">
-              <Text className="text-lg font-medium">₱ 5,000 / </Text>
+              <Text className="text-lg font-medium">₱5,000 / </Text>
               <Text className="text-lg font-medium">P10,000</Text>
             </View>
           </View>

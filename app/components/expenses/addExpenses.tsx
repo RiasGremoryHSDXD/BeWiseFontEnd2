@@ -1,192 +1,177 @@
-import { api } from '@/convex/_generated/api';
+import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from '@react-native-picker/picker';
-import { useMutation } from 'convex/react';
-import { useEffect, useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Picker } from "@react-native-picker/picker";
+import { useMutation } from "convex/react";
+import { useEffect, useState } from "react";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoadingScreen from "../Loading";
-type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other"
-type Frequency = 'OneTime' | 'Monthly'
+type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+type Frequency = "OneTime" | "Monthly";
 
 export default function addExpenses() {
+  const [userCredentialsID, setUserCredentialsID] =
+    useState<Id<"userCredentials"> | null>(null);
+  const [expensesName, setExpensesName] = useState<string>("");
+  const [expensesCategoryValue, setExpensesCategoryValue] =
+    useState<ExpensesCategory>("Other");
+  const [amount, setAmount] = useState<number>(0);
+  const [datePaid, setDatePaid] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [frequency, setFrequency] = useState<Frequency>("OneTime");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-    const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
-    const [expensesName, setExpensesName] = useState<string>("")
-    const [expensesCategoryValue, setExpensesCategoryValue] = useState<ExpensesCategory>("Other")
-    const [amount, setAmount] = useState<number>(0)
-    const [datePaid, setDatePaid] = useState<Date>(new Date())
-    const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
-    const [frequency, setFrequency] = useState<Frequency>('OneTime')
-    const [loading, setLoading] = useState<boolean>(false)
-    const [isProcessing, setIsProcessing] = useState(false)
+  const insertNewExpensesRow = useMutation(
+    api.functions.expenses.insertNewExpenses.insertNewExpenses
+  );
 
-    const insertNewExpensesRow = useMutation(api.functions.expenses.insertNewExpenses.insertNewExpenses)
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const storedUser = await AsyncStorage.getItem("user");
 
-    useEffect(() => {
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
 
-        const loadUserInfo = async () => {
-            const storedUser = await AsyncStorage.getItem("user")
+        setUserCredentialsID(user.id || "");
+      }
+    };
 
-            if(storedUser){
-                const user = JSON.parse(storedUser)
+    loadUserInfo();
+  }, []);
 
-                setUserCredentialsID(user.id || "")
-            }
-        }
+  const handleNewExpensesRecord = async () => {
+    if (loading || isProcessing) return;
+    setIsProcessing(true);
 
-        loadUserInfo()
-    }, [])
+    try {
+      if (!userCredentialsID || !expensesName || !amount || !datePaid) {
+        Alert.alert("Missing Data", "Please fill out all field");
+        return;
+      }
 
-    const handleNewExpensesRecord = async () => {
+      setLoading(true);
+      await insertNewExpensesRow({
+        userCredentialsID,
+        expensesName,
+        expensesCategory: expensesCategoryValue,
+        amount,
+        datePaid: datePaid.toISOString(),
+        frequency,
+      });
 
-        if(loading || isProcessing) return
-        setIsProcessing(true)
-        
-        try {
-            if(!userCredentialsID || !expensesName || !amount || !datePaid){
-                Alert.alert("Missing Data", "Please fill out all field")
-                return
-            }
+      setLoading(false);
 
-            setLoading(true)
-            await insertNewExpensesRow({
-                userCredentialsID, 
-                expensesName,
-                expensesCategory: expensesCategoryValue, 
-                amount,
-                datePaid: datePaid.toISOString(),
-                frequency
-            })
-
-            setLoading(false)
-
-            Alert.alert("Success", "Expenses record add successfully!")
-        } catch (e) {
-            Alert.alert("Error", "Failed to insert expenses record")
-            console.error(e)
-        } finally{
-            setLoading(false)
-            setIsProcessing(false)
-        }
+      Alert.alert("Success", "Expenses record add successfully!");
+    } catch (e) {
+      Alert.alert("Error", "Failed to insert expenses record");
+      console.error(e);
+    } finally {
+      setLoading(false);
+      setIsProcessing(false);
     }
+  };
 
   return (
-    <View
-        className='flex gap-y-3 w-full'
-    >
-        {/*Expenses Name */}
-        <View>
-            <TextInput
-                className='border rounded-md'
-                placeholder='Expenses Name'
-                value={expensesName}
-                onChangeText={(text) => setExpensesName(text)}
-            />
-        </View>
+    <View className="flex gap-y-3 w-full">
+      {/*Expenses Name */}
+      <View className="flex flex-col gap-y-3">
+        <Text className="font-semibold">Expenses Details:</Text>
+        {/* Income  Name */}
+        <TextInput
+          className="border rounded-md py-5 px-3"
+          placeholder="Expenses Name"
+          value={expensesName}
+          onChangeText={(text) => setExpensesName(text)}
+        />
 
-        {/*Expenses Category*/}
-        <Text className="font-bold">Category</Text>
-        <View
-            className='border border-black rounded-lg overflow-hidden'
+        {/* Amount */}
+        <TextInput
+          className="border rounded-md py-5 px-3"
+          placeholder="Amount"
+          value={amount === 0 ? "" : amount.toString()}
+          onChangeText={(text) => {
+            if (text === "") {
+              setAmount(0);
+            } else {
+              const num = parseFloat(text);
+              setAmount(isNaN(num) ? 0 : num);
+            }
+          }}
+          keyboardType="numeric"
+        />
+      </View>
+
+      {/*Expenses Category*/}
+      <Text className="font-bold mt-2">Category</Text>
+      <View className="border border-black rounded-lg overflow-hidden">
+        <Picker
+          selectedValue={expensesCategoryValue}
+          onValueChange={(itemValue) => setExpensesCategoryValue(itemValue)}
         >
-            <Picker
-                selectedValue={expensesCategoryValue}
-                onValueChange={(itemValue) => setExpensesCategoryValue(itemValue)}
-            >
-                <Picker.Item label='Insurance' value='Insurance'/>
-                <Picker.Item label='Bills' value='Bills'/>
-                <Picker.Item label='Game' value='Game'/>
-                <Picker.Item label='Grocery' value='Grocery'/>
-                <Picker.Item label='Other' value='Other'/>
-            </Picker>
-        </View>
+          <Picker.Item label="Insurance" value="Insurance" />
+          <Picker.Item label="Bills" value="Bills" />
+          <Picker.Item label="Game" value="Game" />
+          <Picker.Item label="Grocery" value="Grocery" />
+          <Picker.Item label="Other" value="Other" />
+        </Picker>
+      </View>
 
-        {/*Amount*/}
-        <View
-            className='border rounded-md'
+      {/** Frequency */}
+      <Text className="font-semibold mt-2">Frequency</Text>
+      <View className="border border-black rounded-lg overflow-hidden">
+        <Picker
+          selectedValue={frequency}
+          onValueChange={(itemValue) => setFrequency(itemValue)}
         >
-            <TextInput 
-                placeholder='Amount'
-                value={amount === 0 ? "" : amount.toString()}
-                onChangeText={(text) => {
-                    if(text === ""){
-                        setAmount(0)
-                    }else{
-                        const num = parseFloat(text)
-                        setAmount(isNaN(num) ? 0 : num)
-                    }
-                }}
-                keyboardType='numeric'
-            />
-        </View>
+          <Picker.Item label="OneTime" value="OneTime" />
+          <Picker.Item label="Monthly" value="Monthly" />
+        </Picker>
+      </View>
 
-        {/** Frequency */}
-        <Text className="font-semibold">Frequency</Text>
-        <View
-            className='border border-black rounded-lg overflow-hidden'
-        >
-            <Picker
-                selectedValue={frequency}
-                onValueChange={(itemValue) => setFrequency(itemValue)}
-            >
-                <Picker.Item label='OneTime' value='OneTime' />
-                <Picker.Item label='Monthly' value='Monthly' />
-            </Picker>
-        </View>
+      {/* Date Paid*/}
+      <View className="flex flex-row justify-between">
+        {/* <Text>Expected Paid: </Text> */}
 
-        {/* Date Paid*/}
-        <View
-            className='flex flex-row gap-y-5'
-        >
-            
-                {/* <Text>Expected Paid: </Text> */}
-
-                {frequency === 'OneTime' ? (
-                    <Text>Expected Paid Date : </Text>
-                ) : (
-                    <Text>Started Paid Date : </Text>
-                )}
-
-                {datePaid && (
-                    <TouchableOpacity 
-                        className="border border-gray-300 rounded-md bg-gray-50"
-                        onPress={() => setShowDatePicker(true)}
-                    >
-                        <Text>{datePaid.toDateString()}</Text>
-                    </TouchableOpacity>
-                )}
-
-                {showDatePicker && (
-                    <DateTimePicker 
-                        value={datePaid || new Date()}
-                        mode='date'
-                        display='default'
-                        onChange={(event, selectedDate) =>{ 
-                            setShowDatePicker(false)
-                            if(selectedDate) setDatePaid(selectedDate)
-                        }}
-                    />
-                )}
-        </View>
-    
-        <TouchableOpacity
-            activeOpacity={1}
-            className='p-2 bg-red-400 rounded-lg flex items-center'
-            onPress={handleNewExpensesRecord}
-            disabled={loading || isProcessing}
-        >
-            <Text
-                className='text-2xl font-semibold text-white'
-            >
-                Add
-            </Text>
-        </TouchableOpacity>
-
-        {loading && (
-            <LoadingScreen/>
+        {frequency === "OneTime" ? (
+          <Text>Expected Paid Date : </Text>
+        ) : (
+          <Text>Started Paid Date : </Text>
         )}
+
+        {datePaid && (
+          <TouchableOpacity
+            className="border border-gray-300 rounded-md bg-gray-50"
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text>{datePaid.toDateString()}</Text>
+          </TouchableOpacity>
+        )}
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={datePaid || new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setDatePaid(selectedDate);
+            }}
+          />
+        )}
+      </View>
+
+      <TouchableOpacity
+        activeOpacity={1}
+        className="p-2 bg-red-400 rounded-lg flex items-center mt-5"
+        onPress={handleNewExpensesRecord}
+        disabled={loading || isProcessing}
+      >
+        <Text className="text-2xl font-semibold text-white">Add</Text>
+      </TouchableOpacity>
+
+      {loading && <LoadingScreen />}
     </View>
-  )
+  );
 }

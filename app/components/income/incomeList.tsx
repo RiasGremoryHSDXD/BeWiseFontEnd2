@@ -1,56 +1,69 @@
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useMutation, useQuery } from 'convex/react'
-import React, { useEffect, useState } from 'react'
-import { Alert, Image, Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import Loading from '../Loading'
-import UpdateIncome from './updateIncomes'
-import { Feather, FontAwesome5 } from '@expo/vector-icons'
-
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation, useQuery } from "convex/react";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Loading from "../Loading";
+import UpdateIncome from "./updateIncomes";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
 
 export default function IncomeList() {
-  const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null)
-  const [incomeID, setIncomeID] = useState<Id<"income"> | null>(null)
-  const [isDeleting, setIsDeleting] = useState<boolean>(false)
-  const [isUpdating, setIsUpdating] = useState<boolean>(false)
+  const [userCredentialsID, setUserCredentialsID] =
+    useState<Id<"userCredentials"> | null>(null);
+  const [incomeID, setIncomeID] = useState<Id<"income"> | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const selectIncomeList = useQuery(
     api.functions.income.incomeList.incomeList,
     userCredentialsID ? { userCredentialsID } : "skip"
-  )
+  );
 
   const incomeInfoData = useQuery(
     api.functions.income.incomeInfo.incomeInfo,
-    incomeID ? { incomeID } : 'skip'
-  )
+    incomeID ? { incomeID } : "skip"
+  );
 
-  const deleteIncomeOnList = useMutation(api.functions.income.deleteIncome.deleteIncome)
+  const deleteIncomeOnList = useMutation(
+    api.functions.income.deleteIncome.deleteIncome
+  );
 
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
-        const storedUser = await AsyncStorage.getItem("user")
+        const storedUser = await AsyncStorage.getItem("user");
         if (storedUser) {
-          const user = JSON.parse(storedUser)
-          setUserCredentialsID(user.id || "")
+          const user = JSON.parse(storedUser);
+          setUserCredentialsID(user.id || "");
         }
       } catch (error) {
-        Alert.alert('Error Local Storage [Income List]', 'Error retrieving data in local storage')
+        Alert.alert(
+          "Error Local Storage [Income List]",
+          "Error retrieving data in local storage"
+        );
       }
-    }
+    };
 
-    loadUserInfo()
-  }, [])
+    loadUserInfo();
+  }, []);
 
   const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat('en-PH', {
+    return new Intl.NumberFormat("en-PH", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
-  const handleDeleteButton = (incomeId : Id<"income">) => {
+  const handleDeleteButton = (incomeId: Id<"income">) => {
     Alert.alert(
       "Confirm Delete",
       "Are you sure you want to delete this income?",
@@ -60,35 +73,34 @@ export default function IncomeList() {
           text: "Yes",
           onPress: async () => {
             try {
-              setIsDeleting(true)
-              await deleteIncomeOnList({ incomeID: incomeId })
+              setIsDeleting(true);
+              await deleteIncomeOnList({ incomeID: incomeId });
             } catch (error) {
-              Alert.alert("Error", "Failed to delete income")
+              Alert.alert("Error", "Failed to delete income");
             } finally {
-              setIsDeleting(false)
+              setIsDeleting(false);
             }
-          }
-        }
+          },
+        },
       ],
       { cancelable: true }
-    )
-  }
+    );
+  };
 
-  const handleUpdateIncome = (income_id : Id<"income">) => {
-    setIncomeID(income_id)
-    setIsUpdating(true)
-  }
+  const handleUpdateIncome = (income_id: Id<"income">) => {
+    setIncomeID(income_id);
+    setIsUpdating(true);
+  };
 
   return (
-    <View className="w-full flex-1">
+    <View className="w-full">
       {isDeleting && <Loading />}
-      
+
       {selectIncomeList === undefined ? (
         <Text>Loading...</Text>
       ) : (
         <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingVertical: 8, gap: 8 }}
+          contentContainerStyle={{ gap: 8 }}
           showsVerticalScrollIndicator={false}
         >
           {selectIncomeList.map((income) => (
@@ -100,7 +112,7 @@ export default function IncomeList() {
                 {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require('../../../assets/images/add_income_icon.png')}
+                    source={require("../../../assets/images/add_income_icon.png")}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
@@ -122,15 +134,22 @@ export default function IncomeList() {
                     ₱{formatAmount(income.amount)}
                   </Text>
                   <View className="flex-row gap-2 rounded-full px-2 py-1 shadow-sm">
-                    
                     {/* Update Button */}
-                    <TouchableOpacity onPress={() => handleUpdateIncome(income._id)}>
+                    <TouchableOpacity
+                      onPress={() => handleUpdateIncome(income._id)}
+                    >
                       <Feather name="edit" size={18} color="black" />
                     </TouchableOpacity>
 
                     {/* Delete Button */}
-                    <TouchableOpacity onPress={() => handleDeleteButton(income._id)}>
-                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
+                    <TouchableOpacity
+                      onPress={() => handleDeleteButton(income._id)}
+                    >
+                      <FontAwesome5
+                        name="trash-alt"
+                        size={17}
+                        color="#D90000"
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -163,8 +182,8 @@ export default function IncomeList() {
                 incomeExpectedPayOut={new Date(incomeInfoData?.expectedPayOut)}
                 incomeFrequency={incomeInfoData?.frequency}
                 onSuccessUpdate={() => {
-                  setIsUpdating(false)
-                  setIncomeID(null)
+                  setIsUpdating(false);
+                  setIncomeID(null);
                 }}
               />
             )}
@@ -179,5 +198,5 @@ export default function IncomeList() {
         </View>
       </Modal>
     </View>
-  )
+  );
 }

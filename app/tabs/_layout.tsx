@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons"; // fix import
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons"; // fix import
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Tabs } from "expo-router";
 import { useState } from "react";
@@ -21,16 +21,9 @@ export default function TabLayout() {
           tabBarInactiveTintColor: "#666666",
           tabBarStyle: {
             backgroundColor: "#FFFFFF",
-            borderTopWidth: 1,
-            borderTopColor: "#E5E5E5",
             height: 120,
             paddingBottom: 20,
             paddingTop: 10,
-            elevation: 8,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
           },
           tabBarItemStyle: { paddingVertical: 5 },
           tabBarIconStyle: { marginBottom: 0 },
@@ -64,23 +57,9 @@ export default function TabLayout() {
           name="budgetStatus"
           options={{
             title: "",
-            tabBarIcon: ({ focused }) => (
-              <View style={styles.centerIconContainer}>
-                <View
-                  style={[
-                    styles.centerIconCircle,
-                    { backgroundColor: "#81D8D0" },
-                  ]}
-                >
-                  <Image
-                    source={require("../../assets/images/PigLogo.png")}
-                    style={[
-                      styles.centerIcon,
-                      { tintColor: focused ? "#36978C" : "#12312D" },
-                    ]}
-                    resizeMode="contain"
-                  />
-                </View>
+            tabBarIcon: ({ color }) => (
+              <View style={styles.regularIconContainer}>
+                <FontAwesome5 name="wallet" size={28} color={color} />
               </View>
             ),
           }}
@@ -120,29 +99,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 50,
     height: 50,
-  },
-  centerIconContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    top: -15,
-  },
-  centerIconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    borderWidth: 2,
-    borderColor: "#36978C",
-  },
-  centerIcon: {
-    width: 40,
-    height: 40,
   },
 });

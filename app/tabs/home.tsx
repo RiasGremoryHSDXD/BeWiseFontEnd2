@@ -10,7 +10,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [userCredentialsID, setUserCredentialsID] = useState<Id<"userCredentials"> | null>(null);
+  const [userCredentialsID, setUserCredentialsID] =
+    useState<Id<"userCredentials"> | null>(null);
 
   const income = 24000;
   const expenses = 4000;
@@ -41,7 +42,7 @@ export default function Home() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 justify-center gap-5 items-center w-full bg-[#81D8D0]">
+    <SafeAreaView className="flex h-full justify-center gap-5 items-center w-full bg-[#81D8D0]">
       <View className="w-[90%] mt-8" />
 
       {/* Current Balance */}
@@ -52,7 +53,9 @@ export default function Home() {
           <View className="flex flex-row gap-2 items-center">
             <FontAwesome6 name="peso-sign" size={30} color="black" />
             <Text className="text-3xl font-semibold">
-              {toogleShowBalance ? currentBalance?.currentBalance ?? "0" : "****"}
+              {toogleShowBalance
+                ? (currentBalance?.currentBalance ?? "0")
+                : "****"}
             </Text>
           </View>
         </View>
@@ -75,7 +78,9 @@ export default function Home() {
           />
           <View>
             <Text>Income</Text>
-            <Text className="text-xl font-semibold text-green-500">₱ {income}</Text>
+            <Text className="text-xl font-semibold text-green-500">
+              ₱ {income}
+            </Text>
           </View>
         </View>
 
@@ -87,7 +92,9 @@ export default function Home() {
           />
           <View>
             <Text>Expenses</Text>
-            <Text className="text-xl font-semibold text-red-500">₱ {expenses}</Text>
+            <Text className="text-xl font-semibold text-red-500">
+              ₱ {expenses}
+            </Text>
           </View>
         </View>
       </View>
@@ -124,10 +131,9 @@ export default function Home() {
       <View className="flex-1 gap-y-5 w-[90%] p-5 bg-[#36978C] rounded-3xl">
         {/* Head */}
         <View className="flex flex-row justify-between">
-          <Text className="text-lg font-semibold text-white">Recent Transactions</Text>
-          <TouchableOpacity>
-            <Text className="text-lg text-white">View All {`>`}</Text>
-          </TouchableOpacity>
+          <Text className="text-lg font-semibold text-white">
+            Recent Transactions
+          </Text>
         </View>
 
         {/* Data */}
