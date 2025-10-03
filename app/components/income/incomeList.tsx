@@ -93,14 +93,15 @@ export default function IncomeList() {
   };
 
   return (
-    <View className="w-full">
+    <View className="w-full flex-1">
       {isDeleting && <Loading />}
-
+      
       {selectIncomeList === undefined ? (
         <Text>Loading...</Text>
       ) : (
         <ScrollView
-          contentContainerStyle={{ gap: 8 }}
+          className="flex-1"
+          contentContainerStyle={{ paddingVertical: 8, gap: 8 }}
           showsVerticalScrollIndicator={false}
         >
           {selectIncomeList.map((income) => (
@@ -112,7 +113,7 @@ export default function IncomeList() {
                 {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require("../../../assets/images/add_income_icon.png")}
+                    source={require('../../../assets/images/add_income_icon.png')}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
@@ -134,22 +135,15 @@ export default function IncomeList() {
                     ₱{formatAmount(income.amount)}
                   </Text>
                   <View className="flex-row gap-2 rounded-full px-2 py-1 shadow-sm">
+                    
                     {/* Update Button */}
-                    <TouchableOpacity
-                      onPress={() => handleUpdateIncome(income._id)}
-                    >
+                    <TouchableOpacity onPress={() => handleUpdateIncome(income._id)}>
                       <Feather name="edit" size={18} color="black" />
                     </TouchableOpacity>
 
                     {/* Delete Button */}
-                    <TouchableOpacity
-                      onPress={() => handleDeleteButton(income._id)}
-                    >
-                      <FontAwesome5
-                        name="trash-alt"
-                        size={17}
-                        color="#D90000"
-                      />
+                    <TouchableOpacity onPress={() => handleDeleteButton(income._id)}>
+                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -182,8 +176,8 @@ export default function IncomeList() {
                 incomeExpectedPayOut={new Date(incomeInfoData?.expectedPayOut)}
                 incomeFrequency={incomeInfoData?.frequency}
                 onSuccessUpdate={() => {
-                  setIsUpdating(false);
-                  setIncomeID(null);
+                  setIsUpdating(false)
+                  setIncomeID(null)
                 }}
               />
             )}
@@ -198,5 +192,5 @@ export default function IncomeList() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }

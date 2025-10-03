@@ -94,13 +94,14 @@ export default function ExpensesList() {
   };
 
   return (
-    <View className="w-full">
+    <View className="w-full flex-1">
       {isDeleting && <Loading />}
 
       {selectExpensesList === undefined ? (
         <Text>Loading...</Text>
       ) : (
         <ScrollView
+          className="flex-1"
           contentContainerStyle={{ paddingVertical: 8, gap: 8 }}
           showsVerticalScrollIndicator={false}
         >
@@ -113,7 +114,7 @@ export default function ExpensesList() {
                 {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require("../../../assets/images/add_expenses_icon.png")}
+                    source={require('../../../assets/images/add_expenses_icon.png')}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
@@ -136,21 +137,13 @@ export default function ExpensesList() {
                   </Text>
                   <View className="flex-row rounded-full px-2 gap-4 py-1 shadow-sm">
                     {/* Update Button */}
-                    <TouchableOpacity
-                      onPress={() => handleUpdateButton(expenses._id)}
-                    >
+                    <TouchableOpacity onPress={() => handleUpdateButton(expenses._id)}>
                       <Feather name="edit" size={18} color="black" />
                     </TouchableOpacity>
 
                     {/* Delete Button */}
-                    <TouchableOpacity
-                      onPress={() => handleDeleteButton(expenses._id)}
-                    >
-                      <FontAwesome5
-                        name="trash-alt"
-                        size={17}
-                        color="#D90000"
-                      />
+                    <TouchableOpacity onPress={() => handleDeleteButton(expenses._id)}>
+                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -183,8 +176,8 @@ export default function ExpensesList() {
                 expensesDatePaid={expenseInfoData.datePaid}
                 expensesFrequency={expenseInfoData.frequency}
                 onSuccessUpdate={() => {
-                  setIsUpdating(false);
-                  setExpensesID(null);
+                  setIsUpdating(false)
+                  setExpensesID(null)
                 }}
               />
             )}
@@ -199,5 +192,5 @@ export default function ExpensesList() {
         </View>
       </Modal>
     </View>
-  );
+  )
 }

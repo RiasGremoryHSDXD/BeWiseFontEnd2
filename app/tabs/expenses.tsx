@@ -82,9 +82,9 @@ export default function income() {
   ]);
 
   return (
-    <SafeAreaView className="flex w-full h-full bg-[#81D8D0] p-3 gap-y-3">
+    <SafeAreaView className="flex-1 w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
       {/* Add Expenses control */}
-      <View className="flex  justify-end items-end">
+      <View className="flex flex-[0.06] justify-end items-end">
         <TouchableOpacity
           className="bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black"
           onPress={() => setClickAddExpense(true)}
@@ -94,23 +94,21 @@ export default function income() {
       </View>
 
       {/* Total Monthly Expenses */}
-      <View className="flex flex-row justify-between items-center border border-red-500/20 bg-[#9A4949]/15 rounded-3xl">
-        <View className="ml-4">
+      <View className="flex flex-[0.15] py-2 px-8 flex-row justify-between items-center bg-red-100 rounded-3xl">
+        <View>
           <Image
             source={require("../../assets/images/Expenses-Arrow.png")}
-            style={{ width: 120, height: 100 }}
+            style={{ width: 60, height: 60 }}
           />
         </View>
 
-        <View className="flex gap-y-2 p-8 ">
+        <View className="flex gap-y-2">
           <View>
-            <Text className="text-xl font-semibold text-[#676565]/80">
-              Total Monthly Expenses
-            </Text>
+            <Text className="text-xl font-semibold text-[#676565]">Total Monthly Expenses</Text>
           </View>
 
-          <View className="flex flex-row justify-between ">
-            <Text className="text-3xl text-white">
+          <View className="flex flex-row justify-between items-center">
+            <Text className="text-3xl font-semibold text-red-600">
               ₱ {toggleShowBalance ? totalMonthlyExpenses : "****"}
             </Text>
 
@@ -118,70 +116,47 @@ export default function income() {
               activeOpacity={1}
               onPress={() => setToggleShowBalance(!toggleShowBalance)}
             >
-              <Ionicons
-                name={toggleShowBalance ? "eye" : "eye-off"}
-                size={28}
-              />
+              <Ionicons name={toggleShowBalance ? "eye" : "eye-off"} size={28} />
             </TouchableOpacity>
           </View>
         </View>
       </View>
 
       {/* Expenses Category (explicit cards, no array) */}
-      <View className="flex w-full py-6 px-4 bg-[#FAF7F0] gap-5 rounded-3xl ">
-        <View className="w-full">
-          <Text className="text-xl font-semibold">Income Categories</Text>
-        </View>
-        <View className="flex-row flex-wrap justify-between gap-4">
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Insurance</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {insuranceExpenses}
-            </Text>
+      <View className="flex-[0.35] bg-[#FAF7F0] p-3 rounded-3xl">
+
+        <Text className="font-semibold ml-2">Expenses Categories</Text>
+
+        <View className="flex-row flex-wrap w-full h-full gap-y-3 p-4 justify-between">
+          <View className="flex justify-center items-center w-[48%] h-[25%] bg-red-200 rounded-xl">
+            <Text className="font-semibold">Insurance</Text>
+            <Text className="text-red-600 font-bold">₱ {insuranceExpenses}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Bill</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {billExpenses}
-            </Text>
+          <View className="flex justify-center items-center w-[48%] h-[25%] bg-red-200 rounded-xl">
+            <Text className="font-semibold">Game</Text>
+            <Text className="text-red-600 font-bold">₱ {gameExpenses}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Game</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {gameExpenses}
-            </Text>
+          <View className="flex justify-center items-center w-[48%] h-[25%] bg-red-200 rounded-xl">
+            <Text className="font-semibold">Bills</Text>
+            <Text className="text-red-600 font-bold">₱ {billExpenses}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Grocery</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {groceryExpenses}
-            </Text>
+          <View className="flex justify-center items-center w-[48%] h-[25%] bg-red-200 rounded-xl">
+            <Text className="font-semibold">Grocery</Text>
+            <Text className="text-red-600 font-bold">₱ {groceryExpenses}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Other</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {otherExpenses}
-            </Text>
+          <View className="flex justify-center items-center w-[48%] h-[25%] bg-red-200 rounded-xl">
+            <Text className="font-semibold">Other</Text>
+            <Text className="text-red-600 font-bold">₱ {otherExpenses}</Text>
           </View>
         </View>
       </View>
 
-      {/* Expenses List  */}
-      <View className="flex-1">
-        <View className="flex flex-row w-full justify-between mb-2">
-          <TouchableOpacity className="p-2 bg-green-200 rounded-lg items-center justify-center">
-            <Text className="text-lg font-medium"> Active </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="items-center justify-center">
-            <Text className="text-lg font-medium text-[#ffffff]">
-              History {">"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+      {/* Expenses List (keeps your existing component) */}
+      <View className="flex-[0.45] justify-center items-center">
         <ExpensesList />
       </View>
 
@@ -192,14 +167,15 @@ export default function income() {
         animationType="fade"
         onRequestClose={() => setClickAddExpense(false)}
       >
-        <View className="flex-1 bg-black/80 justify-center items-center">
-          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg gap-y-5">
+        <View className="flex-1 bg-black/50 justify-center items-center">
+          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
             <AddExpenses />
+
             <TouchableOpacity
-              className="p-2 mt-2 border rounded-lg"
+              className="p-2 mt-2 bg-green-400 rounded-lg"
               onPress={() => setClickAddExpense(false)}
             >
-              <Text className="text-2xl font-bold">Close</Text>
+              <Text className="text-2xl font-bold text-white">Close</Text>
             </TouchableOpacity>
           </View>
         </View>

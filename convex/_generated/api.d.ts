@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as functions_balance_currentBalance from "../functions/balance/currentBalance.js";
 import type * as functions_balance_initializedBalance from "../functions/balance/initializedBalance.js";
+import type * as functions_balance_processIncomePayoutOneTime from "../functions/balance/processIncomePayoutOneTime.js";
 import type * as functions_credentials_insertNewUser from "../functions/credentials/insertNewUser.js";
 import type * as functions_credentials_logInUser from "../functions/credentials/logInUser.js";
 import type * as functions_credentials_updateUserName from "../functions/credentials/updateUserName.js";
@@ -45,6 +46,7 @@ import type * as functions_income_updateIncomeInfo from "../functions/income/upd
 declare const fullApi: ApiFromModules<{
   "functions/balance/currentBalance": typeof functions_balance_currentBalance;
   "functions/balance/initializedBalance": typeof functions_balance_initializedBalance;
+  "functions/balance/processIncomePayoutOneTime": typeof functions_balance_processIncomePayoutOneTime;
   "functions/credentials/insertNewUser": typeof functions_credentials_insertNewUser;
   "functions/credentials/logInUser": typeof functions_credentials_logInUser;
   "functions/credentials/updateUserName": typeof functions_credentials_updateUserName;

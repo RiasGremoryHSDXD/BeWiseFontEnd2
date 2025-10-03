@@ -80,33 +80,38 @@ export default function income() {
   ]);
 
   return (
-    <SafeAreaView className="flex w-full h-full border bg-[#81D8D0] p-3 gap-y-3">
+    <SafeAreaView
+      className='flex-1 w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]'
+    >
+
       {/*Add Income*/}
-      <View className="flex justify-end items-end">
+      <View
+        className='flex flex-[0.06] justify-end items-end'
+      >
         <TouchableOpacity
-          className="bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black"
+          className='bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black'
           onPress={() => setClickAddIncome(true)}
         >
           <Text className="text-base text-[#616161]">+ Add Income</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Total Monthly Income */}
-      <View className="flex flex-row justify-between items-center border border-green-800/20 bg-[#499A49]/15 rounded-3xl">
-        <View className="ml-4 z-10">
+      {/* Total Monlty Income */}
+      <View
+        className='flex flex-[0.15] py-2 px-8 flex-row justify-between items-center bg-[#499A4926] rounded-3xl'
+      >
+        <View>
           <Image
             source={require("../../assets/images/Income-Arrow.png")}
-            style={{ width: 130, height: 100 }}
+            style={{ width: 60, height: 60 }}
           ></Image>
         </View>
-        <View className="flex gap-y-2 p-8 ">
+        <View className="flex gap-y-2 ">
           <View>
-            <Text className="text-xl font-semibold text-[#676565]">
-              Total Monthly Income
-            </Text>
+            <Text className="text-xl font-semibold text-[#676565]">Total Monthly Income</Text>
           </View>
           <View className="flex flex-row justify-between">
-            <Text className="text-3xl text-white">
+            <Text className="text-3xl text-green-600">
               ₱ {toogleShowBalance ? totalMonthlyIncome : "****"}
             </Text>
 
@@ -124,82 +129,85 @@ export default function income() {
       </View>
 
       {/**Income Category */}
-      <View className="flex w-full py-6 px-4 bg-[#FAF7F0] gap-5 rounded-3xl ">
-        <View className="w-full">
-          <Text className="text-xl font-semibold">Income Categories</Text>
-        </View>
-        <View className="flex-row flex-wrap justify-between gap-4">
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Work</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {workIncome}
-            </Text>
+      <View
+        className='flex-[0.35] p-3 bg-[#FAF7F0] rounded-3xl'
+      >
+        <Text className="font-semibold ml-2">Income Categories</Text>
+        <View
+          className="flex-row flex-wrap w-full h-full gap-y-3 p-4 justify-between"
+        >
+          <View
+            className="flex justify-center items-center  w-[48%] h-[25%] bg-green-200 rounded-xl"
+          >
+            <Text className="font-semibold">Work</Text>
+            <Text className="text-green-600 font-bold">₱ {workIncome}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Savings</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {savingIncome}
-            </Text>
+          <View
+            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
+          >
+            <Text className="font-semibold">Savings</Text>
+            <Text className="text-green-600 font-bold">₱ {savingIncome}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Investments</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {investmentIncome}
-            </Text>
+          <View
+            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
+          >
+            <Text className="font-semibold">Investments</Text>
+            <Text className="text-green-600 font-bold">₱ {investmentIncome}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Side Hustle</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {sideHustleIncome}
-            </Text>
+          <View
+            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
+          >
+            <Text className="font-semibold">Side Hustle</Text>
+            <Text className="text-green-600 font-bold">₱ {sideHustleIncome}</Text>
           </View>
 
-          <View className="flex border p-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Other</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {otherIncome}
-            </Text>
+          <View
+            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
+          >
+            <Text className="font-semibold">Other</Text>
+            <Text className="text-green-600 font-bold">₱ {otherIncome}</Text>
           </View>
         </View>
       </View>
 
-      {/* Income List */}
-      <View className="flex-1">
-        <View className="flex flex-row w-full justify-between mb-2">
-          <TouchableOpacity className="p-2 bg-green-200 rounded-lg items-center justify-center">
-            <Text className="text-lg font-medium"> Active </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="items-center justify-center">
-            <Text className="text-lg font-medium text-[#ffffff]">
-              History {">"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <IncomeList />
+      {/**Income List */}
+      <View
+        className='flex-[0.45] justify-center items-center'
+      >
+        <IncomeList/>
       </View>
 
-      {/* Add Income Modal */}
       <Modal
         visible={clickAddIncome}
         transparent={true}
         animationType="fade"
         onRequestClose={() => setClickAddIncome(false)}
       >
-        <View className="flex-1 bg-black/80 justify-center items-center">
-          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg gap-y-5">
-            <AddIncomeModal />
+        <View
+          className="flex-1 bg-black/50 justify-center items-center"
+        >
+          <View
+            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
+          >
+            <AddIncomeModal/>
+
             <TouchableOpacity
-              className="p-2 mt-2 border rounded-lg"
+              className="p-2 mt-2 bg-green-400 rounded-lg"
               onPress={() => setClickAddIncome(false)}
             >
-              <Text className="text-2xl font-bold">Close</Text>
+              <Text
+                className="text-2xl font-bold text-white"
+              >
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
     </SafeAreaView>
-  );
+  )
 }
