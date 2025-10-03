@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  FlatList,
   Image,
   Modal,
   ScrollView,
@@ -100,15 +101,14 @@ export default function ExpensesList() {
       {selectExpensesList === undefined ? (
         <Text>Loading...</Text>
       ) : (
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingVertical: 8, gap: 8 }}
+        <FlatList
+          data={selectExpensesList}
+          keyExtractor={(item) => item._id.toString()}
+          contentContainerStyle={{ gap: 8}}
           showsVerticalScrollIndicator={false}
-        >
-          {selectExpensesList.map((expenses) => (
+          renderItem={({ item: expenses}) => (
             <View
               className="bg-white rounded-3xl h-20 p-4 w-full"
-              key={expenses._id.toString()}
             >
               <View className="flex-row items-center justify-between h-full">
                 {/* Left Icon */}
@@ -149,8 +149,8 @@ export default function ExpensesList() {
                 </View>
               </View>
             </View>
-          ))}
-        </ScrollView>
+          )}
+        ></FlatList>
       )}
 
       {/* Update Modal */}

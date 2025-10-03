@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  FlatList,
   Image,
   Modal,
   ScrollView,
@@ -99,15 +100,13 @@ export default function IncomeList() {
       {selectIncomeList === undefined ? (
         <Text>Loading...</Text>
       ) : (
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingVertical: 8, gap: 8 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {selectIncomeList.map((income) => (
+        <FlatList
+          data={selectIncomeList}
+          keyExtractor={(item) => item._id.toString()}
+          contentContainerStyle={{gap: 8}}
+          renderItem={({item: income}) => (
             <View
               className="bg-white rounded-3xl h-20 p-4"
-              key={income._id.toString()}
             >
               <View className="flex-row justify-between items-center h-full">
                 {/* Left Icon */}
@@ -149,8 +148,9 @@ export default function IncomeList() {
                 </View>
               </View>
             </View>
-          ))}
-        </ScrollView>
+          )}
+        >
+        </FlatList>
       )}
 
       {/* Update Modal */}

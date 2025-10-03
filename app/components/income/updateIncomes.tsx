@@ -138,7 +138,7 @@ export default function UpdateIncome({incomeID, incomeName, incomeCategory, inco
         </View>
 
         <View
-            className='flex flex-row'
+            className='flex flex-row justify-between'
         >
             <Text className="font-semibold">Expected PayOut : </Text>
 

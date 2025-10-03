@@ -137,7 +137,7 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
         </View>
 
         <View
-            className="flex flex-row"
+            className="flex flex-row justify-between"
         >
             <Text className="font-semibold">Date Paid : </Text>
 
