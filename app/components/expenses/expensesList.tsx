@@ -105,7 +105,6 @@ export default function ExpensesList() {
           data={selectExpensesList}
           keyExtractor={(item) => item._id.toString()}
           contentContainerStyle={{ gap: 8}}
-          showsVerticalScrollIndicator={false}
           renderItem={({ item: expenses}) => (
             <View
               className="bg-white rounded-3xl h-20 p-4 w-full"

@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesList from "../components/expenses/expensesList";
+import ExpensesHistory from "../components/expenses/expensesHistory";
 
 export default function income() {
   const [clickAddExpense, setClickAddExpense] = useState<boolean>(false);
@@ -28,8 +29,8 @@ export default function income() {
   const [billExpenses, setBillExpenses] = useState<number>(0);
   const [groceryExpenses, setGroceryExpenses] = useState<number>(0);
   const [otherExpenses, setOtherExpenses] = useState<number>(0);
-
   const [toggleShowBalance, setToggleShowBalance] = useState<boolean>(true);
+  const [clickHistory, setClickHistroy] = useState<boolean>(false)
 
   const totalExpenses = useQuery(
     api.functions.expenses.totalExpenses.totalExpenses,
@@ -155,9 +156,29 @@ export default function income() {
         </View>
       </View>
 
-      {/* Expenses List (keeps your existing component) */}
-      <View className="flex-[0.45] justify-center items-center">
-        <ExpensesList />
+      <View className="flex flex-[0.08] justify-center items-start">
+        <TouchableOpacity
+          className={`${clickHistory ? 'bg-[#6B7280]' : 'bg-[#FECACA]'} py-2 px-4 rounded-full`}
+
+          activeOpacity={1}
+          onPress={() => setClickHistroy(!clickHistory)}
+        >
+          <Text 
+            className={`${clickHistory ? 'text-white' : 'text-black'} font-semibold text-lg  tracking-wider`}
+          >
+            {clickHistory ? '< History' : 'Active >'}
+          </Text>
+
+        </TouchableOpacity>
+      </View>
+
+      {/**Expenses List */}
+      <View
+        className='flex-[0.45] justify-center items-center'
+      >
+        {clickHistory ? (
+          <ExpensesHistory/>
+        ) : (<ExpensesList/>)}
       </View>
 
       {/* Add Expenses Modal */}

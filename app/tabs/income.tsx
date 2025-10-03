@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddIncomeModal from "../components/income/addIncome";
 import IncomeList from "../components/income/incomeList";
+import IncomeHistory from "../components/income/incomeHistory";
 
 export default function income() {
   const [userCredentialsID, setUserCredentialsID] =
@@ -28,6 +29,7 @@ export default function income() {
   const [savingIncome, setSavingIncome] = useState<number>(0);
   const [sideHustleIncome, setSideHustleIncome] = useState<number>(0);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
+  const [clickHistory, setClickHistroy] = useState<boolean>(false)
 
   const totalIncome = useQuery(
     api.functions.income.totalIncome.totalIncome,
@@ -173,11 +175,29 @@ export default function income() {
         </View>
       </View>
 
+      <View className="flex flex-[0.08] justify-center items-start">
+        <TouchableOpacity
+          className={`${clickHistory ? 'bg-[#6B7280]' : 'bg-[#BBF7D0]'} py-2 px-4 rounded-full`}
+
+          activeOpacity={1}
+          onPress={() => setClickHistroy(!clickHistory)}
+        >
+          <Text 
+            className={`${clickHistory ? 'text-white' : 'text-black'} font-semibold text-lg  tracking-wider`}
+          >
+            {clickHistory ? '< History' : 'Active >'}
+          </Text>
+
+        </TouchableOpacity>
+      </View>
+
       {/**Income List */}
       <View
         className='flex-[0.45] justify-center items-center'
       >
-        <IncomeList/>
+        {clickHistory ? (
+          <IncomeHistory/>
+        ) : (<IncomeList/>)}
       </View>
 
       <Modal

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import UpdateUserNameModal from "../components/updateInfo/updateName";
+import UpdateUserNameModal from "../components/updateUserName/updateName";
 
 export default function LogOutButton() {
   const router = useRouter();
