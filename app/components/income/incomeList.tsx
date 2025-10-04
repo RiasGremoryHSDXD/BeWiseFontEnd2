@@ -1,5 +1,6 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation, useQuery } from "convex/react";
 import React, { useEffect, useState } from "react";
@@ -8,14 +9,12 @@ import {
   FlatList,
   Image,
   Modal,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import Loading from "../Loading";
 import UpdateIncome from "./updateIncomes";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
 
 export default function IncomeList() {
   const [userCredentialsID, setUserCredentialsID] =
@@ -94,25 +93,24 @@ export default function IncomeList() {
   };
 
   return (
-    <View className="w-full flex-1">
+    <View className="w-full">
       {isDeleting && <Loading />}
-      
+
       {selectIncomeList === undefined ? (
         <Text>Loading...</Text>
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={selectIncomeList}
           keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{gap: 8}}
-          renderItem={({item: income}) => (
-            <View
-              className="bg-white rounded-3xl h-20 p-4"
-            >
+          contentContainerStyle={{ gap: 8 }}
+          renderItem={({ item: income }) => (
+            <View className="bg-white rounded-3xl h-20 p-4">
               <View className="flex-row justify-between items-center h-full">
                 {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require('../../../assets/images/add_income_icon.png')}
+                    source={require("../../../assets/images/add_income_icon.png")}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
@@ -134,23 +132,29 @@ export default function IncomeList() {
                     ₱{formatAmount(income.amount)}
                   </Text>
                   <View className="flex-row gap-2 rounded-full px-2 py-1 shadow-sm">
-                    
                     {/* Update Button */}
-                    <TouchableOpacity onPress={() => handleUpdateIncome(income._id)}>
+                    <TouchableOpacity
+                      onPress={() => handleUpdateIncome(income._id)}
+                    >
                       <Feather name="edit" size={18} color="black" />
                     </TouchableOpacity>
 
                     {/* Delete Button */}
-                    <TouchableOpacity onPress={() => handleDeleteButton(income._id)}>
-                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
+                    <TouchableOpacity
+                      onPress={() => handleDeleteButton(income._id)}
+                    >
+                      <FontAwesome5
+                        name="trash-alt"
+                        size={17}
+                        color="#D90000"
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
               </View>
             </View>
           )}
-        >
-        </FlatList>
+        ></FlatList>
       )}
 
       {/* Update Modal */}
@@ -176,8 +180,8 @@ export default function IncomeList() {
                 incomeExpectedPayOut={new Date(incomeInfoData?.expectedPayOut)}
                 incomeFrequency={incomeInfoData?.frequency}
                 onSuccessUpdate={() => {
-                  setIsUpdating(false)
-                  setIncomeID(null)
+                  setIsUpdating(false);
+                  setIncomeID(null);
                 }}
               />
             )}
@@ -192,5 +196,5 @@ export default function IncomeList() {
         </View>
       </Modal>
     </View>
-  )
+  );
 }

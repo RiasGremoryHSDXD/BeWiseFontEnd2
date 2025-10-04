@@ -1,8 +1,8 @@
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons"; // fix import
+import { FontAwesome5, Ionicons } from "@expo/vector-icons"; // fix import
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Tabs } from "expo-router";
 import { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,

@@ -1,5 +1,4 @@
 import { api } from "@/convex/_generated/api";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { Id } from "@/convex/_generated/dataModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@react-native-vector-icons/ionicons";
@@ -15,8 +14,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddIncomeModal from "../components/income/addIncome";
-import IncomeList from "../components/income/incomeList";
 import IncomeHistory from "../components/income/incomeHistory";
+import IncomeList from "../components/income/incomeList";
 
 export default function income() {
   const [userCredentialsID, setUserCredentialsID] =
@@ -29,7 +28,7 @@ export default function income() {
   const [savingIncome, setSavingIncome] = useState<number>(0);
   const [sideHustleIncome, setSideHustleIncome] = useState<number>(0);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [clickHistory, setClickHistroy] = useState<boolean>(false)
+  const [clickHistory, setClickHistroy] = useState<boolean>(false);
 
   const totalIncome = useQuery(
     api.functions.income.totalIncome.totalIncome,
@@ -82,26 +81,19 @@ export default function income() {
   ]);
 
   return (
-    <SafeAreaView
-      className='flex-1 w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]'
-    >
-
+    <SafeAreaView className="flex w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
       {/*Add Income*/}
-      <View
-        className='flex flex-[0.06] justify-end items-end'
-      >
+      <View className="flex justify-end items-end">
         <TouchableOpacity
-          className='bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black'
+          className="bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black"
           onPress={() => setClickAddIncome(true)}
         >
           <Text className="text-base text-[#616161]">+ Add Income</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Total Monlty Income */}
-      <View
-        className='flex flex-[0.15] py-2 px-8 flex-row justify-between items-center bg-[#499A4926] rounded-3xl'
-      >
+      {/* Total Monthly Income */}
+      <View className="flex px-8 py-6 flex-row justify-between items-center border border-green-600/40 bg-[#499A49]/15 rounded-3xl">
         <View>
           <Image
             source={require("../../assets/images/Income-Arrow.png")}
@@ -110,7 +102,9 @@ export default function income() {
         </View>
         <View className="flex gap-y-2 ">
           <View>
-            <Text className="text-xl font-semibold text-[#676565]">Total Monthly Income</Text>
+            <Text className="text-xl font-semibold text-[#676565]">
+              Total Monthly Income
+            </Text>
           </View>
           <View className="flex flex-row justify-between">
             <Text className="text-3xl text-green-600">
@@ -131,73 +125,65 @@ export default function income() {
       </View>
 
       {/**Income Category */}
-      <View
-        className='flex-[0.35] p-3 bg-[#FAF7F0] rounded-3xl'
-      >
-        <Text className="font-semibold ml-2">Income Categories</Text>
-        <View
-          className="flex-row flex-wrap w-full h-full gap-y-3 p-4 justify-between"
-        >
-          <View
-            className="flex justify-center items-center  w-[48%] h-[25%] bg-green-200 rounded-xl"
-          >
-            <Text className="font-semibold">Work</Text>
-            <Text className="text-green-600 font-bold">₱ {workIncome}</Text>
+      <View className="flex w-full py-6 px-4 bg-[#FAF7F0] gap-5 rounded-3xl ">
+        <View className="w-full">
+          <Text className="text-xl font-semibold">Income Categories</Text>
+        </View>
+        <View className="flex-row flex-wrap justify-between gap-4">
+          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
+            <Text className="text-lg font-medium">Work</Text>
+            <Text className="text-lg text-green-600 font-medium">
+              ₱ {workIncome}
+            </Text>
           </View>
 
-          <View
-            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
-          >
-            <Text className="font-semibold">Savings</Text>
-            <Text className="text-green-600 font-bold">₱ {savingIncome}</Text>
+          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
+            <Text className="text-lg font-medium">Savings</Text>
+            <Text className="text-lg text-green-600 font-medium">
+              ₱ {savingIncome}
+            </Text>
           </View>
 
-          <View
-            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
-          >
-            <Text className="font-semibold">Investments</Text>
-            <Text className="text-green-600 font-bold">₱ {investmentIncome}</Text>
+          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
+            <Text className="text-lg font-medium">Investments</Text>
+            <Text className="text-lg text-green-600 font-medium">
+              ₱ {investmentIncome}
+            </Text>
           </View>
 
-          <View
-            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
-          >
-            <Text className="font-semibold">Side Hustle</Text>
-            <Text className="text-green-600 font-bold">₱ {sideHustleIncome}</Text>
+          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
+            <Text className="text-lg font-medium">Side Hustle</Text>
+            <Text className="text-lg text-green-600 font-medium">
+              ₱ {sideHustleIncome}
+            </Text>
           </View>
 
-          <View
-            className="flex justify-center items-center w-[48%] h-[25%] bg-green-200 rounded-xl"
-          >
-            <Text className="font-semibold">Other</Text>
-            <Text className="text-green-600 font-bold">₱ {otherIncome}</Text>
+          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
+            <Text className="text-lg font-medium">Other</Text>
+            <Text className="text-lg text-green-600 font-medium">
+              ₱ {otherIncome}
+            </Text>
           </View>
         </View>
       </View>
 
-      <View className="flex flex-[0.08] justify-center items-start">
-        <TouchableOpacity
-          className={`${clickHistory ? 'bg-[#6B7280]' : 'bg-[#BBF7D0]'} py-2 px-4 rounded-full`}
-
-          activeOpacity={1}
-          onPress={() => setClickHistroy(!clickHistory)}
-        >
-          <Text 
-            className={`${clickHistory ? 'text-white' : 'text-black'} font-semibold text-lg  tracking-wider`}
+      {/*Income List */}
+      <View className="flex-1 gap-2">
+        <View className="flex justify-center items-start">
+          <TouchableOpacity
+            className={`${clickHistory ? "bg-[#969799]" : "bg-[#BBF7D0]"} py-2 px-4 rounded-full`}
+            activeOpacity={1}
+            onPress={() => setClickHistroy(!clickHistory)}
           >
-            {clickHistory ? '< History' : 'Active >'}
-          </Text>
+            <Text
+              className={`${clickHistory ? "text-white" : "text-black"} font-medium text-lg tracking-wider`}
+            >
+              {clickHistory ? "< History" : "Active >"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-        </TouchableOpacity>
-      </View>
-
-      {/**Income List */}
-      <View
-        className='flex-[0.45] justify-center items-center'
-      >
-        {clickHistory ? (
-          <IncomeHistory/>
-        ) : (<IncomeList/>)}
+        {clickHistory ? <IncomeHistory /> : <IncomeList />}
       </View>
 
       <Modal
@@ -206,28 +192,19 @@ export default function income() {
         animationType="fade"
         onRequestClose={() => setClickAddIncome(false)}
       >
-        <View
-          className="flex-1 bg-black/50 justify-center items-center"
-        >
-          <View
-            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
-          >
-            <AddIncomeModal/>
+        <View className="flex-1 bg-black/50 justify-center items-center">
+          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
+            <AddIncomeModal />
 
             <TouchableOpacity
               className="p-2 mt-2 bg-green-400 rounded-lg"
               onPress={() => setClickAddIncome(false)}
             >
-              <Text
-                className="text-2xl font-bold text-white"
-              >
-                Close
-              </Text>
+              <Text className="text-2xl font-bold text-white">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
     </SafeAreaView>
-  )
+  );
 }

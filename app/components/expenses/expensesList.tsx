@@ -1,5 +1,6 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation, useQuery } from "convex/react";
 import React, { useEffect, useState } from "react";
@@ -8,12 +9,10 @@ import {
   FlatList,
   Image,
   Modal,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import Loading from "../Loading";
 import UpdateExpenses from "./updateExpenses";
 
@@ -95,25 +94,24 @@ export default function ExpensesList() {
   };
 
   return (
-    <View className="w-full flex-1">
+    <View className="w-full">
       {isDeleting && <Loading />}
 
       {selectExpensesList === undefined ? (
         <Text>Loading...</Text>
       ) : (
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={selectExpensesList}
           keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{ gap: 8}}
-          renderItem={({ item: expenses}) => (
-            <View
-              className="bg-white rounded-3xl h-20 p-4 w-full"
-            >
+          contentContainerStyle={{ gap: 8 }}
+          renderItem={({ item: expenses }) => (
+            <View className="bg-white rounded-3xl h-20 p-4 w-full">
               <View className="flex-row items-center justify-between h-full">
                 {/* Left Icon */}
                 <View className="justify-center items-center">
                   <Image
-                    source={require('../../../assets/images/add_expenses_icon.png')}
+                    source={require("../../../assets/images/add_expenses_icon.png")}
                     style={{ width: 32, height: 32 }}
                     resizeMode="contain"
                   />
@@ -136,13 +134,21 @@ export default function ExpensesList() {
                   </Text>
                   <View className="flex-row rounded-full px-2 gap-4 py-1 shadow-sm">
                     {/* Update Button */}
-                    <TouchableOpacity onPress={() => handleUpdateButton(expenses._id)}>
+                    <TouchableOpacity
+                      onPress={() => handleUpdateButton(expenses._id)}
+                    >
                       <Feather name="edit" size={18} color="black" />
                     </TouchableOpacity>
 
                     {/* Delete Button */}
-                    <TouchableOpacity onPress={() => handleDeleteButton(expenses._id)}>
-                      <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
+                    <TouchableOpacity
+                      onPress={() => handleDeleteButton(expenses._id)}
+                    >
+                      <FontAwesome5
+                        name="trash-alt"
+                        size={17}
+                        color="#D90000"
+                      />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -175,8 +181,8 @@ export default function ExpensesList() {
                 expensesDatePaid={expenseInfoData.datePaid}
                 expensesFrequency={expenseInfoData.frequency}
                 onSuccessUpdate={() => {
-                  setIsUpdating(false)
-                  setExpensesID(null)
+                  setIsUpdating(false);
+                  setExpensesID(null);
                 }}
               />
             )}
@@ -191,5 +197,5 @@ export default function ExpensesList() {
         </View>
       </Modal>
     </View>
-  )
+  );
 }
