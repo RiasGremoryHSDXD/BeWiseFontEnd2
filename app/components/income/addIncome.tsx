@@ -16,8 +16,12 @@ type IncomeCategory =
   | "Side Hustle"
   | "Other";
 type Frequency = "OneTime" | "Monthly";
+type Props = {
+  onClose: () => void;
+};
 
-export default function addIncome() {
+
+export default function addIncome({onClose} : Props) {
   const [userCredentialsID, setUserCredentialsID] =
     useState<Id<"userCredentials"> | null>(null);
   const [incomeName, setIncomeName] = useState<string>("");
@@ -176,18 +180,26 @@ export default function addIncome() {
         )}
       </View>
 
-      <View className="flex flex-row justify-between w-full">
+      <View className="flex flex-row justify-between mt-5 w-full">
         <TouchableOpacity
           activeOpacity={1}
-          className="p-2 bg-green-400 rounded-lg w-full flex items-center mt-5"
+          className="flex-1 p-3 bg-red-400 rounded-lg items-center mr-2"
           onPress={handleNewIncomeRecord}
           disabled={loading || isProcessing}
         >
-          <Text className="text-2xl font-bold text-white">Add</Text>
+          <Text className="text-xl font-semibold text-white">Add</Text>
         </TouchableOpacity>
 
-        {loading && <LoadingScreen />}
+        <TouchableOpacity
+          activeOpacity={1}
+          className="flex-1 p-3 bg-gray-400 rounded-lg items-center ml-2"
+          onPress={onClose}
+        >
+          <Text className="text-xl font-semibold text-white">Close</Text>
+        </TouchableOpacity>
       </View>
+
+      {loading && <LoadingScreen />}
     </View>
   );
 }

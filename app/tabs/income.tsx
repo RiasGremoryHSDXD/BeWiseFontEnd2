@@ -179,14 +179,7 @@ export default function income() {
       >
         <View className="flex-1 bg-black/50 justify-center items-center">
           <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
-            <AddIncomeModal />
-
-            <TouchableOpacity
-              className="p-2 mt-2 bg-green-400 rounded-lg"
-              onPress={() => setClickAddIncome(false)}
-            >
-              <Text className="text-2xl font-bold text-white">Close</Text>
-            </TouchableOpacity>
+            <AddIncomeModal onClose={() => setClickAddIncome(false)} />
           </View>
         </View>
       </Modal> 

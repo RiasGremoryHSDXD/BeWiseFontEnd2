@@ -9,8 +9,12 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoadingScreen from "../Loading";
 type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
 type Frequency = "OneTime" | "Monthly";
+type Props = {
+  closeModal: () => void;
+};
 
-export default function addExpenses() {
+
+export default function addExpenses({ closeModal }: Props) {
   const [userCredentialsID, setUserCredentialsID] =
     useState<Id<"userCredentials"> | null>(null);
   const [expensesName, setExpensesName] = useState<string>("");
@@ -161,15 +165,26 @@ export default function addExpenses() {
           />
         )}
       </View>
+      
+      <View className="flex flex-row justify-between mt-5 w-full">
+        <TouchableOpacity
+          activeOpacity={1}
+          className="flex-1 p-3 bg-red-400 rounded-lg items-center mr-2"
+          onPress={handleNewExpensesRecord}
+          disabled={loading || isProcessing}
+        >
+          <Text className="text-xl font-semibold text-white">Add</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        activeOpacity={1}
-        className="p-2 bg-red-400 rounded-lg flex items-center mt-5"
-        onPress={handleNewExpensesRecord}
-        disabled={loading || isProcessing}
-      >
-        <Text className="text-2xl font-semibold text-white">Add</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={1}
+          className="flex-1 p-3 bg-gray-400 rounded-lg items-center ml-2"
+          onPress={closeModal}
+        >
+          <Text className="text-xl font-semibold text-white">Close</Text>
+        </TouchableOpacity>
+      </View>
+
 
       {loading && <LoadingScreen />}
     </View>

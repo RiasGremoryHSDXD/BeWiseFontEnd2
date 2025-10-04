@@ -129,7 +129,7 @@ export default function income() {
       </View>
 
       {/* Expenses Category */}
-      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-4 px-3 rounded-2xl">
+      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-2xl">
         <View className="w-full mb-3">
           <Text className="text-lg font-semibold">Expenses Categories</Text>
         </View>
@@ -187,17 +187,11 @@ export default function income() {
       >
         <View className="flex-1 bg-black/50 justify-center items-center">
           <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
-            <AddExpenses />
-
-            <TouchableOpacity
-              className="p-2 mt-2 bg-green-400 rounded-lg"
-              onPress={() => setClickAddExpense(false)}
-            >
-              <Text className="text-2xl font-bold text-white">Close</Text>
-            </TouchableOpacity>
+            <AddExpenses closeModal={() => setClickAddExpense(false)} />
           </View>
         </View>
       </Modal>
+
     </SafeAreaView>
   );
 }
