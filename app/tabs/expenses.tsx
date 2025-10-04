@@ -129,47 +129,37 @@ export default function income() {
       </View>
 
       {/* Expenses Category */}
-      <View className="flex w-full py-6 px-4 bg-[#FAF7F0] gap-5 rounded-3xl ">
-        <View className="w-full">
+      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-3xl">
+        <View className="w-full mb-4">
           <Text className="text-xl font-semibold">Expenses Categories</Text>
         </View>
-        <View className="flex-row flex-wrap justify-between gap-4">
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Insurance</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {insuranceExpenses}
-            </Text>
-          </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Bill</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {billExpenses}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Insurance</Text>
+          <Text className="text-lg text-red-600 font-medium">₱ {insuranceExpenses}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Game</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {gameExpenses}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Bill</Text>
+          <Text className="text-lg text-red-600 font-medium">₱ {billExpenses}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Grocery</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {groceryExpenses}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Game</Text>
+          <Text className="text-lg text-red-600 font-medium">₱ {gameExpenses}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Other</Text>
-            <Text className="text-lg text-red-600 font-medium">
-              ₱ {otherExpenses}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Grocery</Text>
+          <Text className="text-lg text-red-600 font-medium">₱ {groceryExpenses}</Text>
+        </View>
+        
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Other</Text>
+          <Text className="text-lg text-red-600 font-medium">₱ {otherExpenses}</Text>
         </View>
       </View>
+
 
       {/**Expenses List */}
       <View className="flex-1 gap-2">

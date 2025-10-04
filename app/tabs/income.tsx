@@ -125,45 +125,31 @@ export default function income() {
       </View>
 
       {/**Income Category */}
-      <View className="flex w-full py-6 px-4 bg-[#FAF7F0] gap-5 rounded-3xl ">
-        <View className="w-full">
-          <Text className="text-xl font-semibold">Income Categories</Text>
+      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-3xl">
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Work</Text>
+          <Text className="text-lg text-green-600 font-medium">₱ {workIncome}</Text>
         </View>
-        <View className="flex-row flex-wrap justify-between gap-4">
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Work</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {workIncome}
-            </Text>
-          </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Savings</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {savingIncome}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Savings</Text>
+          <Text className="text-lg text-green-600 font-medium">₱ {savingIncome}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Investments</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {investmentIncome}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Investments</Text>
+          <Text className="text-lg text-green-600 font-medium">₱ {investmentIncome}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Side Hustle</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {sideHustleIncome}
-            </Text>
-          </View>
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Side Hustle</Text>
+          <Text className="text-lg text-green-600 font-medium">₱ {sideHustleIncome}</Text>
+        </View>
 
-          <View className="flex border py-3 border-black/15 justify-center items-center w-[48%] bg-[#F2ECEC] rounded-xl">
-            <Text className="text-lg font-medium">Other</Text>
-            <Text className="text-lg text-green-600 font-medium">
-              ₱ {otherIncome}
-            </Text>
-          </View>
+        
+        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
+          <Text className="text-lg font-medium">Other</Text>
+          <Text className="text-lg text-green-600 font-medium">₱ {otherIncome}</Text>
         </View>
       </View>
 
@@ -204,7 +190,7 @@ export default function income() {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal> 
     </SafeAreaView>
   );
 }

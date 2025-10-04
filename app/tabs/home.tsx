@@ -134,6 +134,12 @@ export default function Home() {
           <Text className="text-lg font-semibold text-white">
             Recent Transactions
           </Text>
+
+          <TouchableOpacity
+
+          >
+            <Text className="font-semibold text-white tracking-wider">View All {'>'}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Data */}
