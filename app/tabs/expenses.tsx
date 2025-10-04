@@ -129,37 +129,36 @@ export default function income() {
       </View>
 
       {/* Expenses Category */}
-      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-3xl">
-        <View className="w-full mb-4">
-          <Text className="text-xl font-semibold">Expenses Categories</Text>
+      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-4 px-3 rounded-2xl">
+        <View className="w-full mb-3">
+          <Text className="text-lg font-semibold">Expenses Categories</Text>
         </View>
 
-        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
-          <Text className="text-lg font-medium">Insurance</Text>
-          <Text className="text-lg text-red-600 font-medium">₱ {insuranceExpenses}</Text>
+        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-base font-medium">Insurance</Text>
+          <Text className="text-base text-red-600 font-medium">₱ {insuranceExpenses}</Text>
         </View>
 
-        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
-          <Text className="text-lg font-medium">Bill</Text>
-          <Text className="text-lg text-red-600 font-medium">₱ {billExpenses}</Text>
+        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-base font-medium">Bill</Text>
+          <Text className="text-base text-red-600 font-medium">₱ {billExpenses}</Text>
         </View>
 
-        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
-          <Text className="text-lg font-medium">Game</Text>
-          <Text className="text-lg text-red-600 font-medium">₱ {gameExpenses}</Text>
+        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-base font-medium">Game</Text>
+          <Text className="text-base text-red-600 font-medium">₱ {gameExpenses}</Text>
         </View>
 
-        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
-          <Text className="text-lg font-medium">Grocery</Text>
-          <Text className="text-lg text-red-600 font-medium">₱ {groceryExpenses}</Text>
+        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-base font-medium">Grocery</Text>
+          <Text className="text-base text-red-600 font-medium">₱ {groceryExpenses}</Text>
         </View>
-        
-        <View className="w-[48%] border py-3 border-black/15 justify-center items-center bg-[#F2ECEC] rounded-xl mb-4">
-          <Text className="text-lg font-medium">Other</Text>
-          <Text className="text-lg text-red-600 font-medium">₱ {otherExpenses}</Text>
+
+        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-base font-medium">Other</Text>
+          <Text className="text-base text-red-600 font-medium">₱ {otherExpenses}</Text>
         </View>
       </View>
-
 
       {/**Expenses List */}
       <View className="flex-1 gap-2">
