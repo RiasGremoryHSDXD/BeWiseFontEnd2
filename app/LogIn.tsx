@@ -91,7 +91,7 @@ export default function LogIn() {
 
   return (
     <>
-      <View className="flex gap-10">
+      <View className="flex gap-3">
         <View>
           <TextInput
             className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
@@ -113,30 +113,35 @@ export default function LogIn() {
           )}
         </View>
 
-        <View className="flex flex-row items-center px-4 justify-between bg-[#FAF7F0] rounded-3xl ">
-          <TextInput
-            className={`flex-1 text-base py-5 ml-2 ${
+        <View className="w-full">
+          <View
+            className={`flex flex-row items-center w-full px-4 py-2 rounded-3xl bg-[#FAF7F0] ${
               errorFields.password ? "border border-red-500" : ""
             }`}
-            placeholder="Password"
-            placeholderTextColor={errorFields.password ? "#ef4444" : ""}
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              clearFieldError("password");
-            }}
-          />
-          <TouchableOpacity onPress={togglePassword}>
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={25}
-              color="#000"
+          >
+            <TextInput
+              className="flex-1 text-base px-2 py-3"
+              placeholder="Password"
+              placeholderTextColor={errorFields.password ? "#ef4444" : ""}
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                clearFieldError("password");
+              }}
             />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={togglePassword}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={25}
+                color="#000"
+              />
+            </TouchableOpacity>
+          </View>
 
+          {/* Error Message */}
           {errorFields.password && (
-            <Text className="text-red-500 text-sm ml-2 ">
+            <Text className="text-red-500 text-sm ml-2 mt-1">
               Password is required
             </Text>
           )}

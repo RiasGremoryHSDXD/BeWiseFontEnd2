@@ -3,9 +3,11 @@ import {
   MaterialCommunityIcons,
   Octicons,
 } from "@expo/vector-icons";
-import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Text, View, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import EditTotalBudget from '../components/budgetStatus/editTotalBudget'
+import SetNewBudget from "../components/budgetStatus/setNewBudget";
 
 const currentBudget = 25000;
 const currentSpent = 8000;
@@ -23,6 +25,10 @@ const categories = [
 ];
 
 export default function BudgetStatus() {
+
+  const [clickEditTotalBudget, setClickEditTotalBudget] = useState<boolean>(false)
+  const [clickSetNewBudget, setClickSetNewBudget] = useState<boolean>(false)
+
   return (
     <SafeAreaView className="flex justify-start items-center w-full h-full bg-[#81D8D0] pt-5">
       {/* Edit button */}
@@ -30,14 +36,14 @@ export default function BudgetStatus() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="flex-row items-center gap-2 px-4 py-2 bg-gray-200 border border-black/20 rounded-full shadow-sm"
-          onPress={() => console.log("Edit Budget pressed")}
+          onPress={() => setClickEditTotalBudget(true)}
         >
           <MaterialCommunityIcons
             name="rename-box-outline"
             size={18}
-            color="black"
+            color="#676565"
           />
-          <Text className="text-sm font-medium">Edit Budget</Text>
+          <Text className="text-sm font-medium text-[#676565]">Edit Total Budget</Text>
         </TouchableOpacity>
       </View>
 
@@ -115,7 +121,7 @@ export default function BudgetStatus() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="flex-1 flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#FFFDC2] rounded-3xl"
-          onPress={() => console.log("Set New Budget pressed")}
+          onPress={() => setClickSetNewBudget(true)}
         >
           <Foundation name="target" size={22} color="black" />
           <Text className="text-base font-medium">Set New Budget</Text>
@@ -134,6 +140,41 @@ export default function BudgetStatus() {
           <Text className="text-base font-medium">Adjust Categories</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Edit Total Budget Modal */}
+      <Modal
+        visible={clickEditTotalBudget}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setClickEditTotalBudget(false)}
+      >
+        <View
+          className="flex-1 bg-black/50 justify-center items-center"
+        >
+          <View
+            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
+          >
+            <EditTotalBudget closeModal={ () => setClickEditTotalBudget(false) }/>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={clickSetNewBudget}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setClickSetNewBudget(false)}
+      >
+        <View
+          className="flex-1 bg-black/50 justify-center items-center"
+        >
+          <View
+            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
+          >
+            <SetNewBudget closeModal={ () => setClickSetNewBudget(false) }/>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

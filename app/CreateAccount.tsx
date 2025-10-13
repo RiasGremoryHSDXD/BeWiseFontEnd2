@@ -85,7 +85,7 @@ export default function CreateAccount() {
 
   return (
     <>
-      <View className="flex gap-8">
+      <View className="flex gap-3">
         <View>
           <TextInput
             className={`text-base w-full px-8 py-5 bg-[#FAF7F0] rounded-3xl ${
@@ -214,7 +214,7 @@ export default function CreateAccount() {
           <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
             {/* Wrong Icon */}
             <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
+              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
                 <Text className="text-red-600 text-4xl">X</Text>
               </View>
               <Text className="text-2xl font-bold text-gray-800 mb-2">

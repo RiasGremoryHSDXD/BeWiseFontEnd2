@@ -126,29 +126,33 @@ export default function income() {
 
       {/**Income Category */}
       <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-2xl">
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Work</Text>
-          <Text className="text-base text-green-600 font-medium">₱ {workIncome}</Text>
+        <View className="w-full mb-3">
+          <Text className="text-base font-semibold">Income Categories</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Savings</Text>
-          <Text className="text-base text-green-600 font-medium">₱ {savingIncome}</Text>
+        <View className="w-[46%] py-1 px-2 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Work</Text>
+          <Text className="text-sm text-green-600 font-medium">₱ {workIncome}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Investments</Text>
-          <Text className="text-base text-green-600 font-medium">₱ {investmentIncome}</Text>
+        <View className="w-[46%] py-1 px-2 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Savings</Text>
+          <Text className="text-sm text-green-600 font-medium">₱ {savingIncome}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Side Hustle</Text>
-          <Text className="text-base text-green-600 font-medium">₱ {sideHustleIncome}</Text>
+        <View className="w-[46%] py-1 px-2 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Investments</Text>
+          <Text className="text-sm text-green-600 font-medium">₱ {investmentIncome}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Other</Text>
-          <Text className="text-base text-green-600 font-medium">₱ {otherIncome}</Text>
+        <View className="w-[46%] py-1 px-2 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Side Hustle</Text>
+          <Text className="text-sm text-green-600 font-medium">₱ {sideHustleIncome}</Text>
+        </View>
+
+        <View className="w-[46%] py-1 px-2 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Other</Text>
+          <Text className="text-sm text-green-600 font-medium">₱ {otherIncome}</Text>
         </View>
       </View>
 

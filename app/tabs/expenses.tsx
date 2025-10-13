@@ -131,32 +131,32 @@ export default function income() {
       {/* Expenses Category */}
       <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-2xl">
         <View className="w-full mb-3">
-          <Text className="text-lg font-semibold">Expenses Categories</Text>
+          <Text className="text-base font-semibold">Expenses Categories</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Insurance</Text>
-          <Text className="text-base text-red-600 font-medium">₱ {insuranceExpenses}</Text>
+        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Insurance</Text>
+          <Text className="text-sm text-red-600 font-medium">₱ {insuranceExpenses}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Bill</Text>
-          <Text className="text-base text-red-600 font-medium">₱ {billExpenses}</Text>
+        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Bill</Text>
+          <Text className="text-sm text-red-600 font-medium">₱ {billExpenses}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Game</Text>
-          <Text className="text-base text-red-600 font-medium">₱ {gameExpenses}</Text>
+        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Game</Text>
+          <Text className="text-sm text-red-600 font-medium">₱ {gameExpenses}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Grocery</Text>
-          <Text className="text-base text-red-600 font-medium">₱ {groceryExpenses}</Text>
+        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Grocery</Text>
+          <Text className="text-sm text-red-600 font-medium">₱ {groceryExpenses}</Text>
         </View>
 
-        <View className="w-[46%] border py-2 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-base font-medium">Other</Text>
-          <Text className="text-base text-red-600 font-medium">₱ {otherExpenses}</Text>
+        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
+          <Text className="text-sm font-medium">Other</Text>
+          <Text className="text-sm text-red-600 font-medium">₱ {otherExpenses}</Text>
         </View>
       </View>
 
