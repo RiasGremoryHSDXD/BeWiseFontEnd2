@@ -4,14 +4,17 @@ import { useMutation } from "convex/react";
 import React, { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-export default function UpdateUsername() {
+interface UpdateUsernameProps {
+  onUsernameUpdated?: (newUsername: string) => void;
+}
+
+export default function UpdateUsername({ onUsernameUpdated }: UpdateUsernameProps) {
   const [newUsername, setNewUsername] = useState("");
   const updateUsername = useMutation(
     api.functions.credentials.updateUserName.UpdateUsername
   );
 
   const handleUpdate = async () => {
-    //Check sa input
     if (!newUsername.trim()) {
       Alert.alert("Error", "Please enter a username");
       return;
@@ -41,8 +44,13 @@ export default function UpdateUsername() {
       user.username = newUsername.trim();
       await AsyncStorage.setItem("user", JSON.stringify(user));
 
+      // Call the callback to update parent component
+      if (onUsernameUpdated) {
+        onUsernameUpdated(newUsername.trim());
+      }
+
       setNewUsername("");
-      Alert.alert("Success");
+      Alert.alert("Success", "Username updated successfully!");
     } catch (err) {
       Alert.alert("Error", "Failed to update username");
     }
@@ -63,7 +71,7 @@ export default function UpdateUsername() {
 
         <View className="items-center mt-2">
           <TouchableOpacity
-            className="bg-blue-500 p-3 rounded-lg "
+            className="bg-blue-500 p-3 rounded-lg"
             onPress={handleUpdate}
           >
             <Text className="text-center text-xl font-medium text-white">
