@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Image, Text, View } from "react-native";
+import HistoryList from "../historyList";
 
 export default function incomeHistory() {
   const selecteIncomeHistory = [
@@ -50,59 +51,19 @@ export default function incomeHistory() {
     },
   ];
 
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat("en-PH", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  const formattedIncomeHistory = selecteIncomeHistory.map((item) => ({
+    _id: item._id,
+    name: item.incomeName,
+    category: item.incomeCategory,
+    amount: item.amount,
+    date: item.expectedPayOut,
+  }));
 
   return (
-    <View className="w-full">
-      {selecteIncomeHistory === undefined ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={selecteIncomeHistory}
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{ gap: 8 }}
-          renderItem={({ item: income }) => (
-            <View className="bg-white rounded-3xl h-20 p-4">
-              <View className="flex-row justify-between items-center h-full">
-                {/* Left Icon */}
-                <View className="justify-center items-center">
-                  <Image
-                    source={require("../../../assets/images/add_income_icon.png")}
-                    style={{ width: 32, height: 32 }}
-                    resizeMode="contain"
-                  />
-                </View>
-
-                {/* Middle Content */}
-                <View className="px-3 justify-center items-center">
-                  <Text className="text-lg font-semibold text-gray-800 mb-1">
-                    {income.incomeName}
-                  </Text>
-                  <Text className="text-sm text-gray-500 capitalize">
-                    {income.incomeCategory}
-                  </Text>
-                </View>
-
-                {/* Right Side */}
-                <View className="items-end justify-between">
-                  <Text className="text-lg font-bold text-green-600 mb-1">
-                    ₱{formatAmount(income.amount)}
-                  </Text>
-                  <View className="flex-row gap-2 rounded-full px-2 py-1 shadow-sm">
-                    <Text>{income.expectedPayOut}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          )}
-        ></FlatList>
-      )}
-    </View>
+    <HistoryList 
+      data={formattedIncomeHistory}
+      color="green"
+      icon={require("../../../assets/images/add_income_icon.png")}
+    />
   );
 }

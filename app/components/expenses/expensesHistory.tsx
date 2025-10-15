@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Image, Text, View } from "react-native";
+import HistoryList from "../historyList";
 
 export default function expensesHistory() {
   const selectedExpensesHistroy = [
@@ -59,59 +60,19 @@ export default function expensesHistory() {
     },
   ];
 
-  const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat("en-PH", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  const selectedData = selectedExpensesHistroy.map((items) => ({
+    _id: items._id,
+    name: items.expensesName,
+    category: items.expensesCategory,
+    amount: items.amount,
+    date: items.datePaid
+  })) 
 
   return (
-    <View className="w-full">
-      {selectedExpensesHistroy === undefined ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={selectedExpensesHistroy}
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{ gap: 8 }}
-          renderItem={({ item: expenses }) => (
-            <View className="bg-white rounded-3xl h-20 p-4 w-full">
-              <View className="flex-row items-center justify-between h-full">
-                {/* Left Icon */}
-                <View className="justify-center items-center">
-                  <Image
-                    source={require("../../../assets/images/add_expenses_icon.png")}
-                    style={{ width: 32, height: 32 }}
-                    resizeMode="contain"
-                  />
-                </View>
-
-                {/* Middle Content */}
-                <View className="px-3 justify-center items-center">
-                  <Text className="text-lg font-semibold text-gray-800 mb-1">
-                    {expenses.expensesName}
-                  </Text>
-                  <Text className="text-sm text-gray-500 capitalize">
-                    {expenses.expensesCategory}
-                  </Text>
-                </View>
-
-                {/* Right Side */}
-                <View className="items-end justify-between">
-                  <Text className="text-lg font-bold text-red-600 mb-1">
-                    ₱{formatAmount(expenses.amount)}
-                  </Text>
-                  <View className="flex-row rounded-full px-2 gap-4 py-1 shadow-sm">
-                    <Text>{expenses.datePaid}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          )}
-        ></FlatList>
-      )}
-    </View>
+    <HistoryList 
+      data={selectedData}
+      color="red"
+      icon={require("../../../assets/images/add_expenses_icon.png")}
+    />
   );
 }
