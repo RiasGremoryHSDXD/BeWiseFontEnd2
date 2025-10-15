@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesHistory from "../components/expenses/expensesHistory";
 import ExpensesList from "../components/expenses/expensesList";
+import CategoriesAmount from "../components/categoriesAmount";
 
 export default function income() {
   const [clickAddExpense, setClickAddExpense] = useState<boolean>(false);
@@ -64,6 +65,15 @@ export default function income() {
   useEffect(() => {
     if (totalExpenses !== undefined) setTotalMonthlyExpenses(totalExpenses);
   }, [totalExpenses]);
+
+  const expenseCategories = [
+    { label: 'Insurance', amount: insuranceExpenses },
+    { label: 'Bill', amount: billExpenses },
+    { label: 'Game', amount: gameExpenses },
+    { label: 'Grocery', amount: groceryExpenses },
+    { label: 'Other', amount: otherExpenses },
+  ];
+
 
   useEffect(() => {
     if (totalEachCategoryTotalExpenses !== undefined) {
@@ -129,36 +139,11 @@ export default function income() {
       </View>
 
       {/* Expenses Category */}
-      <View className="flex flex-row flex-wrap justify-between bg-[#FAF7F0] py-6 px-4 rounded-2xl">
-        <View className="w-full mb-3">
-          <Text className="text-base font-semibold">Expenses Categories</Text>
-        </View>
-
-        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-sm font-medium">Insurance</Text>
-          <Text className="text-sm text-red-600 font-medium">₱ {insuranceExpenses}</Text>
-        </View>
-
-        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-sm font-medium">Bill</Text>
-          <Text className="text-sm text-red-600 font-medium">₱ {billExpenses}</Text>
-        </View>
-
-        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-sm font-medium">Game</Text>
-          <Text className="text-sm text-red-600 font-medium">₱ {gameExpenses}</Text>
-        </View>
-
-        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-sm font-medium">Grocery</Text>
-          <Text className="text-sm text-red-600 font-medium">₱ {groceryExpenses}</Text>
-        </View>
-
-        <View className="w-[46%] border py-1 px-2 border-black/10 justify-center items-center bg-[#F2ECEC] rounded-lg mb-3">
-          <Text className="text-sm font-medium">Other</Text>
-          <Text className="text-sm text-red-600 font-medium">₱ {otherExpenses}</Text>
-        </View>
-      </View>
+      <CategoriesAmount 
+        title="Expenses Category"
+        categories={expenseCategories}
+        color="red"
+      />
 
       {/**Expenses List */}
       <View className="flex-1 gap-2">
