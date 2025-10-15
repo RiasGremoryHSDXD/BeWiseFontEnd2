@@ -130,7 +130,9 @@ export default function LogIn() {
                 clearFieldError("password");
               }}
             />
-            <TouchableOpacity onPress={togglePassword}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={togglePassword}>
               <Ionicons
                 name={showPassword ? "eye-off" : "eye"}
                 size={25}
