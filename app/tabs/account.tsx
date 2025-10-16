@@ -108,7 +108,7 @@ export default function LogOutButton() {
         onRequestClose={() => setClickAnalytics(false)}
       >
         <View className="flex-1 bg-black/70 justify-center items-center">
-          <Analytics/>
+          <Analytics onClose={() => setClickAnalytics(false)}/>
         </View>
       </Modal>
 
@@ -116,7 +116,7 @@ export default function LogOutButton() {
         visible={showUpdateUserName}
         transparent={true}
         animationType="fade"
-        onRequestClose={() => setShowUpdateUsername(false)}
+        onRequestClose={() => setShowUpdateUsername(true)}
       >
         <View className="flex-1 bg-black/70 justify-center items-center">
           <View className="flex border border-[#36978C] bg-white w-[85%] p-6 rounded-2xl shadow-lg">

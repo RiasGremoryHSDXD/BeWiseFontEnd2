@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, Dimensions, ScrollView } from "react-native";
-import { PieChart, BarChart } from "react-native-chart-kit";
+import { View, Text, Dimensions, ScrollView, TouchableOpacity, Image } from "react-native";
+import { PieChart } from "react-native-chart-kit";
 import {
   dummyBudgetStatus,
   dummyExpenses,
@@ -10,7 +10,11 @@ import {
 
 const screenWidth = Dimensions.get("window").width;
 
-export default function Analytics() {
+interface Props {
+  onClose: () => void
+}
+
+export default function Analytics({onClose} : Props) {
   // Calculate totals
   const totalIncome = dummyIncome.reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = dummyExpenses.reduce((sum, e) => sum + e.amount, 0);
@@ -39,9 +43,32 @@ export default function Analytics() {
   return (
     <ScrollView className="flex-1 bg-[#F3FDFB] p-4">
       {/* Header */}
-      <Text className="text-3xl font-bold text-[#1E4E45] mb-6">
-        📊 Analytics
-      </Text>
+      <View className="flex flex-row justify-between mb-6">
+
+        <View className="flex flex-row justify-center items-center gap-x-2">
+          <Image
+            source={require('../../../assets/images/AnalyticsLogo.png')}
+            className="w-[32px] h-[32px]"
+          >
+          </Image>
+          <Text className="text-3xl font-bold text-[#1E4E45]">
+            Analytic
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          className="flex flex-row justify-center items-center"
+          onPress={onClose}
+        >
+          <View className="flex flex-row justify-center items-center border px-3.5 py-1 bg-[#D9D9D9] rounded-3xl gap-x-1">
+            <Image
+              source={require('../../../assets/images/backLogo.png')}
+              className="w-[15px] h-[15px]"
+            />
+            <Text className="semibold text-lg">Back</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {/* Balance Summary Card */}
       <View className="bg-white p-5 rounded-2xl mb-6 shadow-md">
@@ -86,35 +113,6 @@ export default function Analytics() {
           paddingLeft="15"
           absolute
           style={{ alignSelf: "center" }}
-        />
-      </View>
-
-      {/* Expenses by Category - Bar Chart */}
-      <View className="bg-white p-5 rounded-2xl mb-6 shadow-md">
-        <Text className="text-lg font-bold text-[#1E4E45] mb-3">
-          Category Comparison
-        </Text>
-        <BarChart
-          data={{
-            labels: categoryLabels,
-            datasets: [{ data: categoryAmounts }],
-          }}
-          width={screenWidth - 70}
-          height={220}
-          fromZero
-          yAxisLabel="₱"
-          yAxisSuffix=""
-          chartConfig={{
-            backgroundColor: "#fff",
-            backgroundGradientFrom: "#F3FDFB",
-            backgroundGradientTo: "#E8F5E9",
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(30, 78, 69, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            barPercentage: 0.7,
-          }}
-          style={{ borderRadius: 10 }}
-          showValuesOnTopOfBars
         />
       </View>
 
