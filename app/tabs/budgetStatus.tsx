@@ -28,24 +28,10 @@ export default function BudgetStatus() {
 
   const [clickEditTotalBudget, setClickEditTotalBudget] = useState<boolean>(false)
   const [clickSetNewBudget, setClickSetNewBudget] = useState<boolean>(false)
+  const [clickAdjustCategory, setClickAdjustCategory] = useState<boolean>(false)
 
   return (
     <SafeAreaView className="flex justify-start items-center w-full h-full bg-[#81D8D0] pt-5">
-      {/* Edit button */}
-      <View className="w-[90%] flex flex-row justify-end mb-2">
-        <TouchableOpacity
-          activeOpacity={0.7}
-          className="flex-row items-center gap-2 px-4 py-2 bg-gray-200 border border-black/20 rounded-full shadow-sm"
-          onPress={() => setClickEditTotalBudget(true)}
-        >
-          <MaterialCommunityIcons
-            name="rename-box-outline"
-            size={18}
-            color="#676565"
-          />
-          <Text className="text-sm font-medium text-[#676565]">Edit Total Budget</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Budget board */}
       <View className="w-[90%] py-6 px-6 flex-col gap-y-4 items-center bg-[#FFFB82]/20 rounded-3xl">
@@ -130,14 +116,14 @@ export default function BudgetStatus() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="flex-1 flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#36978C] rounded-3xl"
-          onPress={() => console.log("Adjust Categories pressed")}
+          onPress={() => setClickEditTotalBudget(true)}
         >
           <MaterialCommunityIcons
             name="rename-box-outline"
             size={22}
             color="black"
           />
-          <Text className="text-base font-medium">Adjust Categories</Text>
+          <Text className="text-base font-medium">Edit Total Budget</Text>
         </TouchableOpacity>
       </View>
 

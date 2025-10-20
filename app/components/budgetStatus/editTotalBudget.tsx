@@ -40,7 +40,7 @@ export default function editTotalBudget({closeModal} : Prop) {
           className="flex-1 p-3 bg-green-400 rounded-lg items-center mr-2"
           onPress={() => console.log("successfully Change Total Budget")}
         >
-          <Text className="text-xl font-semibold text-white">Add</Text>
+          <Text className="text-xl font-semibold text-white">Save</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

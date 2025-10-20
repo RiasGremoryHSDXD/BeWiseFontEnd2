@@ -63,7 +63,7 @@ export default function setNewBudget({closeModal} : Prop) {
       <View className="flex flex-row justify-between mt-5 w-full">
         <TouchableOpacity
           activeOpacity={1}
-          className="flex-1 p-3 bg-red-400 rounded-lg items-center mr-2"
+          className="flex-1 p-3 bg-green-400 rounded-lg items-center mr-2"
           onPress={() => console.log("successfully Added a new Budget")}
         >
           <Text className="text-xl font-semibold text-white">Add</Text>
