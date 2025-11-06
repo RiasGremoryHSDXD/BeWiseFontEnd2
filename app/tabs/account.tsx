@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateUserNameModal from "../components/updateUserName/updateName";
 import BudgetAssistance from "../components/budgetAssistant/budgetAssistant"
 import Analytics from "../components/analytics/analytics";
+import ReusableModal from "../components/reusableModal";
 
 export default function LogOutButton() {
   const router = useRouter();
@@ -90,47 +91,39 @@ export default function LogOutButton() {
         </View>
       </View>
 
-      <Modal
-        visible={clickBudgetAssistance}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setClickBudgetAssistance(false)}
-      >
-        <View className="flex-1 bg-black/70 justify-center items-center">
-          <BudgetAssistance onClose={() => setClickBudgetAssistance(false)}/>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={clickAnalytics}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setClickAnalytics(false)}
-      >
-        <View className="flex-1 bg-black/70 justify-center items-center">
-          <Analytics onClose={() => setClickAnalytics(false)}/>
-        </View>
-      </Modal>
-
-      <Modal
+      {/* Click Rename Button Modal */}
+      <ReusableModal
         visible={showUpdateUserName}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowUpdateUsername(true)}
+        onRequestClose={() => setShowUpdateUsername(false)}
       >
-        <View className="flex-1 bg-black/70 justify-center items-center">
-          <View className="flex border border-[#36978C] bg-white w-[85%] p-6 rounded-2xl shadow-lg">
-            <View className="flex-row justify-between items-center w-full">
-              <View />
-              <TouchableOpacity onPress={() => setShowUpdateUsername(false)}>
-                <Text className="text-2xl font-bold text-gray-600">✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <UpdateUserNameModal onUsernameUpdated={handleUsernameUpdate} />
-          </View>
+        <View className="flex w-full items-end">  
+          <TouchableOpacity onPress={() => setShowUpdateUsername(false)}>
+            <Text className="text-2xl font-bold text-gray-600">✕</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
+
+        <UpdateUserNameModal onUsernameUpdated={handleUsernameUpdate} /> 
+      </ReusableModal>
+
+      {/**Click Budget Assistance Button Modal */}  
+      <ReusableModal
+        visible={clickBudgetAssistance}
+        onRequestClose={() => setClickBudgetAssistance(false)}
+        reusableModalDesign="flex-1 bg-black/50 justify-center items-center"
+        reuseableModalContainerDesign = 'flex justify-center items-center bg-white w-[85%] py-6 rounded-2xl shadow-lg'
+      >
+        <BudgetAssistance onClose={() => setClickBudgetAssistance(false)}/>
+      </ReusableModal>
+
+      {/**Click Analytics Button Modal */}  
+      <ReusableModal
+        visible={clickAnalytics}
+        onRequestClose={() => setClickAnalytics(false)}
+        reuseableModalContainerDesign="flex-1 bg-black/50 justify-center items-center"
+      >
+        <Analytics onClose={() => setClickAnalytics(false)}/>
+      </ReusableModal>
+
     </SafeAreaView>
   );
 }

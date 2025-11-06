@@ -17,6 +17,8 @@ import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesHistory from "../components/expenses/expensesHistory";
 import ExpensesList from "../components/expenses/expensesList";
 import CategoriesAmount from "../components/categoriesAmount";
+import ReusableModal from "../components/reusableModal";
+
 
 export default function income() {
   const [clickAddExpense, setClickAddExpense] = useState<boolean>(false);
@@ -163,19 +165,13 @@ export default function income() {
         {clickHistory ? <ExpensesHistory /> : <ExpensesList />}
       </View>
 
-      {/* Add Expenses Modal */}
-      <Modal
+      {/* Click Add Expenses Button Modal */}
+      <ReusableModal
         visible={clickAddExpense}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setClickAddExpense(false)}
       >
-        <View className="flex-1 bg-black/50 justify-center items-center">
-          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
-            <AddExpenses closeModal={() => setClickAddExpense(false)} />
-          </View>
-        </View>
-      </Modal>
+        <AddExpenses closeModal={() => setClickAddExpense(false)}/>
+      </ReusableModal>
 
     </SafeAreaView>
   );

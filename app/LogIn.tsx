@@ -12,6 +12,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ReusableModal from "./components/reusableModal";
+import ReuseableButton from "./components/reusableButton";
+
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("");
@@ -149,55 +152,41 @@ export default function LogIn() {
           )}
         </View>
 
-        <View className="flex items-end">
-          <Text>Forgot password?</Text>
-        </View>
-
-        <TouchableOpacity
-          activeOpacity={1}
-          className="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
+        <ReuseableButton
+          reuseableButtonDesign="bg-[#36978C] flex items-center w-1/2 py-4 self-center rounded-[100px]"
+          textButtonDesign="text-2xl text-black font-medium"
+          textButton="Log In"
           onPress={handleSignIn}
-        >
-          <Text className="text-2xl text-black font-medium">Log In</Text>
-        </TouchableOpacity>
+        />
       </View>
 
       {/* Login Error Modal */}
-      <Modal
+      <ReusableModal
         visible={logInError}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setLogInError(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
-            {/* Error Icon */}
-            <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
-                <Text className="text-red-600 text-4xl">✕</Text>
-              </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Login Failed!
-              </Text>
-              <Text className="text-gray-600 text-center text-base leading-6">
-                Invalid email or password. Please check your credentials and try
-                again.
-              </Text>
-            </View>
-
-            {/* Action Button */}
-            <TouchableOpacity
-              activeOpacity={1}
-              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
-              onPress={() => setLogInError(false)}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Try Again
-              </Text>
-            </TouchableOpacity>
+        {/* Error Icon */}
+        <View className="items-center mb-4">
+          <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
+            <Text className="text-red-600 text-4xl">✕</Text>
           </View>
+          <Text className="text-2xl font-bold text-gray-800 mb-2">
+            Login Failed!
+          </Text>
+          <Text className="text-gray-600 text-center text-base leading-6">
+            Invalid email or password. Please check your credentials and try
+            again.
+          </Text>
         </View>
-      </Modal>
+
+        {/* Action Button */}
+        <ReuseableButton
+          reuseableButtonDesign="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
+          textButtonDesign="text-white text-lg font-semibold text-center"
+          textButton="Try Again"
+          onPress={() => setLogInError(false)}
+        />
+      </ReusableModal>
 
       {/* Loading Overlay */}
       {loading && (

@@ -17,6 +17,7 @@ import AddIncomeModal from "../components/income/addIncome";
 import IncomeHistory from "../components/income/incomeHistory";
 import IncomeList from "../components/income/incomeList";
 import CategoriesAmount from "../components/categoriesAmount";
+import ReusableModal from "../components/reusableModal";
 
 export default function income() {
   const [userCredentialsID, setUserCredentialsID] =
@@ -158,18 +159,14 @@ export default function income() {
         {clickHistory ? <IncomeHistory /> : <IncomeList />}
       </View>
 
-      <Modal
+      {/* Click Add Income Button Modal */}
+      <ReusableModal
         visible={clickAddIncome}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setClickAddIncome(false)}
       >
-        <View className="flex-1 bg-black/50 justify-center items-center">
-          <View className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg">
-            <AddIncomeModal onClose={() => setClickAddIncome(false)} />
-          </View>
-        </View>
-      </Modal> 
+        <AddIncomeModal onClose={() => setClickAddIncome(false)}/>
+      </ReusableModal>
+
     </SafeAreaView>
   );
 }

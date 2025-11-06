@@ -8,6 +8,8 @@ import { Text, View, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EditTotalBudget from '../components/budgetStatus/editTotalBudget'
 import SetNewBudget from "../components/budgetStatus/setNewBudget";
+import ReusableModal from "../components/reusableModal";
+
 
 const currentBudget = 25000;
 const currentSpent = 8000;
@@ -140,41 +142,23 @@ export default function BudgetStatus() {
           <Text className="text-base font-medium">Adjust Categories</Text>
         </TouchableOpacity>
       </View>
+    
+    {/*Click Edit Total Budget Button Modal */}
+    <ReusableModal
+      visible={clickEditTotalBudget}
+      onRequestClose={() => setClickEditTotalBudget(false)}
+    >
+      <EditTotalBudget closeModal={ () => setClickEditTotalBudget(false) }/>
+    </ReusableModal>
+    
+    {/* Click Set New Budget Button Modal */}
+    <ReusableModal
+      visible={clickSetNewBudget}
+      onRequestClose={() => setClickSetNewBudget(false)}
+    >
+      <SetNewBudget closeModal={ () => setClickSetNewBudget(false) }/>
+    </ReusableModal>
 
-      {/* Edit Total Budget Modal */}
-      <Modal
-        visible={clickEditTotalBudget}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setClickEditTotalBudget(false)}
-      >
-        <View
-          className="flex-1 bg-black/50 justify-center items-center"
-        >
-          <View
-            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
-          >
-            <EditTotalBudget closeModal={ () => setClickEditTotalBudget(false) }/>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        visible={clickSetNewBudget}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setClickSetNewBudget(false)}
-      >
-        <View
-          className="flex-1 bg-black/50 justify-center items-center"
-        >
-          <View
-            className="flex justify-center items-center bg-white w-[85%] p-6 rounded-2xl shadow-lg"
-          >
-            <SetNewBudget closeModal={ () => setClickSetNewBudget(false) }/>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }

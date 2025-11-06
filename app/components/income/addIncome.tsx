@@ -155,7 +155,7 @@ export default function addIncome({onClose} : Props) {
         {frequency === "OneTime" ? (
           <Text>Expected Payout : </Text>
         ) : (
-          <Text>Started Monthly Payout : </Text>
+          <Text>Monthly Payout : </Text>
         )}
 
         {expectedPayOut && (

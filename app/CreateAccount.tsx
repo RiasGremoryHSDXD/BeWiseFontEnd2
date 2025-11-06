@@ -3,6 +3,8 @@ import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import ReusableModal from "./components/reusableModal";
+import ReuseableButton from "./components/reusableButton";
 
 export default function CreateAccount() {
   const [username, setUserName] = useState<string>("");
@@ -161,119 +163,92 @@ export default function CreateAccount() {
           )}
         </View>
 
-
-        <TouchableOpacity
-          className="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"
+        {/* Sign Up Button */}  
+        <ReuseableButton
+          reuseableButtonDesign="bg-[#36978C] flex items-center justify-center mt-8 w-52 h-14 px-4 self-center rounded-3xl"
+          textButtonDesign="text-2xl text-black/60 font-medium"
+          textButton="Sign Up"
           onPress={handleSignUp}
-        >
-          <Text className="text-2xl text-black/60 font-medium">Sign Up</Text>
-        </TouchableOpacity>
+        />
       </View>
 
       {/* Success Modal */}
-      <Modal
+      <ReusableModal
         visible={showSuccessModal}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setShowSuccessModal(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
-            {/* Success Icon */}
-            <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
-                <Text className="text-green-600 text-4xl">✓</Text>
-              </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Account Created
-              </Text>
-              <Text className="text-gray-600 text-center text-base leading-6">
-                Your account was created successfully. Welcome!
-              </Text>
-            </View>
-
-            {/* Action Button */}
-            <TouchableOpacity
-              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
-              onPress={() => setShowSuccessModal(false)}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Continue
-              </Text>
-            </TouchableOpacity>
+        {/* Success Icon */}
+        <View className="items-center mb-4">
+          <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-4">
+            <Text className="text-green-600 text-4xl">✓</Text>
           </View>
+          <Text className="text-2xl font-bold text-gray-800 mb-2">
+            Account Created
+          </Text>
+          <Text className="text-gray-600 text-center text-base leading-6">
+            Your account was created successfully. Welcome!
+          </Text>
         </View>
-      </Modal>
+          
+         {/* Action Button */} 
+        <ReuseableButton
+          textButtonDesign="text-white text-lg font-semibold text-center"
+          textButton="Continue"
+          onPress={() => setShowSuccessModal(false)}
+        />
+      </ReusableModal>
 
       {/* Email Address Is Used Modal */}
-      <Modal
+      <ReusableModal
         visible={emailAlreadyExist}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setEmailAlreadyExist(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
-            {/* Wrong Icon */}
-            <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
-                <Text className="text-red-600 text-4xl">X</Text>
-              </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Email already used
-              </Text>
-              <Text className="text-gray-600 text-center text-base leading-6">
-                Please use a different email address.
-              </Text>
-            </View>
-
-            {/* Action Button */}
-            <TouchableOpacity
-              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
-              onPress={() => setEmailAlreadyExist(false)}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Try Again
-              </Text>
-            </TouchableOpacity>
+        {/* Error Icon */}
+        <View className="items-center mb-4">
+          <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
+            <Text className="text-red-600 text-4xl">X</Text>
           </View>
+          <Text className="text-2xl font-bold text-gray-800 mb-2">
+            Email already used
+          </Text>
+          <Text className="text-gray-600 text-center text-base leading-6">
+            Please use a different email address.
+          </Text>
         </View>
-      </Modal>
+
+        {/* Action Button */}
+        <ReuseableButton
+          textButtonDesign="text-white text-lg font-semibold text-center"
+          textButton="Try Again"
+          onPress={() => setEmailAlreadyExist(false)}
+        />
+      </ReusableModal>
 
       {/* Email Address Invalid Format Modal */}
-      <Modal
+      <ReusableModal
         visible={emailNotValid}
-        transparent={true}
-        animationType="fade"
         onRequestClose={() => setEmailNotValid(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-3xl p-8 mx-6 w-80 shadow-2xl">
-            {/* Wrong Icon */}
-            <View className="items-center mb-4">
-              <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
-                <Text className="text-red-600 text-4xl">X</Text>
-              </View>
-              <Text className="text-2xl font-bold text-gray-800 mb-2">
-                Invalid Email
-              </Text>
-              <Text className="text-gray-600 text-center text-base leading-6">
-                Please enter a valid email address.
-              </Text>
-            </View>
-
-            {/* Action Button */}
-            <TouchableOpacity
-              className="bg-[#36978C] py-3 px-6 rounded-2xl mt-6"
-              onPress={() => setEmailNotValid(false)}
-            >
-              <Text className="text-white text-lg font-semibold text-center">
-                Try Again
-              </Text>
-            </TouchableOpacity>
+        {/* Error Icon */}
+        <View className="items-center mb-4">
+          <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
+            <Text className="text-red-600 text-4xl">X</Text>
           </View>
+          <Text className="text-2xl font-bold text-gray-800 mb-2">
+            Invalid Email
+          </Text>
+          <Text className="text-gray-600 text-center text-base leading-6">
+            Please enter a valid email address.
+          </Text>
         </View>
-      </Modal>
+
+        {/* Action Button */}
+        <ReuseableButton
+          textButtonDesign="text-white text-lg font-semibold text-center"
+          textButton="Try Again"
+          onPress={() => setEmailNotValid(false)}
+        />
+      </ReusableModal>
     </>
   );
 }

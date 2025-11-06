@@ -69,7 +69,7 @@ export default function BudgetAssistant({ onClose }: Props) {
   };
 
   return (
-    <View className="bg-[#F3FDFB] p-5 rounded-2xl w-[90%]">
+    <View className=" rounded-2xl w-[90%]">
       <Text className="text-2xl font-bold text-[#1E4E45] text-center mb-2">
         Budget Assistant
       </Text>
