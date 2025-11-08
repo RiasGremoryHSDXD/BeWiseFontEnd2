@@ -1,4 +1,3 @@
-import { api } from "@/convex/_generated/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useQuery } from "convex/react";
@@ -14,7 +13,8 @@ import {
 } from "react-native";
 import ReusableModal from "./components/reusableModal";
 import ReuseableButton from "./components/reusableButton";
-
+import api from "../api/api"
+import axios from "axios";
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("");
@@ -36,10 +36,6 @@ export default function LogIn() {
     setShowPassword((showPassword) => !showPassword);
   };
 
-  const logInCredentialsValidation = useQuery(
-    api.functions.credentials.logInUser.logInUser,
-    { email, password }
-  );
 
   const handleSignIn = async () => {
     // Reset error states
@@ -54,31 +50,49 @@ export default function LogIn() {
 
     setLoading(true);
 
-    if (logInCredentialsValidation === undefined) {
-      setLoading(false);
-      return;
+    try
+    {
+      const response = await api.post("/auth/login", 
+        {
+          email,
+          password
+        }
+      )
+
+      if(response.status !== 200)
+      {
+        setLogInError(true);
+        setLoading(false);
+        return;
+      }
+
+      const { token, user } = response.data
+      
+      await AsyncStorage.setItem("authToken", token);
+      await AsyncStorage.setItem('user', JSON.stringify(user))
+      // router.replace("/tabs/home");
+      console.log(response.data)
+    }catch(error)
+    {
+      if(axios.isAxiosError(error) && error.response)
+      {
+        const errorMessage = error.response.data.message || "An error occured"
+
+        if(errorMessage === "Invalid email or password")
+        {
+          setLogInError(true);
+        }
+        else
+        {
+          console.error("Sign Error: ", error)
+        }
+      }
+      else
+      {
+        console.error("Sign Error: ", error)
+      }
     }
-
-    if (!logInCredentialsValidation.success) {
-      setLogInError(true);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      await AsyncStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: logInCredentialsValidation.user?.id,
-          email: logInCredentialsValidation.user?.email,
-          username: logInCredentialsValidation.user?.username,
-        })
-      );
-
-      router.replace("/tabs/home");
-    } catch (error) {
-      console.log("Error saving user: ", error);
-    } finally {
+    finally {
       setLoading(false);
     }
   };

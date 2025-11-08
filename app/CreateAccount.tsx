@@ -1,10 +1,11 @@
-import { api } from "@/convex/_generated/api";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ReusableModal from "./components/reusableModal";
 import ReuseableButton from "./components/reusableButton";
+import api from "../api/api"
+import axios from "axios";
 
 export default function CreateAccount() {
   const [username, setUserName] = useState<string>("");
@@ -23,23 +24,11 @@ export default function CreateAccount() {
   const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
   const [emailNotValid, setEmailNotValid] = useState<boolean>(false);
 
-  const createAccount = useMutation(
-    api.functions.credentials.insertNewUser.insertNewUser
-  );
-  const emailValidation = useQuery(
-    api.functions.credentials.validateUserEmail.validateUserEmail,
-    {
-      email,
-    }
-  );
-
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePassword = () => {
     setShowPassword((showPassword) => !showPassword);
   };
-
-  const validEmailRegex = /^[A-Za-z0-9._%+-]+@(gmail\.com|email\.com)$/;
 
   const handleSignUp = async () => {
     // Reset error states
@@ -51,29 +40,50 @@ export default function CreateAccount() {
 
     setErrorFields(newErrorFields);
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password) 
+    {
       return;
     }
 
-    if (emailValidation === undefined) return;
+    try
+    {
+      const response = await api.post("/auth/register", 
+      {
+        username,
+        email,
+        password,
+      });
 
-    if (!validEmailRegex.test(email)) {
-      setEmailNotValid(true);
-      return;
+      if(response.status === 201)
+        {
+          setUserName("");
+          setEmail("");
+          setPassword("");
+          setErrorFields({ user_name: false, email: false, password: false });
+          setShowSuccessModal(true)
+        }
+    }catch(error)
+    {
+      if(axios.isAxiosError(error) && error.response)
+      {
+
+        const errorMessage = error.response.data.message || "An error occured"
+
+        if(errorMessage === "The Email already taken")
+        {
+          setEmailAlreadyExist(true);
+        }
+        else
+        {
+          setEmailNotValid(true);
+        }
+      }
+      else
+      {
+        setEmailNotValid(true);
+        console.error("Sign Error: ", error)
+      }
     }
-
-    if (emailValidation) {
-      setEmailAlreadyExist(true);
-      return;
-    }
-
-    await createAccount({ username, email, password });
-
-    setUserName("");
-    setEmail("");
-    setPassword("");
-    setErrorFields({ user_name: false, email: false, password: false });
-    setShowSuccessModal(true);
   };
 
   const clearFieldError = (field: string) => {
