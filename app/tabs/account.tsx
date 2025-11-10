@@ -18,23 +18,23 @@ export default function LogOutButton() {
   const [clickBudgetAssistance, setClickBudgetAssistance] = useState<boolean>(false)
   const [clickAnalytics, setClickAnalytics] = useState<boolean>(false)
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserID(user.id || "");
-          setUserEmail(user.email || "");
-          setUserName(user.username || "");
-        }
-      } catch (e) {
-        Alert.alert("Error", "Error in retrieving Data in local Storage");
-      }
-    };
+  // useEffect(() => {
+  //   const loadUserInfo = async () => {
+  //     try {
+  //       const storedUser = await AsyncStorage.getItem("user");
+  //       if (storedUser) {
+  //         const user = JSON.parse(storedUser);
+  //         setUserID(user.id || "");
+  //         setUserEmail(user.email || "");
+  //         setUserName(user.username || "");
+  //       }
+  //     } catch (e) {
+  //       Alert.alert("Error", "Error in retrieving Data in local Storage");
+  //     }
+  //   };
 
-    loadUserInfo();
-  }, []);
+  //   loadUserInfo();
+  // }, []);
 
   const handleUsernameUpdate = (newUsername: string) => {
     setUserName(newUsername);

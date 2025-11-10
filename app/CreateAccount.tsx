@@ -1,6 +1,6 @@
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import { useMutation, useQuery } from "convex/react";
-import { useState } from "react";
+import { use, useState } from "react";
 import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ReusableModal from "./components/reusableModal";
 import ReuseableButton from "./components/reusableButton";
@@ -21,8 +21,8 @@ export default function CreateAccount() {
     password: false,
   });
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-  const [emailAlreadyExist, setEmailAlreadyExist] = useState<boolean>(false);
   const [emailNotValid, setEmailNotValid] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -71,15 +71,20 @@ export default function CreateAccount() {
 
         if(errorMessage === "The Email already taken")
         {
-          setEmailAlreadyExist(true);
+          setErrorMessage(error.response.data.message);      
+          setEmailNotValid(true);
         }
         else
         {
+          console.log(123)
+          console.log("SERVER ERROR:", error.response.data.message);
+          setErrorMessage(error.response.data.message);      
           setEmailNotValid(true);
         }
       }
       else
       {
+        console.log(2222)
         setEmailNotValid(true);
         console.error("Sign Error: ", error)
       }
@@ -208,33 +213,8 @@ export default function CreateAccount() {
         />
       </ReusableModal>
 
-      {/* Email Address Is Used Modal */}
-      <ReusableModal
-        visible={emailAlreadyExist}
-        onRequestClose={() => setEmailAlreadyExist(false)}
-      >
-        {/* Error Icon */}
-        <View className="items-center mb-4">
-          <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
-            <Text className="text-red-600 text-4xl">X</Text>
-          </View>
-          <Text className="text-2xl font-bold text-gray-800 mb-2">
-            Email already used
-          </Text>
-          <Text className="text-gray-600 text-center text-base leading-6">
-            Please use a different email address.
-          </Text>
-        </View>
 
-        {/* Action Button */}
-        <ReuseableButton
-          textButtonDesign="text-white text-lg font-semibold text-center"
-          textButton="Try Again"
-          onPress={() => setEmailAlreadyExist(false)}
-        />
-      </ReusableModal>
-
-      {/* Email Address Invalid Format Modal */}
+      {/* Error Modal*/}
       <ReusableModal
         visible={emailNotValid}
         onRequestClose={() => setEmailNotValid(false)}
@@ -244,11 +224,8 @@ export default function CreateAccount() {
           <View className="w-16 h-16 bg-red-100 rounded-full items-center justify-center mb-4">
             <Text className="text-red-600 text-4xl">X</Text>
           </View>
-          <Text className="text-2xl font-bold text-gray-800 mb-2">
-            Invalid Email
-          </Text>
           <Text className="text-gray-600 text-center text-base leading-6">
-            Please enter a valid email address.
+            {errorMessage}
           </Text>
         </View>
 

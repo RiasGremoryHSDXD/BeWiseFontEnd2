@@ -26,21 +26,21 @@ export default function Home() {
     userCredentialsID ? { userCredentialsID } : "skip"
   );
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
-        }
-      } catch (e) {
-        Alert.alert("Error", "Failed to retrieve user from local storage");
-      }
-    };
+  // useEffect(() => {
+  //   const loadUserInfo = async () => {
+  //     try {
+  //       const storedUser = await AsyncStorage.getItem("user");
+  //       if (storedUser) {
+  //         const user = JSON.parse(storedUser);
+  //         setUserCredentialsID(user.id || "");
+  //       }
+  //     } catch (e) {
+  //       Alert.alert("Error", "Failed to retrieve user from local storage");
+  //     }
+  //   };
 
-    loadUserInfo();
-  }, []);
+  //   loadUserInfo();
+  // }, []);
 
   return (
     <SafeAreaView className="flex h-full justify-center gap-5 items-center w-full bg-[#81D8D0]">

@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesHistory from "../components/expenses/expensesHistory";
-import ExpensesList from "../components/expenses/expensesList";
+// import ExpensesList from "../components/expenses/expensesList";
 import CategoriesAmount from "../components/categoriesAmount";
 import ReusableModal from "../components/reusableModal";
 
@@ -45,24 +45,24 @@ export default function income() {
     userCredentialsID ? { userCredentialsID } : "skip"
   );
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
-        }
-      } catch (error) {
-        Alert.alert(
-          "Error Local Storage [expenses.tsx file]",
-          "Error retrieving data in local storage"
-        );
-      }
-    };
+  // useEffect(() => {
+  //   const loadUserInfo = async () => {
+  //     try {
+  //       const storedUser = await AsyncStorage.getItem("user");
+  //       if (storedUser) {
+  //         const user = JSON.parse(storedUser);
+  //         setUserCredentialsID(user.id || "");
+  //       }
+  //     } catch (error) {
+  //       Alert.alert(
+  //         "Error Local Storage [expenses.tsx file]",
+  //         "Error retrieving data in local storage"
+  //       );
+  //     }
+  //   };
 
-    loadUserInfo();
-  }, []);
+  //   loadUserInfo();
+  // }, []);
 
   useEffect(() => {
     if (totalExpenses !== undefined) setTotalMonthlyExpenses(totalExpenses);
@@ -77,22 +77,22 @@ export default function income() {
   ];
 
 
-  useEffect(() => {
-    if (totalEachCategoryTotalExpenses !== undefined) {
-      setInsuranceExpeses(totalEachCategoryTotalExpenses.Insurance);
-      setBillExpenses(totalEachCategoryTotalExpenses.Bills);
-      setGameExpenses(totalEachCategoryTotalExpenses.Game);
-      setGroceryExpenses(totalEachCategoryTotalExpenses.Grocery);
-      setOtherExpenses(totalEachCategoryTotalExpenses.Other);
-    }
-  }, [
-    totalEachCategoryTotalExpenses,
-    totalEachCategoryTotalExpenses?.Insurance,
-    totalEachCategoryTotalExpenses?.Bills,
-    totalEachCategoryTotalExpenses?.Game,
-    totalEachCategoryTotalExpenses?.Grocery,
-    totalEachCategoryTotalExpenses?.Other,
-  ]);
+  // useEffect(() => {
+  //   if (totalEachCategoryTotalExpenses !== undefined) {
+  //     setInsuranceExpeses(totalEachCategoryTotalExpenses.Insurance);
+  //     setBillExpenses(totalEachCategoryTotalExpenses.Bills);
+  //     setGameExpenses(totalEachCategoryTotalExpenses.Game);
+  //     setGroceryExpenses(totalEachCategoryTotalExpenses.Grocery);
+  //     setOtherExpenses(totalEachCategoryTotalExpenses.Other);
+  //   }
+  // }, [
+  //   totalEachCategoryTotalExpenses,
+  //   totalEachCategoryTotalExpenses?.Insurance,
+  //   totalEachCategoryTotalExpenses?.Bills,
+  //   totalEachCategoryTotalExpenses?.Game,
+  //   totalEachCategoryTotalExpenses?.Grocery,
+  //   totalEachCategoryTotalExpenses?.Other,
+  // ]);
 
   return (
     <SafeAreaView className="flex w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
@@ -162,7 +162,7 @@ export default function income() {
             </Text>
           </TouchableOpacity>
         </View>
-        {clickHistory ? <ExpensesHistory /> : <ExpensesList />}
+        {clickHistory ? <ExpensesHistory /> : <Text>No Expenses</Text>}
       </View>
 
       {/* Click Add Expenses Button Modal */}

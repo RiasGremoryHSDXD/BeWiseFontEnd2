@@ -70,8 +70,8 @@ export default function LogIn() {
       
       await AsyncStorage.setItem("authToken", token);
       await AsyncStorage.setItem('user', JSON.stringify(user))
-      // router.replace("/tabs/home");
-      console.log(response.data)
+      router.replace("/tabs/home");
+      // console.log(response.data)
     }catch(error)
     {
       if(axios.isAxiosError(error) && error.response)
