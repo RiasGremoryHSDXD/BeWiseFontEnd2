@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+// import { Id } from "@/convex/_generated/dataModel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { useQuery } from "convex/react";
@@ -14,14 +14,14 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddIncomeModal from "../components/income/addIncome";
-import IncomeHistory from "../components/income/incomeHistory";
-import IncomeList from "../components/income/incomeList";
+// import IncomeHistory from "../components/income/incomeHistory";
+// import IncomeList from "../components/income/incomeList";
 import CategoriesAmount from "../components/categoriesAmount";
 import ReusableModal from "../components/reusableModal";
 
 export default function income() {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
+  // const [userCredentialsID, setUserCredentialsID] =
+  //   useState<Id<"userCredentials"> | null>(null);
   const [clickAddIncome, setClickAddIncome] = useState<boolean>(false);
   const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
   const [workIncome, setWorkIncome] = useState<number>(0);
@@ -32,55 +32,55 @@ export default function income() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
   const [clickHistory, setClickHistroy] = useState<boolean>(false);
 
-  const totalIncome = useQuery(
-    api.functions.income.totalIncome.totalIncome,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
+  // const totalIncome = useQuery(
+  //   api.functions.income.totalIncome.totalIncome,
+  //   userCredentialsID ? { userCredentialsID } : "skip"
+  // );
 
-  const totalEachCategoryTotalIncome = useQuery(
-    api.functions.income.totalEachCategoryIncome.totalEachCategoryIncome,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
+  // const totalEachCategoryTotalIncome = useQuery(
+  //   api.functions.income.totalEachCategoryIncome.totalEachCategoryIncome,
+  //   userCredentialsID ? { userCredentialsID } : "skip"
+  // );
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
-        }
-      } catch (error) {
-        Alert.alert(
-          "Error Local Storage [income.tsx file]",
-          "Error retrieving data in local storage"
-        );
-      }
-    };
+  // useEffect(() => {
+  //   const loadUserInfo = async () => {
+  //     try {
+  //       const storedUser = await AsyncStorage.getItem("user");
+  //       if (storedUser) {
+  //         const user = JSON.parse(storedUser);
+  //         setUserCredentialsID(user.id || "");
+  //       }
+  //     } catch (error) {
+  //       Alert.alert(
+  //         "Error Local Storage [income.tsx file]",
+  //         "Error retrieving data in local storage"
+  //       );
+  //     }
+  //   };
 
-    loadUserInfo();
-  }, []);
+  //   loadUserInfo();
+  // }, []);
 
-  useEffect(() => {
-    if (totalIncome !== undefined) setTotalMonthlyIncome(totalIncome);
-  }, [totalIncome]);
+  // useEffect(() => {
+  //   if (totalIncome !== undefined) setTotalMonthlyIncome(totalIncome);
+  // }, [totalIncome]);
 
-  useEffect(() => {
-    if (totalEachCategoryTotalIncome !== undefined) {
-      setWorkIncome(totalEachCategoryTotalIncome.Work);
-      setInvestmentIncome(totalEachCategoryTotalIncome.Investment);
-      setSavingIncome(totalEachCategoryTotalIncome.Savings);
-      setSideHustleIncome(totalEachCategoryTotalIncome["Side Hustle"]);
-      setOtherIncome(totalEachCategoryTotalIncome.Other);
-    }
-  }, [
-    totalEachCategoryTotalIncome,
-    totalEachCategoryTotalIncome?.Work,
-    totalEachCategoryTotalIncome?.Investment,
-    totalEachCategoryTotalIncome?.Savings,
-    totalEachCategoryTotalIncome?.["Side Hustle"],
-    totalEachCategoryTotalIncome?.Other,
-  ]);
+  // useEffect(() => {
+  //   if (totalEachCategoryTotalIncome !== undefined) {
+  //     setWorkIncome(totalEachCategoryTotalIncome.Work);
+  //     setInvestmentIncome(totalEachCategoryTotalIncome.Investment);
+  //     setSavingIncome(totalEachCategoryTotalIncome.Savings);
+  //     setSideHustleIncome(totalEachCategoryTotalIncome["Side Hustle"]);
+  //     setOtherIncome(totalEachCategoryTotalIncome.Other);
+  //   }
+  // }, [
+  //   totalEachCategoryTotalIncome,
+  //   totalEachCategoryTotalIncome?.Work,
+  //   totalEachCategoryTotalIncome?.Investment,
+  //   totalEachCategoryTotalIncome?.Savings,
+  //   totalEachCategoryTotalIncome?.["Side Hustle"],
+  //   totalEachCategoryTotalIncome?.Other,
+  // ]);
 
   const incomeCategories = [
     { label: 'Work', amount: workIncome },
@@ -156,7 +156,7 @@ export default function income() {
           </TouchableOpacity>
         </View>
 
-        {clickHistory ? <IncomeHistory /> : <IncomeList />}
+        {/* {clickHistory ? <IncomeHistory /> : <IncomeList />} */}
       </View>
 
       {/* Click Add Income Button Modal */}
