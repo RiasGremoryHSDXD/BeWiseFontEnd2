@@ -2,7 +2,7 @@ import express from "express"
 import cors from "cors"
 import "dotenv/config.js"
 import authRoutes from "./routes/authRoutes.js"
-import incomeRoutes from "./routes/incomeRoute/addIncomeRoute.js"
+import incomeRoutes from "./routes/incomeRoutes.js"
 import { connectDB } from "./lib/db.js"
 
 
