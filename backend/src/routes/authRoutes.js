@@ -6,6 +6,12 @@ import jwt from "jsonwebtoken"
 
 const router = express.Router()
 
+const generateToken = (userId) => {
+    return jwt.sign({userId}, process.env.JWT_SECRET, {
+        expiresIn: "15d"
+    })
+}
+
 router.post("/register", async (request, response) =>{
     try {
         const {username, email, password} = request.body 
@@ -51,22 +57,29 @@ router.post("/register", async (request, response) =>{
 
         await user.save()
 
+        const token = generateToken(user._id);
+
         return response
-            .status(201)
-            .json({
-                message: "User created successfully",
-                user:{
-                    id: user._id,
-                    username: user.username,
-                    email: user.email,
-                }
-            })
+                .status(200)
+                .json({
+                    token,
+                    user:{
+                        _id: user._id,
+                        username: user.username,
+                        email: user.email,
+                    },
+                    message: "User created successfully"
+                 })
     } catch (error) {
         
-        if(error.name === "ValidationError") return response.status(400).json({message: error.message})
+        // if(error.name === "ValidationError") return response.status(400).json({message: error.message})
 
-        console.error("Registration Error: ", error);
-        return response.status(500).json({message: "Internal Server Error"})
+        // console.error("Registration Error: ", error);
+        // return response.status(500).json({message: "Internal Server Error"})
+        console.log("Error in register route", error)
+        return response
+            .status(500)
+            .json({message: "Internal Server Error"})
     }
 })
 
@@ -89,46 +102,48 @@ router.post("/login", async (request, response) =>{
                 .json({message: "Invalid email or password"})
         }
 
-        const isMatch = await bcrypt.compare(password, user.password)
-        if(!isMatch)
-        {
-            return response
-                .status(400)
-                .json({message: "Invalid email or password"})
+        // const isMatch = await bcrypt.compare(password, user.password)
+        // if(!isMatch)
+        // {
+        //     return response
+        //         .status(400)
+        //         .json({message: "Invalid email or password"})
         
-        }
+        // }
 
-        const token = jwt.sign
-        (
-            {
-                userId: user._id,
-                email: user.email,
-            },
-            process.env.JWT_TOKEN_SECRET,
-            {   
-                expiresIn: "1h"
-            }
-        )
+        const isPasswordCorrect = await user.comparePassword(password)
+        if(!isPasswordCorrect) return response.status(400).json({message: "Invalid email or password"})
+
+        // const token = jwt.sign
+        // (
+        //     {
+        //         userId: user._id,
+        //         email: user.email,
+        //     },
+        //     process.env.JWT_TOKEN_SECRET,
+        //     {   
+        //         expiresIn: "1h"
+        //     }
+        // )
+
+        const token = generateToken(user._id);
 
         return response
             .status(200)
-            .json
-            ({
-                message: "Login successful",
+            .json({
                 token,
-                user:
-                {
-                    id: user._id,
+                user:{
+                    _id: user._id,
                     username: user.username,
                     email: user.email,
-                    profileImage: user.profileImage
-                }
+                },
+                message: "Login successfully"
             })
     }catch(error){
         console.error("Login Error", error)
         return response
             .status(500)
-            .json({message: "Internal Server Error"})
+            .json({message: "Internal Server Error"}) 
     }
 })
 
