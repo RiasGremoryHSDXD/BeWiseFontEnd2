@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import "dotenv/config.js"
 import authRoutes from "./routes/authRoutes.js"
+import incomeRoutes from "./routes/incomeRoute/addIncomeRoute.js"
 import { connectDB } from "./lib/db.js"
 
 
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
 app.use("/api/auth", authRoutes)
+app.use("/api/income", incomeRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)

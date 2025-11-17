@@ -1,6 +1,5 @@
 import express from "express"
 import User from "../models/User.js"
-import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
 
@@ -102,29 +101,8 @@ router.post("/login", async (request, response) =>{
                 .json({message: "Invalid email or password"})
         }
 
-        // const isMatch = await bcrypt.compare(password, user.password)
-        // if(!isMatch)
-        // {
-        //     return response
-        //         .status(400)
-        //         .json({message: "Invalid email or password"})
-        
-        // }
-
         const isPasswordCorrect = await user.comparePassword(password)
         if(!isPasswordCorrect) return response.status(400).json({message: "Invalid email or password"})
-
-        // const token = jwt.sign
-        // (
-        //     {
-        //         userId: user._id,
-        //         email: user.email,
-        //     },
-        //     process.env.JWT_TOKEN_SECRET,
-        //     {   
-        //         expiresIn: "1h"
-        //     }
-        // )
 
         const token = generateToken(user._id);
 
@@ -139,6 +117,7 @@ router.post("/login", async (request, response) =>{
                 },
                 message: "Login successfully"
             })
+            
     }catch(error){
         console.error("Login Error", error)
         return response
