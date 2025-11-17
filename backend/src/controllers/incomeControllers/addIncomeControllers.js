@@ -55,9 +55,9 @@ export const addIncome = async (request, response) => {
                 .json(addIncome)
 
         }catch(error){
-            console.log("Error Add income Route", error)
+            console.log("Error Add income Controllers", error)
             return response
                 .status(500)
-                .json({message: "Internal Server Error (Add Income Route)"})
+                .json({message: "Internal Server Error (Add Income Controllers)"})
         }
 }
