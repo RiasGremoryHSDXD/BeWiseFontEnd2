@@ -22,6 +22,7 @@ export const deleteIncome = async (request, response) => {
     return response
       .status(200)
       .json({ message: "Income deleted successfully" });
+      
   } catch (error) {
     console.log("Error Delete Income Controllers", error);
     return response

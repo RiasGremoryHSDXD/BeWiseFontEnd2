@@ -52,7 +52,10 @@ export const addIncome = async (request, response) => {
 
             return response
                 .status(200)
-                .json(addIncome)
+                .json({
+                    message: "Income added successfully",
+                    income: addIncome
+                })
 
         }catch(error){
             console.log("Error Add income Controllers", error)

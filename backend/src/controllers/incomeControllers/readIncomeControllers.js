@@ -9,7 +9,10 @@ export const readIncome = async (request, response) => {
 
         return response
             .status(200)
-            .json(incomeList)
+            .json({
+                message: "Income list retrieved successfully",
+                income: incomeList
+            })
     }catch(error)
     {
         console.log("Error Read Income Controllers", error)
