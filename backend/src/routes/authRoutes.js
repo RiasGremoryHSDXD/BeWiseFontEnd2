@@ -66,6 +66,7 @@ router.post("/register", async (request, response) =>{
                         _id: user._id,
                         username: user.username,
                         email: user.email,
+                        profileImage: user.profileImage
                     },
                     message: "User created successfully"
                  })
@@ -114,6 +115,7 @@ router.post("/login", async (request, response) =>{
                     _id: user._id,
                     username: user.username,
                     email: user.email,
+                    profileImage: user.profileImage
                 },
                 message: "Login successfully"
             })
