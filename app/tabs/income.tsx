@@ -1,103 +1,115 @@
-import { api } from "@/convex/_generated/api";
-// import { Id } from "@/convex/_generated/dataModel";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@react-native-vector-icons/ionicons";
-import { useQuery } from "convex/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
   Image,
-  Modal,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
+import Ionicons from "@react-native-vector-icons/ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// CUSTOM IMPORTS
+import api from "../../api/api"; // Your Axios Instance
 import AddIncomeModal from "../components/income/addIncome";
 import IncomeHistory from "../components/income/incomeHistory";
 import IncomeList from "../components/income/incomeList";
 import CategoriesAmount from "../components/categoriesAmount";
 import ReusableModal from "../components/reusableModal";
 
-export default function income() {
-  // const [userCredentialsID, setUserCredentialsID] =
-  //   useState<Id<"userCredentials"> | null>(null);
+// --- FIX: Update Interface to match Child Component ---
+interface Income {
+  _id: string;
+  incomeName: string;
+  incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
+  amount: number;
+  frequency: string;
+  expectedPayOut: string; // <--- ADDED THIS LINE
+}
+
+export default function IncomeScreen() {
+  // --- UI STATE ---
   const [clickAddIncome, setClickAddIncome] = useState<boolean>(false);
-  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
-  const [workIncome, setWorkIncome] = useState<number>(0);
-  const [investmentIncome, setInvestmentIncome] = useState<number>(0);
-  const [otherIncome, setOtherIncome] = useState<number>(0);
-  const [savingIncome, setSavingIncome] = useState<number>(0);
-  const [sideHustleIncome, setSideHustleIncome] = useState<number>(0);
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
   const [clickHistory, setClickHistroy] = useState<boolean>(false);
 
+  // --- DATA STATE ---
+  const [incomeList, setIncomeList] = useState<Income[]>([]);
   const [refreshKey, setRefreshKey] = useState<number>(0);
 
+  // --- CALCULATION STATE ---
+  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
+  const [categoriesData, setCategoriesData] = useState([
+    { label: 'Work', amount: 0 },
+    { label: 'Investment', amount: 0 },
+    { label: 'Savings', amount: 0 },
+    { label: 'Side Hustle', amount: 0 },
+    { label: 'Other', amount: 0 },
+  ]);
+
+  // 1. REFRESH TRIGGER
   const triggerRefresh = () => {
     setRefreshKey((prev) => prev + 1);
-    setClickAddIncome(false); // Close modal automatically on success
   };
-  // const totalIncome = useQuery(
-  //   api.functions.income.totalIncome.totalIncome,
-  //   userCredentialsID ? { userCredentialsID } : "skip"
-  // );
 
-  // const totalEachCategoryTotalIncome = useQuery(
-  //   api.functions.income.totalEachCategoryIncome.totalEachCategoryIncome,
-  //   userCredentialsID ? { userCredentialsID } : "skip"
-  // );
+  // 2. FETCH DATA FUNCTION
+  const fetchIncome = async () => {
+    try {
+      const response = await api.get("/income/readIncome");
+      if (response.status === 200) {
+        setIncomeList(response.data.income);
+      }
+    } catch (error) {
+      console.error("Failed to fetch income", error);
+    }
+  };
 
-  // useEffect(() => {
-  //   const loadUserInfo = async () => {
-  //     try {
-  //       const storedUser = await AsyncStorage.getItem("user");
-  //       if (storedUser) {
-  //         const user = JSON.parse(storedUser);
-  //         setUserCredentialsID(user.id || "");
-  //       }
-  //     } catch (error) {
-  //       Alert.alert(
-  //         "Error Local Storage [income.tsx file]",
-  //         "Error retrieving data in local storage"
-  //       );
-  //     }
-  //   };
+  // 3. FETCH ON TAB FOCUS
+  useFocusEffect(
+    useCallback(() => {
+      fetchIncome();
+    }, [])
+  );
 
-  //   loadUserInfo();
-  // }, []);
+  // 4. FETCH ON TRIGGER (Add/Delete/Update)
+  useEffect(() => {
+    if (refreshKey > 0) {
+      fetchIncome();
+    }
+  }, [refreshKey]);
 
-  // useEffect(() => {
-  //   if (totalIncome !== undefined) setTotalMonthlyIncome(totalIncome);
-  // }, [totalIncome]);
+  // 5. CALCULATE TOTALS AUTOMATICALLY
+  useEffect(() => {
+    let total = 0;
+    let work = 0, inv = 0, save = 0, side = 0, other = 0;
 
-  // useEffect(() => {
-  //   if (totalEachCategoryTotalIncome !== undefined) {
-  //     setWorkIncome(totalEachCategoryTotalIncome.Work);
-  //     setInvestmentIncome(totalEachCategoryTotalIncome.Investment);
-  //     setSavingIncome(totalEachCategoryTotalIncome.Savings);
-  //     setSideHustleIncome(totalEachCategoryTotalIncome["Side Hustle"]);
-  //     setOtherIncome(totalEachCategoryTotalIncome.Other);
-  //   }
-  // }, [
-  //   totalEachCategoryTotalIncome,
-  //   totalEachCategoryTotalIncome?.Work,
-  //   totalEachCategoryTotalIncome?.Investment,
-  //   totalEachCategoryTotalIncome?.Savings,
-  //   totalEachCategoryTotalIncome?.["Side Hustle"],
-  //   totalEachCategoryTotalIncome?.Other,
-  // ]);
+    incomeList.forEach((item) => {
+      const amt = Number(item.amount) || 0;
+      total += amt;
 
-  const incomeCategories = [
-    { label: 'Work', amount: workIncome },
-    { label: 'Savings', amount: savingIncome },
-    { label: 'Investments', amount: investmentIncome },
-    { label: 'Side Hustle', amount: sideHustleIncome },
-    { label: 'Other', amount: otherIncome },
-  ];
+      switch (item.incomeCategory) {
+        case "Work": work += amt; break;
+        case "Investment": inv += amt; break;
+        case "Savings": save += amt; break;
+        case "Side Hustle": side += amt; break;
+        case "Other": other += amt; break;
+      }
+    });
+
+    setTotalMonthlyIncome(total);
+    setCategoriesData([
+      { label: 'Work', amount: work },
+      { label: 'Savings', amount: save },
+      { label: 'Investment', amount: inv }, // Fixed Label to match state
+      { label: 'Side Hustle', amount: side },
+      { label: 'Other', amount: other },
+    ]);
+  }, [incomeList]);
+
   return (
     <SafeAreaView className="flex w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
-      {/*Add Income*/}
+      {/* --- HEADER: ADD BUTTON --- */}
       <View className="flex justify-end items-end">
         <TouchableOpacity
           className="bg-[#D9D9D9] rounded-3xl px-5 py-2 border border-r-black"
@@ -107,13 +119,13 @@ export default function income() {
         </TouchableOpacity>
       </View>
 
-      {/* Total Monthly Income */}
+      {/* --- TOTAL INCOME CARD --- */}
       <View className="flex px-8 py-6 flex-row justify-between items-center border border-green-600/40 bg-[#499A49]/15 rounded-3xl">
         <View>
           <Image
             source={require("../../assets/images/Income-Arrow.png")}
             style={{ width: 60, height: 60 }}
-          ></Image>
+          />
         </View>
         <View className="flex gap-y-2 ">
           <View>
@@ -123,7 +135,7 @@ export default function income() {
           </View>
           <View className="flex flex-row justify-between">
             <Text className="text-3xl text-green-600">
-              ₱ {toogleShowBalance ? totalMonthlyIncome : "****"}
+              ₱ {toogleShowBalance ? totalMonthlyIncome.toLocaleString() : "****"}
             </Text>
 
             <TouchableOpacity
@@ -139,14 +151,14 @@ export default function income() {
         </View>
       </View>
 
-      {/**Income Category */}
+      {/* --- CATEGORIES CHART --- */}
       <CategoriesAmount
         title="Income Category"
-        categories={incomeCategories}
+        categories={categoriesData}
         color="green"
       />
 
-      {/*Income List */}
+      {/* --- INCOME LIST / HISTORY --- */}
       <View className="flex-1 gap-2">
         <View className="flex justify-center items-start">
           <TouchableOpacity
@@ -162,17 +174,27 @@ export default function income() {
           </TouchableOpacity>
         </View>
 
-        {clickHistory ? <IncomeHistory /> : <IncomeList refreshTrigger={refreshKey}/>}
+        {clickHistory ? (
+            <IncomeHistory /> 
+        ) : (
+            <IncomeList 
+                data={incomeList} 
+                refreshTrigger={triggerRefresh} 
+            />
+        )}
       </View>
 
-      {/* Click Add Income Button Modal */}
+      {/* --- ADD INCOME MODAL --- */}
       <ReusableModal
         visible={clickAddIncome}
         onRequestClose={() => setClickAddIncome(false)}
       >
         <AddIncomeModal 
           onClose={() => setClickAddIncome(false)}
-          onSuccess={triggerRefresh}
+          onSuccess={() => {
+             setClickAddIncome(false);
+             triggerRefresh(); 
+          }}
         />
       </ReusableModal>
 
