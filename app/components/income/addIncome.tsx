@@ -19,10 +19,11 @@ type IncomeCategory =
 type Frequency = "OneTime" | "Monthly";
 type Props = {
   onClose: () => void;
+  onSuccess: () => void;
 };
 
 
-export default function addIncome({onClose} : Props) {
+export default function addIncome({onClose, onSuccess} : Props) {
   const [userCredentialsID, setUserCredentialsID] =
     useState<string | null>(null);
   const [incomeName, setIncomeName] = useState<string>("");
@@ -68,12 +69,11 @@ export default function addIncome({onClose} : Props) {
       if(response.status === 200){
           setLoading(false);
           Alert.alert("Success", "Income record added successfully!");
+          onSuccess();
       }
 
       setLoading(false);
     } catch (error : any) {
-      // Alert.alert("Error", "Failed to insert income record.");
-      // console.error(e);
       Alert.alert("Error", error.response.data.message || "Failed to add income");
     } finally {
       setLoading(false);

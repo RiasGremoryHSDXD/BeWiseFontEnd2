@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddIncomeModal from "../components/income/addIncome";
-// import IncomeHistory from "../components/income/incomeHistory";
-// import IncomeList from "../components/income/incomeList";
+import IncomeHistory from "../components/income/incomeHistory";
+import IncomeList from "../components/income/incomeList";
 import CategoriesAmount from "../components/categoriesAmount";
 import ReusableModal from "../components/reusableModal";
 
@@ -32,6 +32,12 @@ export default function income() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
   const [clickHistory, setClickHistroy] = useState<boolean>(false);
 
+  const [refreshKey, setRefreshKey] = useState<number>(0);
+
+  const triggerRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+    setClickAddIncome(false); // Close modal automatically on success
+  };
   // const totalIncome = useQuery(
   //   api.functions.income.totalIncome.totalIncome,
   //   userCredentialsID ? { userCredentialsID } : "skip"
@@ -156,7 +162,7 @@ export default function income() {
           </TouchableOpacity>
         </View>
 
-        {/* {clickHistory ? <IncomeHistory /> : <IncomeList />} */}
+        {clickHistory ? <IncomeHistory /> : <IncomeList refreshTrigger={refreshKey}/>}
       </View>
 
       {/* Click Add Income Button Modal */}
@@ -164,7 +170,10 @@ export default function income() {
         visible={clickAddIncome}
         onRequestClose={() => setClickAddIncome(false)}
       >
-        <AddIncomeModal onClose={() => setClickAddIncome(false)}/>
+        <AddIncomeModal 
+          onClose={() => setClickAddIncome(false)}
+          onSuccess={triggerRefresh}
+        />
       </ReusableModal>
 
     </SafeAreaView>
