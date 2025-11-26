@@ -167,7 +167,7 @@ export default function income() {
 
       {/* Click Add Expenses Button Modal */}
       <ReusableModal
-        visible={clickAddExpense}
+        visible={clickAddExpense} 
         onRequestClose={() => setClickAddExpense(false)}
       >
         <AddExpenses closeModal={() => setClickAddExpense(false)}/>
