@@ -7,7 +7,7 @@ import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RecentTransaction from '../components/home/recentTransactionList'
+import RecentTransaction from "../components/home/recentTransactionList";
 
 export default function Home() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
@@ -140,7 +140,7 @@ export default function Home() {
         {/* Data */}
         <View className="flex-1 items-center justify-center">
           {/* <Text className="text-2xl text-white/70">No Recent Transactions</Text> */}
-          <RecentTransaction/>
+          <RecentTransaction />
         </View>
       </View>
     </SafeAreaView>

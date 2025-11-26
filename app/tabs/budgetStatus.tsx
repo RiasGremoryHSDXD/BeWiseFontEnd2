@@ -6,10 +6,11 @@ import {
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import EditTotalBudget from '../components/budgetStatus/editTotalBudget'
+import EditTotalBudget from "../components/budgetStatus/editTotalBudget";
 import SetNewBudget from "../components/budgetStatus/setNewBudget";
 import ReusableModal from "../components/reusableModal";
-
+import ShowBudget from "../components/budgetStatus/showBudget";
+import { CategoryType } from "../types/categoryType";
 
 const currentBudget = 25000;
 const currentSpent = 8000;
@@ -22,15 +23,18 @@ const categories = [
   { name: "Insurance", spent: 5000, budget: 10000, color: "purple" },
   { name: "Bills", spent: 2000, budget: 6000, color: "green" },
   { name: "Other", spent: 1000, budget: 4000, color: "gray" },
-  { name: "Game", spent: 300, budget: 2000, color: "blue" },
-  { name: "Grocery", spent: 2000, budget: 3000, color: "orange" },
+  { name: "Hobbies", spent: 300, budget: 2000, color: "blue" },
+  { name: "Daily Need", spent: 2000, budget: 3000, color: "orange" },
 ];
 
 export default function BudgetStatus() {
-
-  const [clickEditTotalBudget, setClickEditTotalBudget] = useState<boolean>(false)
-  const [clickSetNewBudget, setClickSetNewBudget] = useState<boolean>(false)
-
+  const [clickEditTotalBudget, setClickEditTotalBudget] =
+    useState<boolean>(false);
+  const [clickSetNewBudget, setClickSetNewBudget] = useState<boolean>(false);
+  const [clickViewCategory, setClickViewCategory] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null
+  );
   return (
     <SafeAreaView className="flex justify-start items-center w-full h-full bg-[#81D8D0] pt-5">
       {/* Edit button */}
@@ -45,12 +49,14 @@ export default function BudgetStatus() {
             size={18}
             color="#676565"
           />
-          <Text className="text-sm font-medium text-[#676565]">Edit Total Budget</Text>
+          <Text className="text-sm font-medium text-[#676565]">
+            Edit Total Budget
+          </Text>
         </TouchableOpacity>
       </View>
 
       {/* Budget board */}
-      <View className="w-[90%] py-6 px-6 flex-col gap-y-4 items-center bg-[#FFFB82]/20 rounded-3xl">
+      <View className="w-[90%] py-6 px-6 flex-col gap-y-4 items-center bg-[#FFFB82]/20 border border-[#FFFB82]/60 rounded-3xl">
         <View className="flex flex-row justify-between items-center w-full">
           <View className="flex flex-col">
             <Text>Total Budget</Text>
@@ -83,11 +89,20 @@ export default function BudgetStatus() {
           <Text className="text-xl font-semibold">Budget Status</Text>
         </View>
 
+        {/* Budget Categories */}
         <View className="flex flex-col gap-y-5">
           {categories.map((cat, index) => {
             const percent = Math.round((cat.spent / cat.budget) * 100);
+
             return (
-              <View key={index} className="flex w-full">
+              <TouchableOpacity
+                key={index}
+                className="flex w-full"
+                onPress={() => {
+                  setSelectedCategory(cat);
+                  setClickViewCategory(true);
+                }}
+              >
                 {/* Row Title */}
                 <View className="flex flex-row justify-between">
                   <View className="flex flex-row gap-x-2">
@@ -112,53 +127,46 @@ export default function BudgetStatus() {
                     style={{ width: `${percent}%` }}
                   />
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
       </View>
 
       {/* Budget buttons (bigger) */}
-      <View className="flex-row justify-between w-[90%] gap-5 mt-5">
+      <View className="flex w-[90%] gap-5 mt-5">
         <TouchableOpacity
           activeOpacity={0.7}
-          className="flex-1 flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#FFFDC2] rounded-3xl"
+          className="flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#FFFDC2] rounded-3xl"
           onPress={() => setClickSetNewBudget(true)}
         >
           <Foundation name="target" size={22} color="black" />
           <Text className="text-base font-medium">Set New Budget</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          className="flex-1 flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#36978C] rounded-3xl"
-          onPress={() => console.log("Adjust Categories pressed")}
-        >
-          <MaterialCommunityIcons
-            name="rename-box-outline"
-            size={22}
-            color="black"
-          />
-          <Text className="text-base font-medium">Adjust Categories</Text>
-        </TouchableOpacity>
       </View>
-    
-    {/*Click Edit Total Budget Button Modal */}
-    <ReusableModal
-      visible={clickEditTotalBudget}
-      onRequestClose={() => setClickEditTotalBudget(false)}
-    >
-      <EditTotalBudget closeModal={ () => setClickEditTotalBudget(false) }/>
-    </ReusableModal>
-    
-    {/* Click Set New Budget Button Modal */}
-    <ReusableModal
-      visible={clickSetNewBudget}
-      onRequestClose={() => setClickSetNewBudget(false)}
-    >
-      <SetNewBudget closeModal={ () => setClickSetNewBudget(false) }/>
-    </ReusableModal>
 
+      {/*Click Edit Total Budget Button Modal */}
+      <ReusableModal
+        visible={clickEditTotalBudget}
+        onRequestClose={() => setClickEditTotalBudget(false)}
+      >
+        <EditTotalBudget closeModal={() => setClickEditTotalBudget(false)} />
+      </ReusableModal>
+
+      {/* Click Set New Budget Button Modal */}
+      <ReusableModal
+        visible={clickSetNewBudget}
+        onRequestClose={() => setClickSetNewBudget(false)}
+      >
+        <SetNewBudget closeModal={() => setClickSetNewBudget(false)} />
+      </ReusableModal>
+
+      {/* Click Category */}
+      <ShowBudget
+        visible={clickViewCategory}
+        onRequestClose={() => setClickViewCategory(false)}
+        category={selectedCategory}
+      ></ShowBudget>
     </SafeAreaView>
   );
 }
