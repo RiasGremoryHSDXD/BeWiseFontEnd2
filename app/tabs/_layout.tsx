@@ -1,19 +1,14 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"; // fix import
-import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Tabs } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
-  unsavedChangesWarning: false,
-});
 
 export default function TabLayout() {
   const [active, setActive] = useState(false);
   const toggleClick = () => setActive((prev) => !prev);
 
   return (
-    <ConvexProvider client={convex}>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -89,7 +84,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </ConvexProvider>
+ 
   );
 }
 

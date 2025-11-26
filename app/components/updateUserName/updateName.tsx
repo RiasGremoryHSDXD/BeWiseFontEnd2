@@ -1,6 +1,4 @@
-import { api } from "@/convex/_generated/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation } from "convex/react";
 import React, { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -10,9 +8,6 @@ interface UpdateUsernameProps {
 
 export default function UpdateUsername({ onUsernameUpdated }: UpdateUsernameProps) {
   const [newUsername, setNewUsername] = useState("");
-  const updateUsername = useMutation(
-    api.functions.credentials.updateUserName.UpdateUsername
-  );
 
   const handleUpdate = async () => {
     if (!newUsername.trim()) {
@@ -34,11 +29,6 @@ export default function UpdateUsername({ onUsernameUpdated }: UpdateUsernameProp
         Alert.alert("Error", "User ID not found");
         return;
       }
-
-      await updateUsername({
-        userId: userId,
-        newUsername: newUsername.trim(),
-      });
 
       // Update local storage
       user.username = newUsername.trim();

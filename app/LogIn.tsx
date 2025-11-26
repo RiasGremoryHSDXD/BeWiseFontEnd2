@@ -15,6 +15,7 @@ import ReusableModal from "./components/reusableModal";
 import ReuseableButton from "./components/reusableButton";
 import api from "../api/api"
 import axios from "axios";
+import { useAuth } from "./context/authContext";
 
 export default function LogIn() {
   const [email, setEmail] = useState<string>("");
@@ -36,6 +37,7 @@ export default function LogIn() {
     setShowPassword((showPassword) => !showPassword);
   };
 
+  const { login } = useAuth();
 
   const handleSignIn = async () => {
     // Reset error states
@@ -67,11 +69,9 @@ export default function LogIn() {
       }
 
       const { token, user } = response.data
-      
-      await AsyncStorage.setItem("authToken", token);
-      await AsyncStorage.setItem('user', JSON.stringify(user))
-      router.replace("/tabs/home");
-      // console.log(response.data)
+
+      await login(user, token);
+
     }catch(error)
     {
       if(axios.isAxiosError(error) && error.response)
@@ -84,12 +84,12 @@ export default function LogIn() {
         }
         else
         {
-          console.error("Sign Error: ", error)
+          console.error("Sign Error", error)
         }
       }
       else
       {
-        console.error("Sign Error: ", error)
+        console.error("Sign Error (Possible Wrong IP address in front end .env)", error)
       }
     }
     finally {

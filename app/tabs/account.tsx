@@ -1,47 +1,38 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateUserNameModal from "../components/updateUserName/updateName";
 import BudgetAssistance from "../components/budgetAssistant/budgetAssistant"
 import Analytics from "../components/analytics/analytics";
 import ReusableModal from "../components/reusableModal";
+import { useAuth } from "../context/authContext"; 
 
 export default function LogOutButton() {
   const router = useRouter();
-  const [userID, setUserID] = useState<string>("");
-  const [userEmail, setUserEmail] = useState<string>("");
-  const [userName, setUserName] = useState<string>("");
+
   const [showUpdateUserName, setShowUpdateUsername] = useState(false);
   const [clickBudgetAssistance, setClickBudgetAssistance] = useState<boolean>(false)
   const [clickAnalytics, setClickAnalytics] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   const loadUserInfo = async () => {
-  //     try {
-  //       const storedUser = await AsyncStorage.getItem("user");
-  //       if (storedUser) {
-  //         const user = JSON.parse(storedUser);
-  //         setUserID(user.id || "");
-  //         setUserEmail(user.email || "");
-  //         setUserName(user.username || "");
-  //       }
-  //     } catch (e) {
-  //       Alert.alert("Error", "Error in retrieving Data in local Storage");
-  //     }
-  //   };
-
-  //   loadUserInfo();
-  // }, []);
+  const { user, logout } = useAuth();
+    
 
   const handleUsernameUpdate = (newUsername: string) => {
-    setUserName(newUsername);
     setShowUpdateUsername(false);
   };
 
-  const LogOutAccount = () => router.replace("/");
+  const LogOutAccount = async () => {
+    try
+    {
+      await logout(); 
+    }
+    catch(error)
+    {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 justify-center gap-2 items-center w-full h-full bg-[#81D8D0]">
@@ -59,7 +50,7 @@ export default function LogOutButton() {
             size={120}
             color="black"
           />
-          <Text className="text-xl font-medium">{userName}</Text>
+          <Text className="text-xl font-medium">{user?.username}</Text>
         </View>
 
         {/* Menu Buttons */}
