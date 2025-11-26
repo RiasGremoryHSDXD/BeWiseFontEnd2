@@ -62,7 +62,7 @@ router.post("/register", async (request, response) => {
       message: "User created successfully",
     });
   } catch (error) {
-    // if(error.name === "ValidationError") return response.status(400).json({message: error.message})
+    if(error.name === "ValidationError") return response.status(400).json({message: error.message})
 
     // console.error("Registration Error: ", error);
     // return response.status(500).json({message: "Internal Server Error"})
@@ -77,13 +77,6 @@ router.post("/login", async (request, response) => {
 
     if (!email || !password) {
       return response.status(400).json({ message: "All fields are required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return response
-        .status(400)
-        .json({ message: "Invalid email or password" });
     }
 
     const user = await User.findOne({ email });
