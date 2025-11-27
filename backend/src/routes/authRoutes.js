@@ -39,7 +39,7 @@ router.post("/register", async (request, response) => {
       return response.status(400).json({ message: "The Email already taken" });
     }
 
-    const profileImage = `https://api.dicebear.com/9.x/avataaars/svg?seed=${username}`;
+    const profileImage = `https://api.dicebear.com/9.x/avataaars/png?seed=${username}`;
     const user = new User({
       username,
       email,
