@@ -1,7 +1,7 @@
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateUserNameModal from "../components/updateUserName/updateName";
 import BudgetAssistance from "../components/budgetAssistant/budgetAssistant"
@@ -45,11 +45,16 @@ export default function LogOutButton() {
       {/* Profile Section */}
       <View className="flex-1 w-[90%] items-center justify-between flex-col p-2">
         <View className="flex flex-col w-full items-center justify-center gap-5">
-          <MaterialCommunityIcons
+          {/* <MaterialCommunityIcons
             name="account-circle"
             size={120}
             color="black"
+          /> */}
+          <Image
+            source={{ uri: user?.profileImage}}
+            style={{ width: 120, height: 120 }}
           />
+        
           <Text className="text-xl font-medium">{user?.username}</Text>
         </View>
 
