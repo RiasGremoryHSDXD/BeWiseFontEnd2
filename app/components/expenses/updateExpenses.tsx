@@ -1,76 +1,81 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from '@react-native-picker/picker';
-import { useMutation } from "convex/react";
 import React, { useEffect, useState } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import api from "../../../api/api";
+import Loading from "../Loading";
 
 type UpdateExpensesProps = {
-    expensesID?: Id<'expenses'>
-    expensesName?: string
-    expensesCategory?: string
-    expensesAmount?: number
-    expensesDatePaid?: string
-    expensesFrequency?: string
-    onSuccessUpdate?: () => void
+    expensesID: string
+    expensesName: string
+    expensesCategory: string
+    expensesAmount: number
+    expensesDatePaid: Date
+    expensesFrequency: string
+    onSuccessUpdate: () => void
+    onClose: () => void
 }
 
 type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other"
 type Frequency = 'OneTime' | 'Monthly'
 
-export default function UpdateExpenses({expensesID, expensesName, expensesCategory, expensesAmount, expensesDatePaid, expensesFrequency, onSuccessUpdate} : UpdateExpensesProps) {
+export default function UpdateExpenses({
+    expensesID, 
+    expensesName, 
+    expensesCategory, 
+    expensesAmount, 
+    expensesDatePaid, 
+    expensesFrequency, 
+    onSuccessUpdate,
+    onClose
+} : UpdateExpensesProps) {
 
-    const [newExpensesName, setNewExpensesName] = useState<string>(expensesName ??  "")
+    const [newExpensesName, setNewExpensesName] = useState<string>(expensesName)
     const [newExpensesCategoryValue, setNewExpensesCategoryValue] = useState<ExpensesCategory>(expensesCategory as ExpensesCategory)
-    const [newAmount, setNewAmount] = useState<number>(expensesAmount ?? 0)
-    const [newDatePaid, setNewDatePaid] = useState<Date>(expensesDatePaid ? new Date(expensesDatePaid) : new Date())
+    const [newAmount, setNewAmount] = useState<number>(expensesAmount)
+    const [newDatePaid, setNewDatePaid] = useState<Date>(expensesDatePaid)
     const [newFrequency, setNewFrequency] = useState<Frequency>(expensesFrequency as Frequency)
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false);
     const [isProcessing, setIsProcessing] = useState(false)
 
-    const expensesUpdateInfo = useMutation(api.functions.expenses.updateExpensesInfo.updateExpenseInfo)
-
+    // Sync state if props change
     useEffect(() => {
-        setNewExpensesName(expensesName ?? "")
+        setNewExpensesName(expensesName)
         setNewExpensesCategoryValue(expensesCategory as ExpensesCategory)
-        setNewAmount(expensesAmount ?? 0)
-        setNewDatePaid(expensesDatePaid ? new Date(expensesDatePaid) : new Date())
+        setNewAmount(expensesAmount)
+        setNewDatePaid(expensesDatePaid)
         setNewFrequency(expensesFrequency as Frequency)
     }, [expensesName, expensesCategory, expensesAmount, expensesDatePaid, expensesFrequency])
 
 
    const handleUpdateButton = async () => {
     if (loading || isProcessing) return;
-
     setIsProcessing(true);
+    setLoading(true);
 
     try {
         if (!expensesID || !newExpensesName || !newExpensesCategoryValue || !newAmount || !newDatePaid || !newFrequency) {
-        Alert.alert('Missing Data', "Please fill out all fields");
-        return;
+            Alert.alert('Missing Data', "Please fill out all fields");
+            return;
         }
 
-        setLoading(true);
-
-        await expensesUpdateInfo({
-        expensesID,
-        newExpensesName,
-        newExpensesCategory: newExpensesCategoryValue,
-        newAmount,
-        newDatePaid: newDatePaid.toString(),
-        newFrequency
+        const response = await api.put(`/expenses/updateExpense/${expensesID}`, {
+            expensesName: newExpensesName,
+            expensesCategory: newExpensesCategoryValue,
+            amount: newAmount,
+            datePaid: newDatePaid.toISOString(),
+            frequency: newFrequency
         });
 
-        // ✅ Close the modal immediately after success
-        onSuccessUpdate?.();
+        if (response.status === 200) {
+            Alert.alert("Success", "Expenses updated successfully.");
+            onSuccessUpdate(); // Trigger parent refresh
+        }
 
-        // Then show alert (non-blocking for modal)
-        Alert.alert("Success", "Expenses updated successfully.");
-
-    } catch (error) {
-        Alert.alert("Update failed", "Could not update expenses.");
+    } catch (error: any) {
+        console.error(error);
+        Alert.alert("Update failed", error.response?.data?.message || "Could not update expenses.");
     } finally {
         setLoading(false);
         setIsProcessing(false);
@@ -78,22 +83,18 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
     };
 
   return (
-    <View
-        className="w-full gap-y-3"
-    >
+    <View className="w-full gap-y-3">
+        {loading && <Loading />}
 
         <Text className="font-semibold">Expense Name</Text>
         <TextInput
-            className="border rounded-lg"
+            className="border rounded-lg p-3"
             value={newExpensesName}
             onChangeText={(text) => setNewExpensesName(text)}
-        >
-        </TextInput>
+        />
 
         <Text className="font-semibold">Category</Text>
-        <View
-            className="border border-black rounded-lg overflow-hidden"
-        >
+        <View className="border border-black rounded-lg overflow-hidden">
             <Picker
                 selectedValue={newExpensesCategoryValue}
                 onValueChange={(itemValue) => setNewExpensesCategoryValue(itemValue)}
@@ -108,7 +109,7 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
 
         <Text className="font-semibold">Amount</Text>
         <TextInput
-            className="border rounded-lg"
+            className="border rounded-lg p-3"
             value={newAmount === 0 ? "" : newAmount.toString()}
             onChangeText={(text) => {
                 if(text === ""){
@@ -120,13 +121,10 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
                 }
             }}
             keyboardType="numeric"
-        >
-        </TextInput>
+        />
 
         <Text className="font-semibold">Frequency</Text>
-        <View
-            className="border border-black rounded-lg overflow-hidden"
-        >
+        <View className="border border-black rounded-lg overflow-hidden">
             <Picker
                 selectedValue={newFrequency}
                 onValueChange={(itemValue) => setNewFrequency(itemValue)}
@@ -136,19 +134,15 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
             </Picker>
         </View>
 
-        <View
-            className="flex flex-row justify-between"
-        >
+        <View className="flex flex-row justify-between items-center">
             <Text className="font-semibold">Date Paid : </Text>
 
             <TouchableOpacity
-                className="border border-gray-300 rounded-md px-3 bg-gray-50"
+                className="border border-gray-300 rounded-md px-3 py-2 bg-gray-50"
                 onPress={() => setShowDatePicker(true)}
                 activeOpacity={0.7}
             >
-                <Text
-                    className='font-semibold'    
-                >
+                <Text className='font-semibold'>
                     {newDatePaid ? newDatePaid.toDateString() : "Select date"}
                 </Text>
             </TouchableOpacity>
@@ -166,12 +160,22 @@ export default function UpdateExpenses({expensesID, expensesName, expensesCatego
             )}
         </View>
 
-        <TouchableOpacity
-            onPress={handleUpdateButton}
-            className="bg-blue-400 items-center p-2 rounded-lg"
-        >
-            <Text className="font-semibold text-lg text-white">Update</Text>
-        </TouchableOpacity>
+        <View className="flex-row justify-between mt-4 gap-2">
+            <TouchableOpacity
+                onPress={handleUpdateButton}
+                className="bg-blue-400 items-center p-3 rounded-lg flex-1"
+                disabled={loading || isProcessing}
+            >
+                <Text className="font-semibold text-lg text-white">Update</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+                onPress={onClose}
+                className="bg-gray-400 items-center p-3 rounded-lg flex-1"
+            >
+                <Text className="font-semibold text-lg text-white">Cancel</Text>
+            </TouchableOpacity>
+        </View>
     </View>
   )
 }
