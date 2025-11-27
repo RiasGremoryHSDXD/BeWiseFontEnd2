@@ -21,7 +21,7 @@ export default function IncomeHistoryScreen() {
     const fetchIncomeHistory = async () => {
       try {
         // Ensure this route matches your backend route exactly
-        const response = await api.get("/incomeHistory/readIncomeHistory"); 
+        const response = await api.get("/history/readIncomeHistory"); 
         
         if (response.status === 200) {
           // 3. DATA MAPPING: Ensure 'response.data.history' matches your Controller's return key

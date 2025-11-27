@@ -15,7 +15,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/income", incomeRoutes);
 app.use("/api/expenses", expensesRoutes);
-app.use("/api/incomeHistory", historyRoutes);
+app.use("/api/history", historyRoutes);
 
 
 app.listen(PORT, () => {
