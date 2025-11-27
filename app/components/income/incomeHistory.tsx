@@ -1,66 +1,51 @@
-import React from "react";
-import { FlatList, Image, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import HistoryList from "../historyList";
+import api from "../../../api/api";
 
-export default function incomeHistory() {
-  const selecteIncomeHistory = [
-    {
-      _id: "ih_001",
-      userCredentialsID: "u_123",
-      incomeName: "Monthly Salary",
-      incomeCategory: "Work",
-      amount: 30000.0,
-      expectedPayOut: "2025-10-01",
-      frequency: "Monthly",
-    },
-    {
-      _id: "ih_002",
-      userCredentialsID: "u_123",
-      incomeName: "Freelance Project",
-      incomeCategory: "Side Hustle",
-      amount: 5000.0,
-      expectedPayOut: "2025-09-25",
-      frequency: "OneTime",
-    },
-    {
-      _id: "ih_003",
-      userCredentialsID: "u_123",
-      incomeName: "Stock Dividend",
-      incomeCategory: "Investment",
-      amount: 1200.0,
-      expectedPayOut: "2025-09-15",
-      frequency: "Monthly",
-    },
-    {
-      _id: "ih_004",
-      userCredentialsID: "u_123",
-      incomeName: "Savings Interest",
-      incomeCategory: "Savings",
-      amount: 800.0,
-      expectedPayOut: "2025-09-30",
-      frequency: "Monthly",
-    },
-    {
-      _id: "ih_005",
-      userCredentialsID: "u_123",
-      incomeName: "Gift Money",
-      incomeCategory: "Other",
-      amount: 2000.0,
-      expectedPayOut: "2025-08-10",
-      frequency: "OneTime",
-    },
-  ];
+// 1. UPDATE INTERFACE: Match the Backend Model exactly
+interface IncomeHistoryItem {
+  _id: string;
+  userId: string;
+  incomeName: string;
+  incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
+  amount: number;
+  paidDate: string; 
+  frequency: string;
+}
 
-  const formattedIncomeHistory = selecteIncomeHistory.map((item) => ({
+export default function IncomeHistoryScreen() {
+  // 2. FIX STATE: Define as an Array [] and initialize as empty []
+  const [historyData, setHistoryData] = useState<IncomeHistoryItem[]>([]);
+
+  useEffect(() => {
+    const fetchIncomeHistory = async () => {
+      try {
+        // Ensure this route matches your backend route exactly
+        const response = await api.get("/incomeHistory/readIncomeHistory"); 
+        
+        if (response.status === 200) {
+          // 3. DATA MAPPING: Ensure 'response.data.history' matches your Controller's return key
+          setHistoryData(response.data.history); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch income history", error);
+      }
+    };
+
+    fetchIncomeHistory();
+  }, []);
+
+  // 4. MAPPING: Now .map() works because historyData is guaranteed to be an array
+  const formattedIncomeHistory = historyData.map((item) => ({
     _id: item._id,
     name: item.incomeName,
     category: item.incomeCategory,
     amount: item.amount,
-    date: item.expectedPayOut,
+    date: item.paidDate.split("T")[0] , // Updated to match interface
   }));
 
   return (
-    <HistoryList 
+    <HistoryList
       data={formattedIncomeHistory}
       color="green"
       icon={require("../../../assets/images/add_income_icon.png")}
