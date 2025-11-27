@@ -1,76 +1,50 @@
-import React from "react";
-import { FlatList, Image, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import HistoryList from "../historyList";
+import api from "../../../api/api";
 
-export default function expensesHistory() {
-  const selectedExpensesHistroy = [
-    {
-      _id: "eh_001",
-      userCredentialsID: "u_123",
-      expensesName: "Electric Bill",
-      expensesCategory: "Bills",
-      amount: 2500.0,
-      datePaid: "2025-09-28",
-      frequency: "Monthly",
-    },
-    {
-      _id: "eh_002",
-      userCredentialsID: "u_123",
-      expensesName: "Internet Subscription",
-      expensesCategory: "Bills",
-      amount: 1500.0,
-      datePaid: "2025-09-25",
-      frequency: "Monthly",
-    },
-    {
-      _id: "eh_003",
-      userCredentialsID: "u_123",
-      expensesName: "Groceries at SM",
-      expensesCategory: "Grocery",
-      amount: 4200.0,
-      datePaid: "2025-09-20",
-      frequency: "OneTime",
-    },
-    {
-      _id: "eh_004",
-      userCredentialsID: "u_123",
-      expensesName: "Mobile Game Top-up",
-      expensesCategory: "Game",
-      amount: 800.0,
-      datePaid: "2025-09-18",
-      frequency: "OneTime",
-    },
-    {
-      _id: "eh_005",
-      userCredentialsID: "u_123",
-      expensesName: "Health Insurance",
-      expensesCategory: "Insurance",
-      amount: 3500.0,
-      datePaid: "2025-09-10",
-      frequency: "Monthly",
-    },
-    {
-      _id: "eh_006",
-      userCredentialsID: "u_123",
-      expensesName: "Taxi Rides",
-      expensesCategory: "Other",
-      amount: 600.0,
-      datePaid: "2025-09-05",
-      frequency: "OneTime",
-    },
-  ];
+// 1. UPDATE INTERFACE: Match the ExpensesHistory Backend Model exactly
+interface ExpensesHistoryItem {
+  _id: string;
+  userId: string;
+  expensesName: string; // Note: Expenses model uses 'expensesName'
+  expensesCategory: "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+  amount: number;
+  datePaid: string;     // Note: Expenses model uses 'datePaid'
+  frequency: string;
+}
 
-  const selectedData = selectedExpensesHistroy.map((items) => ({
-    _id: items._id,
-    name: items.expensesName,
-    category: items.expensesCategory,
-    amount: items.amount,
-    date: items.datePaid
-  })) 
+export default function ExpensesHistoryScreen() {
+  // 2. STATE: Initialize as an empty array of ExpensesHistoryItem
+  const [historyData, setHistoryData] = useState<ExpensesHistoryItem[]>([]);
+
+  useEffect(() => {
+    const fetchExpensesHistory = async () => {
+      try {
+        const response = await api.get("/history/readExpensesHistory");
+
+        if (response.status === 200) {
+          setHistoryData(response.data.history);
+        }
+      } catch (error) {
+        console.error("Failed to fetch expenses history", error);
+      }
+    };
+
+    fetchExpensesHistory();
+  }, []);
+
+  // 5. MAPPING: Transform backend data to match HistoryList props
+  const formattedExpensesHistory = historyData.map((item) => ({
+    _id: item._id,
+    name: item.expensesName,      
+    category: item.expensesCategory,
+    amount: item.amount,
+    date: item.datePaid.split("T")[0], // Format ISO string to YYYY-MM-DD
+  }));
 
   return (
-    <HistoryList 
-      data={selectedData}
+    <HistoryList
+      data={formattedExpensesHistory}
       color="red"
       icon={require("../../../assets/images/add_expenses_icon.png")}
     />
