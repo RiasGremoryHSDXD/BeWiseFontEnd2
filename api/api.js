@@ -14,21 +14,20 @@ const api = axios.create({
   baseURL: `${API_URL}/api`,
 });
 
-api.interceptors.request.use(async (config) => 
-{
-    const token = await AsyncStorage
-        .getItem("authToken")
-    
-    if (token)
-    {
-        config.headers.Authorization = `Bearer ${token}`
+api.interceptors.request.use(
+  async (config) => {
+    const token = await AsyncStorage.getItem("authToken");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    return config
-}, (error) => 
-    {
-        Promise.reject(error)
-    } 
-)
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
+console.log("EXPO_PUBLIC_API_URL =", process.env.EXPO_PUBLIC_API_URL);
 
 export default api;

@@ -1,8 +1,6 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@react-native-vector-icons/ionicons";
-import { useQuery } from "convex/react";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -15,7 +13,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddExpenses from "../components/expenses/addExpenses";
 import ExpensesHistory from "../components/expenses/expensesHistory";
-// import ExpensesList from "../components/expenses/expensesList";
 import CategoriesAmount from "../components/categoriesAmount";
 import ReusableModal from "../components/reusableModal";
 
@@ -24,8 +21,6 @@ export default function income() {
   const [clickAddExpense, setClickAddExpense] = useState<boolean>(false);
 
   // keep your separate state variables as you
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
   const [totalMonthlyExpenses, setTotalMonthlyExpenses] = useState<number>(0);
   const [insuranceExpenses, setInsuranceExpeses] = useState<number>(0);
   const [gameExpenses, setGameExpenses] = useState<number>(0);
@@ -35,15 +30,15 @@ export default function income() {
   const [toggleShowBalance, setToggleShowBalance] = useState<boolean>(true);
   const [clickHistory, setClickHistroy] = useState<boolean>(false);
 
-  const totalExpenses = useQuery(
-    api.functions.expenses.totalExpenses.totalExpenses,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
+  // const totalExpenses = useQuery(
+  //   api.functions.expenses.totalExpenses.totalExpenses,
+  //   userCredentialsID ? { userCredentialsID } : "skip"
+  // );
 
-  const totalEachCategoryTotalExpenses = useQuery(
-    api.functions.expenses.totalEachCategoryExpenses.totalEachCategoryExpenses,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
+  // const totalEachCategoryTotalExpenses = useQuery(
+  //   api.functions.expenses.totalEachCategoryExpenses.totalEachCategoryExpenses,
+  //   userCredentialsID ? { userCredentialsID } : "skip"
+  // );
 
   // useEffect(() => {
   //   const loadUserInfo = async () => {
@@ -64,9 +59,10 @@ export default function income() {
   //   loadUserInfo();
   // }, []);
 
-  useEffect(() => {
-    if (totalExpenses !== undefined) setTotalMonthlyExpenses(totalExpenses);
-  }, [totalExpenses]);
+
+  // useEffect(() => {
+  //   if (totalExpenses !== undefined) setTotalMonthlyExpenses(totalExpenses);
+  // }, [totalExpenses]);
 
   const expenseCategories = [
     { label: 'Insurance', amount: insuranceExpenses },
@@ -167,7 +163,7 @@ export default function income() {
 
       {/* Click Add Expenses Button Modal */}
       <ReusableModal
-        visible={clickAddExpense}
+        visible={clickAddExpense} 
         onRequestClose={() => setClickAddExpense(false)}
       >
         <AddExpenses closeModal={() => setClickAddExpense(false)}/>

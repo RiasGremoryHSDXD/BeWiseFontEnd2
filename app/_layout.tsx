@@ -1,17 +1,13 @@
-import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack } from "expo-router";
 import "../global.css";
-
-const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
-  unsavedChangesWarning: false,
-});
+import { AuthProvider } from "./context/authContext";
 
 export default function RootLayout() {
   return (
-    <ConvexProvider client={convex}>
-      <Stack screenOptions={{headerShown: false}}>
+    <AuthProvider>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
       </Stack>
-    </ConvexProvider>
+    </AuthProvider>
   );
 }

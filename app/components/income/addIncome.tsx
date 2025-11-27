@@ -1,13 +1,14 @@
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "convex/react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoadingScreen from "../Loading";
+import api from "../../../api/api";
+import useAsyncStorage from "../../hooks/asyncStorageData";
+
+
 
 type IncomeCategory =
   | "Work"
@@ -18,12 +19,13 @@ type IncomeCategory =
 type Frequency = "OneTime" | "Monthly";
 type Props = {
   onClose: () => void;
+  onSuccess: () => void;
 };
 
 
-export default function addIncome({onClose} : Props) {
+export default function addIncome({onClose, onSuccess} : Props) {
   const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
+    useState<string | null>(null);
   const [incomeName, setIncomeName] = useState<string>("");
   const [incomeCategoryValue, setIncomeCategoryValue] =
     useState<IncomeCategory>("Other");
@@ -35,29 +37,13 @@ export default function addIncome({onClose} : Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const navigation = useNavigation();
 
-  // const insertNewIncomeRow = useMutation(api.functions.income.insertNewIncome.insertNewIncome);
-  const insertNewIncomeRow = useMutation(
-    api.functions.income.insertNewIncome.insertNewIncome
-  );
+  const userDetails = useAsyncStorage()
 
   useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
-        }
-      } catch (e) {
-        Alert.alert(
-          "Error local storage",
-          "Error in retrieve Data in local Storage"
-        );
-      }
-    };
-
-    loadUserInfo();
-  }, []);
+    if(userDetails && userDetails._id){
+      setUserCredentialsID(userDetails._id)
+    }
+  }, [userDetails])
 
   const handleNewIncomeRecord = async () => {
     if (loading || isProcessing) return;
@@ -71,21 +57,24 @@ export default function addIncome({onClose} : Props) {
 
       setLoading(true);
 
-      await insertNewIncomeRow({
+      const response = await api.post("/income/addIncome", {
         userCredentialsID,
-        incomeName,
-        incomeCategory: incomeCategoryValue,
-        amount,
-        expectedPayOut: expectedPayOut.toISOString(),
-        frequency,
-      });
+        incomeName, 
+        incomeCategory: incomeCategoryValue, 
+        amount, 
+        expectedPayOut: expectedPayOut.toString(), 
+        frequency
+      })
+
+      if(response.status === 200){
+          setLoading(false);
+          Alert.alert("Success", "Income record added successfully!");
+          onSuccess();
+      }
 
       setLoading(false);
-
-      Alert.alert("Success", "Income record added successfully!");
-    } catch (e) {
-      Alert.alert("Error", "Failed to insert income record.");
-      console.error(e);
+    } catch (error : any) {
+      Alert.alert("Error", error.response.data.message || "Failed to add income");
     } finally {
       setLoading(false);
       setIsProcessing(false);

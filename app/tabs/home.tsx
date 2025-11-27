@@ -1,46 +1,20 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+
 import { FontAwesome6, Foundation } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
-import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import RecentTransaction from '../components/home/recentTransactionList'
+import RecentTransaction from "../components/home/recentTransactionList";
 
 export default function Home() {
   const [toogleShowBalance, setToogleShowBalance] = useState<boolean>(true);
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
 
   const income = 24000;
   const expenses = 4000;
   const currentSpent = 8000;
   const currentBudget = 25000;
   const percentageSpent = Math.round((currentSpent / currentBudget) * 100);
-
-  // Convex Query for Current Balance
-  const currentBalance = useQuery(
-    api.functions.balance.currentBalance.currentBalance,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
-
-  // useEffect(() => {
-  //   const loadUserInfo = async () => {
-  //     try {
-  //       const storedUser = await AsyncStorage.getItem("user");
-  //       if (storedUser) {
-  //         const user = JSON.parse(storedUser);
-  //         setUserCredentialsID(user.id || "");
-  //       }
-  //     } catch (e) {
-  //       Alert.alert("Error", "Failed to retrieve user from local storage");
-  //     }
-  //   };
-
-  //   loadUserInfo();
-  // }, []);
+  const currentBalance = 1000;
 
   return (
     <SafeAreaView className="flex h-full justify-center gap-5 items-center w-full bg-[#81D8D0]">
@@ -55,7 +29,7 @@ export default function Home() {
             <FontAwesome6 name="peso-sign" size={30} color="black" />
             <Text className="text-3xl font-semibold">
               {toogleShowBalance
-                ? (currentBalance?.currentBalance ?? "0")
+                ? (currentBalance ?? "0")
                 : "****"}
             </Text>
           </View>
@@ -140,7 +114,7 @@ export default function Home() {
         {/* Data */}
         <View className="flex-1 items-center justify-center">
           {/* <Text className="text-2xl text-white/70">No Recent Transactions</Text> */}
-          <RecentTransaction/>
+          <RecentTransaction />
         </View>
       </View>
     </SafeAreaView>

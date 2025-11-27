@@ -1,9 +1,5 @@
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation, useQuery } from "convex/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   FlatList,
@@ -15,46 +11,31 @@ import {
 } from "react-native";
 import Loading from "../Loading";
 import UpdateIncome from "./updateIncomes";
+import api from "../../../api/api";
 
-export default function IncomeList() {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
-  const [incomeID, setIncomeID] = useState<Id<"income"> | null>(null);
+// Interface matching the Parent's data
+interface Income {
+  _id: string;
+  incomeName: string;
+  incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
+  amount: number;
+  expectedPayOut: string;
+  frequency: string;
+}
+
+interface IncomeProps {
+  data: Income[];             // <--- WE USE THIS NOW
+  refreshTrigger: () => void; // <--- CALL THIS ON DELETE/UPDATE
+}
+
+export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
+  // DELETE: const [incomeList, setIncomeList] ... (Don't use local state)
+  // DELETE: const fetchIncome ... (Parent does this now)
+  // DELETE: useFocusEffect ... (Parent does this now)
+
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-
-  const selectIncomeList = useQuery(
-    api.functions.income.incomeList.incomeList,
-    userCredentialsID ? { userCredentialsID } : "skip"
-  );
-
-  const incomeInfoData = useQuery(
-    api.functions.income.incomeInfo.incomeInfo,
-    incomeID ? { incomeID } : "skip"
-  );
-
-  const deleteIncomeOnList = useMutation(
-    api.functions.income.deleteIncome.deleteIncome
-  );
-
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserCredentialsID(user.id || "");
-        }
-      } catch (error) {
-        Alert.alert(
-          "Error Local Storage [Income List]",
-          "Error retrieving data in local storage"
-        );
-      }
-    };
-
-    loadUserInfo();
-  }, []);
+  const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
 
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat("en-PH", {
@@ -63,19 +44,26 @@ export default function IncomeList() {
     }).format(amount);
   };
 
-  const handleDeleteButton = (incomeId: Id<"income">) => {
+  const handleDeleteButton = (incomeId: string) => {
     Alert.alert(
       "Confirm Delete",
       "Are you sure you want to delete this income?",
       [
-        { text: "Cancel" },
+        { text: "Cancel", style: "cancel" },
         {
           text: "Yes",
+          style: "destructive",
           onPress: async () => {
             try {
               setIsDeleting(true);
-              await deleteIncomeOnList({ incomeID: incomeId });
+              await api.delete(`/income/deleteIncome/${incomeId}`);
+              
+              // SUCCESS! Tell Parent to refresh everything
+              refreshTrigger(); 
+              
+              Alert.alert("Success", "Income deleted successfully");
             } catch (error) {
+              console.error(error);
               Alert.alert("Error", "Failed to delete income");
             } finally {
               setIsDeleting(false);
@@ -87,75 +75,68 @@ export default function IncomeList() {
     );
   };
 
-  const handleUpdateIncome = (income_id: Id<"income">) => {
-    setIncomeID(income_id);
+  const handleUpdateIncome = (income: Income) => {
+    setSelectedIncome(income);
     setIsUpdating(true);
   };
 
   return (
-    <View className="w-full">
+    <View className="w-full flex-1">
       {isDeleting && <Loading />}
 
-      {selectIncomeList === undefined ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={selectIncomeList}
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={{ gap: 8 }}
-          renderItem={({ item: income }) => (
-            <View className="bg-white rounded-3xl h-20 p-4">
-              <View className="flex-row justify-between items-center h-full">
-                {/* Left Icon */}
-                <View className="justify-center items-center">
-                  <Image
-                    source={require("../../../assets/images/add_income_icon.png")}
-                    style={{ width: 32, height: 32 }}
-                    resizeMode="contain"
-                  />
-                </View>
+      {/* CRITICAL: Use the 'data' prop, not local state */}
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={data} 
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{ gap: 8, paddingBottom: 20 }}
+        ListEmptyComponent={
+          <Text className="text-center text-gray-500 mt-10">
+            No income records found.
+          </Text>
+        }
+        renderItem={({ item: income }) => (
+          <View className="bg-white rounded-3xl h-20 p-4 shadow-sm">
+            <View className="flex-row justify-between items-center h-full">
+              <View className="justify-center items-center">
+                <Image
+                  source={require("../../../assets/images/add_income_icon.png")}
+                  style={{ width: 32, height: 32 }}
+                  resizeMode="contain"
+                />
+              </View>
 
-                {/* Middle Content */}
-                <View className="px-3 justify-center items-center">
-                  <Text className="text-lg font-semibold text-gray-800 mb-1">
-                    {income.incomeName}
-                  </Text>
-                  <Text className="text-sm text-gray-500 capitalize">
-                    {income.incomeCategory}
-                  </Text>
-                </View>
+              <View className="px-3 justify-center items-start flex-1">
+                <Text className="text-lg font-semibold text-gray-800 mb-1" numberOfLines={1}>
+                  {income.incomeName}
+                </Text>
+                <Text className="text-sm text-gray-500 capitalize">
+                  {income.incomeCategory}
+                </Text>
+              </View>
 
-                {/* Right Side */}
-                <View className="items-end justify-between">
-                  <Text className="text-lg font-bold text-green-600 mb-1">
-                    ₱{formatAmount(income.amount)}
-                  </Text>
-                  <View className="flex-row gap-2 rounded-full px-2 py-1 shadow-sm">
-                    {/* Update Button */}
-                    <TouchableOpacity
-                      onPress={() => handleUpdateIncome(income._id)}
-                    >
-                      <Feather name="edit" size={18} color="black" />
-                    </TouchableOpacity>
+              <View className="items-end justify-between">
+                <Text className="text-lg font-bold text-green-600 mb-1">
+                  ₱{formatAmount(income.amount)}
+                </Text>
+                <View className="flex-row gap-3">
+                  <TouchableOpacity onPress={() => handleUpdateIncome(income)}>
+                    <Feather name="edit" size={18} color="black" />
+                  </TouchableOpacity>
 
-                    {/* Delete Button */}
-                    <TouchableOpacity
-                      onPress={() => handleDeleteButton(income._id)}
-                    >
-                      <FontAwesome5
-                        name="trash-alt"
-                        size={17}
-                        color="#D90000"
-                      />
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity onPress={() => handleDeleteButton(income._id)}>
+                    <FontAwesome5
+                      name="trash-alt"
+                      size={17}
+                      color="#D90000"
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-          )}
-        ></FlatList>
-      )}
+          </View>
+        )}
+      />
 
       {/* Update Modal */}
       <Modal
@@ -165,33 +146,24 @@ export default function IncomeList() {
         onRequestClose={() => setIsUpdating(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-xl w-[94%] p-5 flex justify-center items-center">
-            {!incomeInfoData ? (
-              <View>
-                <Loading />
-                <Text>Loading...</Text>
-              </View>
-            ) : (
+          <View className="bg-white rounded-xl w-[94%] p-5 flex justify-center items-center max-h-[80%]">
+            {selectedIncome && (
               <UpdateIncome
-                incomeID={incomeInfoData?._id}
-                incomeName={incomeInfoData?.incomeName}
-                incomeCategory={incomeInfoData?.incomeCategory}
-                incomeAmount={incomeInfoData?.amount}
-                incomeExpectedPayOut={new Date(incomeInfoData?.expectedPayOut)}
-                incomeFrequency={incomeInfoData?.frequency}
+                incomeID={selectedIncome._id}
+                incomeName={selectedIncome.incomeName}
+                incomeCategory={selectedIncome.incomeCategory}
+                incomeAmount={selectedIncome.amount}
+                incomeExpectedPayOut={new Date(selectedIncome.expectedPayOut)}
+                incomeFrequency={selectedIncome.frequency}
                 onSuccessUpdate={() => {
                   setIsUpdating(false);
-                  setIncomeID(null);
+                  setSelectedIncome(null);
+                  // SUCCESS! Tell Parent to refresh everything
+                  refreshTrigger(); 
                 }}
+                onClose={() => setIsUpdating(false)}
               />
             )}
-
-            <TouchableOpacity
-              className="bg-red-400 w-full items-center p-2 mt-2 rounded-lg"
-              onPress={() => setIsUpdating(false)}
-            >
-              <Text className="font-semibold text-lg text-white">Close</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>

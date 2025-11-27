@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Dimensions, ScrollView, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import {
   dummyBudgetStatus,
@@ -11,20 +18,27 @@ import {
 const screenWidth = Dimensions.get("window").width;
 
 interface Props {
-  onClose: () => void
+  onClose: () => void;
 }
 
-export default function Analytics({onClose} : Props) {
+export default function Analytics({ onClose }: Props) {
   // Calculate totals
   const totalIncome = dummyIncome.reduce((sum, i) => sum + i.amount, 0);
   const totalExpenses = dummyExpenses.reduce((sum, e) => sum + e.amount, 0);
-  const currentBalance = dummyBalance.reduce((sum, b) => sum + b.currentBalance, 0);
+  const currentBalance = dummyBalance.reduce(
+    (sum, b) => sum + b.currentBalance,
+    0
+  );
 
   // Expenses by Category
-  const categoryTotals: Record<string, number> = dummyExpenses.reduce((acc, expense) => {
-    acc[expense.expensesCategory] = (acc[expense.expensesCategory] || 0) + expense.amount;
-    return acc;
-  }, {} as Record<string, number>);
+  const categoryTotals: Record<string, number> = dummyExpenses.reduce(
+    (acc, expense) => {
+      acc[expense.expensesCategory] =
+        (acc[expense.expensesCategory] || 0) + expense.amount;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const categoryLabels = Object.keys(categoryTotals);
   const categoryAmounts: number[] = Object.values(categoryTotals);
@@ -44,30 +58,13 @@ export default function Analytics({onClose} : Props) {
     <ScrollView className="flex-1 bg-[#F3FDFB] p-4">
       {/* Header */}
       <View className="flex flex-row justify-between mb-6">
-
         <View className="flex flex-row justify-center items-center gap-x-2">
           <Image
-            source={require('../../../assets/images/AnalyticsLogo.png')}
+            source={require("../../../assets/images/AnalyticsLogo.png")}
             className="w-[32px] h-[32px]"
-          >
-          </Image>
-          <Text className="text-3xl font-bold text-[#1E4E45]">
-            Analytic
-          </Text>
+          ></Image>
+          <Text className="text-3xl font-bold text-[#1E4E45]">Analytic</Text>
         </View>
-
-        <TouchableOpacity
-          className="flex flex-row justify-center items-center"
-          onPress={onClose}
-        >
-          <View className="flex flex-row justify-center items-center border px-3.5 py-1 bg-[#D9D9D9] rounded-3xl gap-x-1">
-            <Image
-              source={require('../../../assets/images/backLogo.png')}
-              className="w-[15px] h-[15px]"
-            />
-            <Text className="semibold text-lg">Back</Text>
-          </View>
-        </TouchableOpacity>
       </View>
 
       {/* Balance Summary Card */}
