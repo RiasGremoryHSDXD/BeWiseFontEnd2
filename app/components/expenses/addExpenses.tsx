@@ -1,25 +1,21 @@
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
-import { useMutation } from "convex/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoadingScreen from "../Loading";
+import api from "../../../api/api";
+
 type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
 type Frequency = "OneTime" | "Monthly";
+
 type Props = {
   closeModal: () => void;
+  onSuccess: () => void;
 };
 
-
-export default function addExpenses({ closeModal }: Props) {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<Id<"userCredentials"> | null>(null);
+export default function AddExpenses({ closeModal, onSuccess }: Props) {
   const [expensesName, setExpensesName] = useState<string>("");
-  const [expensesCategoryValue, setExpensesCategoryValue] =
-    useState<ExpensesCategory>("Other");
+  const [expensesCategoryValue, setExpensesCategoryValue] = useState<ExpensesCategory>("Other");
   const [amount, setAmount] = useState<number>(0);
   const [datePaid, setDatePaid] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
@@ -27,50 +23,34 @@ export default function addExpenses({ closeModal }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const insertNewExpensesRow = useMutation(
-    api.functions.expenses.insertNewExpenses.insertNewExpenses
-  );
-
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
-
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-
-        setUserCredentialsID(user.id || "");
-      }
-    };
-
-    loadUserInfo();
-  }, []);
-
   const handleNewExpensesRecord = async () => {
     if (loading || isProcessing) return;
     setIsProcessing(true);
 
     try {
-      if (!userCredentialsID || !expensesName || !amount || !datePaid) {
-        Alert.alert("Missing Data", "Please fill out all field");
+      if (!expensesName || !amount || !datePaid) {
+        Alert.alert("Missing Data", "Please fill out all fields");
         return;
       }
 
       setLoading(true);
-      await insertNewExpensesRow({
-        userCredentialsID,
+
+      const response = await api.post("/expenses/addExpense", {
         expensesName,
         expensesCategory: expensesCategoryValue,
         amount,
-        datePaid: datePaid.toISOString(),
+        datePaid: datePaid.toISOString(), // Standardize date format
         frequency,
       });
 
-      setLoading(false);
-
-      Alert.alert("Success", "Expenses record add successfully!");
-    } catch (e) {
-      Alert.alert("Error", "Failed to insert expenses record");
-      console.error(e);
+      if (response.status === 200) {
+        setLoading(false);
+        Alert.alert("Success", "Expenses record added successfully!");
+        onSuccess(); // Trigger parent refresh
+      }
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert("Error", error.response?.data?.message || "Failed to add expense");
     } finally {
       setLoading(false);
       setIsProcessing(false);
@@ -79,10 +59,9 @@ export default function addExpenses({ closeModal }: Props) {
 
   return (
     <View className="flex gap-y-3 w-full">
-      {/*Expenses Name */}
+      {/* Expenses Name */}
       <View className="flex flex-col gap-y-3">
         <Text className="font-semibold">Expenses Details:</Text>
-        {/* Income  Name */}
         <TextInput
           className="border rounded-md py-5 px-3"
           placeholder="Expenses Name"
@@ -107,7 +86,7 @@ export default function addExpenses({ closeModal }: Props) {
         />
       </View>
 
-      {/*Expenses Category*/}
+      {/* Category */}
       <Text className="font-bold mt-2">Category</Text>
       <View className="border border-black rounded-lg overflow-hidden">
         <Picker
@@ -122,7 +101,7 @@ export default function addExpenses({ closeModal }: Props) {
         </Picker>
       </View>
 
-      {/** Frequency */}
+      {/* Frequency */}
       <Text className="font-semibold mt-2">Frequency</Text>
       <View className="border border-black rounded-lg overflow-hidden">
         <Picker
@@ -134,24 +113,20 @@ export default function addExpenses({ closeModal }: Props) {
         </Picker>
       </View>
 
-      {/* Date Paid*/}
+      {/* Date Paid */}
       <View className="flex flex-row justify-between">
-        {/* <Text>Expected Paid: </Text> */}
-
         {frequency === "OneTime" ? (
           <Text>Expected Paid Date : </Text>
         ) : (
           <Text>Started Paid Date : </Text>
         )}
 
-        {datePaid && (
-          <TouchableOpacity
-            className="border border-gray-300 rounded-md bg-gray-50"
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text>{datePaid.toDateString()}</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          className="border border-gray-300 rounded-md bg-gray-50 px-3"
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text>{datePaid.toDateString()}</Text>
+        </TouchableOpacity>
 
         {showDatePicker && (
           <DateTimePicker
@@ -184,7 +159,6 @@ export default function addExpenses({ closeModal }: Props) {
           <Text className="text-xl font-semibold text-white">Close</Text>
         </TouchableOpacity>
       </View>
-
 
       {loading && <LoadingScreen />}
     </View>
