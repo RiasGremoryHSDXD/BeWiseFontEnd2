@@ -6,15 +6,14 @@ import api from "../../../api/api";
 interface ExpensesHistoryItem {
   _id: string;
   userId: string;
-  expensesName: string; // Note: Expenses model uses 'expensesName'
-  expensesCategory: "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+  expensesName: string;
+  expensesCategory: "Insurance" | "Bills" | "Hobby" | "Daily need" | "Other";
   amount: number;
-  datePaid: string;     // Note: Expenses model uses 'datePaid'
+  datePaid: string;
   frequency: string;
 }
 
 export default function ExpensesHistoryScreen() {
-  // 2. STATE: Initialize as an empty array of ExpensesHistoryItem
   const [historyData, setHistoryData] = useState<ExpensesHistoryItem[]>([]);
 
   useEffect(() => {
@@ -36,10 +35,10 @@ export default function ExpensesHistoryScreen() {
   // 5. MAPPING: Transform backend data to match HistoryList props
   const formattedExpensesHistory = historyData.map((item) => ({
     _id: item._id,
-    name: item.expensesName,      
+    name: item.expensesName,
     category: item.expensesCategory,
     amount: item.amount,
-    date: item.datePaid.split("T")[0], // Format ISO string to YYYY-MM-DD
+    date: item.datePaid.split("T")[0],
   }));
 
   return (

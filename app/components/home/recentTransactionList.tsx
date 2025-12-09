@@ -1,86 +1,131 @@
 import { View, Text, FlatList, Image } from "react-native";
+import { useState, useEffect } from "react";
 import React from "react";
+import api from "../../../api/api";
+import "../../../assets/images/add_income_icon.png";
+import "../../../assets/images/add_expenses_icon.png";
+
+interface ExpensesHistoryItem {
+  _id: string;
+  userId: string;
+  expensesName: string;
+  expensesCategory: "Insurance" | "Bills" | "Hobby" | "Daily need" | "Other";
+  amount: number;
+  datePaid: string;
+  frequency: string;
+}
+
+interface IncomeHistoryItem {
+  _id: string;
+  userId: string;
+  incomeName: string;
+  incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
+  amount: number;
+  paidDate: string;
+  frequency: string;
+}
+
+interface FormattedTransaction {
+  _id: string;
+  name: string;
+  category: string;
+  amount: number;
+  date: string;
+  type: "expense" | "income";
+}
 
 export default function RecentTransactionList() {
-  const recentTransaction = [
-    {
-      id: 1,
-      type: "income",
-      incomeName: "Salary",
-      incomeCategory: "Work",
-      amount: 9000,
-      expectedPayOut: "2025-09-01",
-      frequency: "Monthly",
-      imageSource: require("../../../assets/images/add_income_icon.png"),
-    },
-    {
-      id: 2,
-      type: "expense",
-      expensesName: "Grocery",
-      expensesCategory: "Grocery",
-      amount: 5000,
-      datePaid: "2025-08-29",
-      frequency: "OneTime",
-      imageSource: require("../../../assets/images/add_expenses_icon.png"),
-    },
-    {
-      id: 3,
-      type: "expense",
-      expensesName: "Grocery",
-      expensesCategory: "Grocery",
-      amount: 5000,
-      datePaid: "2025-08-29",
-      frequency: "OneTime",
-      imageSource: require("../../../assets/images/add_expenses_icon.png"),
-    },
-  ];
+  const defaultIncomeIcon = require("../../../assets/images/add_income_icon.png");
+  const defaultExpenseIcon = require("../../../assets/images/add_expenses_icon.png");
 
-  const renderItem = ({ item }: any) => {
+  const [expensesHistory, setExpensesHistory] = useState<ExpensesHistoryItem[]>(
+    []
+  );
+  const [incomeHistory, setIncomeHistory] = useState<IncomeHistoryItem[]>([]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const [expensesRes, incomeRes] = await Promise.all([
+          api.get("/history/readExpensesHistory"),
+          api.get("/history/readIncomeHistory"),
+        ]);
+
+        if (expensesRes.status === 200) {
+          setExpensesHistory(expensesRes.data.history);
+        }
+        if (incomeRes.status === 200) {
+          setIncomeHistory(incomeRes.data.history);
+        }
+      } catch (error) {
+        console.error("Failed to fetch transaction history", error);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
+  const formattedTransactions: FormattedTransaction[] = [
+    ...expensesHistory.map((item) => ({
+      _id: item._id,
+      name: item.expensesName,
+      category: item.expensesCategory,
+      amount: item.amount,
+      date: item.datePaid.split("T")[0],
+      type: "expense" as const,
+    })),
+    ...incomeHistory.map((item) => ({
+      _id: item._id,
+      name: item.incomeName,
+      category: item.incomeCategory,
+      amount: item.amount,
+      date: item.paidDate.split("T")[0],
+      type: "income" as const,
+    })),
+  ]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
+
+  const renderItem = ({ item }: { item: FormattedTransaction }) => {
     const isIncome = item.type === "income";
-    const name = isIncome ? item.incomeName : item.expensesName;
-    const category = isIncome ? item.incomeCategory : item.expensesCategory;
-    const date = isIncome ? item.expectedPayOut : item.datePaid;
-    const amountColor = isIncome ? "text-green-500" : "text-red-500";
+    const amountColor = isIncome ? "text-green-800" : "text-red-700";
     const sign = isIncome ? "+" : "-";
-
+    const iconSource = isIncome ? defaultIncomeIcon : defaultExpenseIcon;
     return (
-      <View className="flex-row w-full items-center justify-between py-3.5 ">
+      <View className="flex-row w-full items-center justify-between py-3.5">
         {/* Left Side */}
-        <View className="flex-row items-center space-x-3">
-          <View className={` rounded-full p-2.5`}>
-            <Image
-              source={item.imageSource}
-              style={{ width: 30, height: 30 }}
-            />
+        <View className="flex-row items-center gap-x-3 ">
+          <View className="rounded-full ">
+            <Image source={iconSource} style={{ width: 30, height: 30 }} />
           </View>
 
           <View>
-            <Text className="text-white text-base font-semibold">{name}</Text>
-            <Text className="text-[#D9F8F7] text-sm">{category}</Text>
+            <Text className="text-white text-base font-semibold">
+              {item.name}
+            </Text>
+            <Text className="text-[#D9F8F7] text-sm ">{item.category}</Text>
           </View>
         </View>
 
         {/* Right Side */}
         <View className="items-end">
           <Text className={`text-base font-semibold ${amountColor}`}>
-            {sign} {item.amount.toLocaleString()}
+            {sign} ₱{item.amount.toLocaleString()}
           </Text>
-          <Text className="text-[#D9F8F7] text-xs">{date}</Text>
+          <Text className="text-[#D9F8F7] text-sm">{item.date}</Text>
         </View>
       </View>
     );
   };
 
   return (
-    <View className=" overflow-hidden">
+    <View className="overflow-hidden">
       <FlatList
-        data={recentTransaction}
-        keyExtractor={(item) => item.id.toString()}
+        data={formattedTransactions}
+        keyExtractor={(item) => item._id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => (
-          <View className="h-px bg-white/25" />
-        )}
+        ItemSeparatorComponent={() => <View className="h-px bg-white/25" />}
       />
     </View>
   );

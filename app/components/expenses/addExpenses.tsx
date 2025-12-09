@@ -5,7 +5,12 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import LoadingScreen from "../Loading";
 import api from "../../../api/api";
 
-type ExpensesCategory = "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+type ExpensesCategory =
+  | "Insurance"
+  | "Bills"
+  | "Hobby"
+  | "Daily Need"
+  | "Other";
 type Frequency = "OneTime" | "Monthly";
 
 type Props = {
@@ -15,7 +20,8 @@ type Props = {
 
 export default function AddExpenses({ closeModal, onSuccess }: Props) {
   const [expensesName, setExpensesName] = useState<string>("");
-  const [expensesCategoryValue, setExpensesCategoryValue] = useState<ExpensesCategory>("Other");
+  const [expensesCategoryValue, setExpensesCategoryValue] =
+    useState<ExpensesCategory>("Other");
   const [amount, setAmount] = useState<number>(0);
   const [datePaid, setDatePaid] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
@@ -39,18 +45,21 @@ export default function AddExpenses({ closeModal, onSuccess }: Props) {
         expensesName,
         expensesCategory: expensesCategoryValue,
         amount,
-        datePaid: datePaid.toISOString(), // Standardize date format
+        datePaid: datePaid.toISOString(),
         frequency,
       });
 
       if (response.status === 200) {
         setLoading(false);
         Alert.alert("Success", "Expenses record added successfully!");
-        onSuccess(); // Trigger parent refresh
+        onSuccess();
       }
     } catch (error: any) {
       console.error(error);
-      Alert.alert("Error", error.response?.data?.message || "Failed to add expense");
+      Alert.alert(
+        "Error",
+        error.response?.data?.message || "Failed to add expense"
+      );
     } finally {
       setLoading(false);
       setIsProcessing(false);
@@ -95,8 +104,8 @@ export default function AddExpenses({ closeModal, onSuccess }: Props) {
         >
           <Picker.Item label="Insurance" value="Insurance" />
           <Picker.Item label="Bills" value="Bills" />
-          <Picker.Item label="Game" value="Game" />
-          <Picker.Item label="Grocery" value="Grocery" />
+          <Picker.Item label="Hobby" value="Hobby" />
+          <Picker.Item label="Daily Need" value="Daily Need" />
           <Picker.Item label="Other" value="Other" />
         </Picker>
       </View>
@@ -140,7 +149,7 @@ export default function AddExpenses({ closeModal, onSuccess }: Props) {
           />
         )}
       </View>
-      
+
       <View className="flex flex-row justify-between mt-5 w-full">
         <TouchableOpacity
           activeOpacity={1}

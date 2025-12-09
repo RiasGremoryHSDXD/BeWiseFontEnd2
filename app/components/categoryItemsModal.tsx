@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
+// Generic interface that works for both Expenses and Income
 interface CategoryItem {
   _id: string;
   name: string;
@@ -23,13 +24,15 @@ interface Props {
   onClose: () => void;
   categoryName: string;
   items: CategoryItem[];
+  color: "red" | "green";
 }
 
-export default function ShowBudget({
+export default function CategoryItemsModal({
   visible,
   onClose,
   categoryName,
   items,
+  color,
 }: Props) {
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat("en-PH", {
@@ -79,9 +82,19 @@ export default function ShowBudget({
           </View>
 
           {/* Total Amount Card */}
-          <View className="border rounded-2xl p-4 mb-4 text-yellow-500">
+          <View
+            className={`${
+              color === "red"
+                ? "bg-red-50 border-red-200"
+                : "bg-green-50 border-green-200"
+            } border rounded-2xl p-4 mb-4`}
+          >
             <Text className="text-gray-600 mb-1">Total Amount</Text>
-            <Text className="text-3xl bold text-yellow-400">
+            <Text
+              className={`text-3xl font-bold ${
+                color === "red" ? "text-red-600" : "text-green-600"
+              }`}
+            >
               ₱ {formatAmount(totalAmount)}
             </Text>
           </View>
@@ -116,7 +129,7 @@ export default function ShowBudget({
                         <View
                           className={`${
                             item.frequency === "Monthly"
-                              ? "bg-yellow-100"
+                              ? "bg-yellow-200"
                               : "bg-gray-300"
                           } py-1 px-3 rounded-full`}
                         >
@@ -133,7 +146,11 @@ export default function ShowBudget({
                     </View>
 
                     {/* Amount */}
-                    <Text className="text-xl font-bold text-yellow-400">
+                    <Text
+                      className={`text-xl font-bold ${
+                        color === "red" ? "text-red-600" : "text-green-600"
+                      }`}
+                    >
                       ₱{formatAmount(item.amount)}
                     </Text>
                   </View>

@@ -21,7 +21,7 @@ const ExpensesHistorySchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["Insurance", "Bills", "Game", "Grocery", "Other"],
+      enum: ["Insurance", "Bills", "Hobby", "Daily Need", "Other"],
     },
 
     amount: {
@@ -46,6 +46,9 @@ const ExpensesHistorySchema = new mongoose.Schema(
   }
 );
 
-const ExpensesHistory = mongoose.model("ExpensesHistory", ExpensesHistorySchema);
+const ExpensesHistory = mongoose.model(
+  "ExpensesHistory",
+  ExpensesHistorySchema
+);
 
 export default ExpensesHistory;

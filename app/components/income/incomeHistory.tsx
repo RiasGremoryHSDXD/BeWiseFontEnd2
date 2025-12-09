@@ -9,7 +9,7 @@ interface IncomeHistoryItem {
   incomeName: string;
   incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
   amount: number;
-  paidDate: string; 
+  paidDate: string;
   frequency: string;
 }
 
@@ -20,12 +20,11 @@ export default function IncomeHistoryScreen() {
   useEffect(() => {
     const fetchIncomeHistory = async () => {
       try {
-        // Ensure this route matches your backend route exactly
-        const response = await api.get("/history/readIncomeHistory"); 
-        
+        const response = await api.get("/history/readIncomeHistory");
+
         if (response.status === 200) {
           // 3. DATA MAPPING: Ensure 'response.data.history' matches your Controller's return key
-          setHistoryData(response.data.history); 
+          setHistoryData(response.data.history);
         }
       } catch (error) {
         console.error("Failed to fetch income history", error);
@@ -41,7 +40,7 @@ export default function IncomeHistoryScreen() {
     name: item.incomeName,
     category: item.incomeCategory,
     amount: item.amount,
-    date: item.paidDate.split("T")[0] , // Updated to match interface
+    date: item.paidDate.split("T")[0],
   }));
 
   return (

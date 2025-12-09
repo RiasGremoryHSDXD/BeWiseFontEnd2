@@ -12,11 +12,11 @@ interface HistoryItem {
 
 interface HistoryListProps {
   data: HistoryItem[];
-  color: "red" | "green"; // red for expenses, green for income
-  icon: any; // image source (require)
+  color: "red" | "green";
+  icon: any;
 }
 
-export default function HistoryList({  data, color, icon }: HistoryListProps) {
+export default function HistoryList({ data, color, icon }: HistoryListProps) {
   const formatAmount = (amount: number) =>
     new Intl.NumberFormat("en-PH", {
       minimumFractionDigits: 0,
@@ -25,7 +25,6 @@ export default function HistoryList({  data, color, icon }: HistoryListProps) {
 
   return (
     <View className="w-full">
-
       {data?.length === 0 ? (
         <Text>No records found.</Text>
       ) : (
@@ -80,8 +79,8 @@ export default function HistoryList({  data, color, icon }: HistoryListProps) {
 
 /**
  * List of file that this code is being reuse
- * 
+ *
  * > expensesHistory.tsx
  * > incomeHistory.tsx
- * 
+ *
  */

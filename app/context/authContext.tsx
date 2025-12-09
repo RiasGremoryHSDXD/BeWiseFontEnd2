@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
@@ -15,7 +21,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (user: User, token: string) => Promise<void>; // Adjusted to match implementation logic
+  login: (user: User, token: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -53,8 +59,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // Global Login Function
-  // FIXED: Changed parameter order to match typical (user, token) usage or updated interface
-  // Let's standardize on: login(user, token)
   const login = async (userData: User, newToken: string) => {
     try {
       await AsyncStorage.setItem("authToken", newToken);

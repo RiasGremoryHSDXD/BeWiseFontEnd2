@@ -11,17 +11,17 @@
  * @property {string} [reuseableModalDesign] - (Deprecated: use reusableModalDesign instead) custom modal style.
  * @property {() => void} onRequestClose - Function triggered when the modal is requested to close.
  * @property {React.ReactNode} children - Elements to be rendered inside the modal.
-*/
+ */
 
 export interface ReusableModalProps {
-    reusableModalDesign?: string;
-    reuseableModalContainerDesign?: string;
-    visible: boolean;
-    transparent?: boolean;
-    animationType?: 'fade' | 'slide' | 'none';
-    reuseableModalDesign?: string;
-    onRequestClose: () => void;
-    children: React.ReactNode;
+  reusableModalDesign?: string;
+  reuseableModalContainerDesign?: string;
+  visible: boolean;
+  transparent?: boolean;
+  animationType?: "fade" | "slide" | "none";
+  reuseableModalDesign?: string;
+  onRequestClose: () => void;
+  children: React.ReactNode;
 }
 
-export default {}
+export default {};

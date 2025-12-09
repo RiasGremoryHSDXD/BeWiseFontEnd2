@@ -17,18 +17,21 @@ import api from "../../../api/api";
 interface Expense {
   _id: string;
   expensesName: string;
-  expensesCategory: "Insurance" | "Bills" | "Game" | "Grocery" | "Other";
+  expensesCategory: "Insurance" | "Bills" | "Hobby" | "Daily Need" | "Other";
   amount: number;
   frequency: string;
   datePaid: string;
 }
 
 interface ExpensesListProps {
-  data: Expense[];            // Received from Parent
-  refreshTrigger: () => void; // Call this on Delete/Update
+  data: Expense[];
+  refreshTrigger: () => void;
 }
 
-export default function ExpensesList({ data, refreshTrigger }: ExpensesListProps) {
+export default function ExpensesList({
+  data,
+  refreshTrigger,
+}: ExpensesListProps) {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
@@ -53,10 +56,8 @@ export default function ExpensesList({ data, refreshTrigger }: ExpensesListProps
             try {
               setIsDeleting(true);
               await api.delete(`/expenses/deleteExpense/${expenseId}`);
-              
-              // SUCCESS! Tell Parent to refresh
-              refreshTrigger(); 
-              
+              refreshTrigger();
+
               Alert.alert("Success", "Expense deleted successfully");
             } catch (error) {
               console.error(error);
@@ -77,12 +78,12 @@ export default function ExpensesList({ data, refreshTrigger }: ExpensesListProps
   };
 
   return (
-    <View className="w-full flex-1">
+    <View className="w-full">
       {isDeleting && <Loading />}
 
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={data} 
+        data={data}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ gap: 8, paddingBottom: 20 }}
         ListEmptyComponent={
@@ -91,40 +92,48 @@ export default function ExpensesList({ data, refreshTrigger }: ExpensesListProps
           </Text>
         }
         renderItem={({ item: expense }) => (
-          <View className="bg-white rounded-3xl h-20 p-4 shadow-sm">
+          <View className="bg-white rounded-3xl h-20 p-4">
             <View className="flex-row justify-between items-center h-full">
-              <View className="justify-center items-center">
+              <View className="flex flex-row justify-center items-center gap-x-3">
                 <Image
                   source={require("../../../assets/images/add_expenses_icon.png")}
                   style={{ width: 32, height: 32 }}
                   resizeMode="contain"
                 />
+                <View>
+                  <Text
+                    className="text-lg font-semibold text-gray-800 mb-1"
+                    numberOfLines={1}
+                  >
+                    {expense.expensesName}
+                  </Text>
+                  <Text className="text-sm text-gray-500 capitalize">
+                    {expense.expensesCategory}
+                  </Text>
+                </View>
               </View>
 
-              <View className="px-3 justify-center items-start flex-1">
-                <Text className="text-lg font-semibold text-gray-800 mb-1" numberOfLines={1}>
-                  {expense.expensesName}
-                </Text>
-                <Text className="text-sm text-gray-500 capitalize">
-                  {expense.expensesCategory}
-                </Text>
+              <View
+                className={`${expense.frequency === "Monthly" ? "bg-yellow-100" : "bg-gray-200"} py-1 px-3 rounded-full `}
+              >
+                <Text className="text-sm font-medium">{expense.frequency}</Text>
               </View>
 
-              <View className="items-end justify-between">
+              <View className="items-end justify-center ">
                 <Text className="text-lg font-bold text-red-600 mb-1">
                   ₱{formatAmount(expense.amount)}
                 </Text>
                 <View className="flex-row gap-3">
-                  <TouchableOpacity onPress={() => handleUpdateExpense(expense)}>
+                  <TouchableOpacity
+                    onPress={() => handleUpdateExpense(expense)}
+                  >
                     <Feather name="edit" size={18} color="black" />
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => handleDeleteButton(expense._id)}>
-                    <FontAwesome5
-                      name="trash-alt"
-                      size={17}
-                      color="#D90000"
-                    />
+                  <TouchableOpacity
+                    onPress={() => handleDeleteButton(expense._id)}
+                  >
+                    <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
                   </TouchableOpacity>
                 </View>
               </View>

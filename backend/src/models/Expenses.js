@@ -25,13 +25,7 @@ const ExpenseSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: [
-        "Insurance",
-        "Bills",
-        "Game",
-        "Grocery",
-        "Other",
-      ],
+      enum: ["Insurance", "Bills", "Hobby", "Daily Need", "Other"],
     },
 
     // 4. Amount
@@ -51,7 +45,7 @@ const ExpenseSchema = new mongoose.Schema(
     frequency: {
       type: String,
       required: true,
-      enum: ["OneTime", "Monthly"]
+      enum: ["OneTime", "Monthly"],
     },
   },
   {

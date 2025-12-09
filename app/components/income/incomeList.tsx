@@ -24,8 +24,8 @@ interface Income {
 }
 
 interface IncomeProps {
-  data: Income[];             // <--- WE USE THIS NOW
-  refreshTrigger: () => void; // <--- CALL THIS ON DELETE/UPDATE
+  data: Income[];
+  refreshTrigger: () => void;
 }
 
 export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
@@ -57,10 +57,8 @@ export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
             try {
               setIsDeleting(true);
               await api.delete(`/income/deleteIncome/${incomeId}`);
-              
-              // SUCCESS! Tell Parent to refresh everything
-              refreshTrigger(); 
-              
+              refreshTrigger();
+
               Alert.alert("Success", "Income deleted successfully");
             } catch (error) {
               console.error(error);
@@ -81,13 +79,12 @@ export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
   };
 
   return (
-    <View className="w-full flex-1">
+    <View className="w-full">
       {isDeleting && <Loading />}
 
-      {/* CRITICAL: Use the 'data' prop, not local state */}
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={data} 
+        data={data}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ gap: 8, paddingBottom: 20 }}
         ListEmptyComponent={
@@ -98,23 +95,31 @@ export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
         renderItem={({ item: income }) => (
           <View className="bg-white rounded-3xl h-20 p-4 shadow-sm">
             <View className="flex-row justify-between items-center h-full">
-              <View className="justify-center items-center">
+              <View className="flex-row justify-center items-center gap-x-3">
                 <Image
                   source={require("../../../assets/images/add_income_icon.png")}
                   style={{ width: 32, height: 32 }}
                   resizeMode="contain"
                 />
+
+                <View className="justify-center">
+                  <Text
+                    className="text-lg font-semibold text-gray-800 mb-1"
+                    numberOfLines={1}
+                  >
+                    {income.incomeName}
+                  </Text>
+                  <Text className="text-sm text-gray-500 capitalize">
+                    {income.incomeCategory}
+                  </Text>
+                </View>
               </View>
 
-              <View className="px-3 justify-center items-start flex-1">
-                <Text className="text-lg font-semibold text-gray-800 mb-1" numberOfLines={1}>
-                  {income.incomeName}
-                </Text>
-                <Text className="text-sm text-gray-500 capitalize">
-                  {income.incomeCategory}
-                </Text>
+              <View
+                className={`py-1 px-3 rounded-full ${income.frequency === "Monthly" ? "bg-yellow-100" : "bg-gray-200"}`}
+              >
+                <Text className="text-sm font-medium">{income.frequency}</Text>
               </View>
-
               <View className="items-end justify-between">
                 <Text className="text-lg font-bold text-green-600 mb-1">
                   ₱{formatAmount(income.amount)}
@@ -124,12 +129,10 @@ export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
                     <Feather name="edit" size={18} color="black" />
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => handleDeleteButton(income._id)}>
-                    <FontAwesome5
-                      name="trash-alt"
-                      size={17}
-                      color="#D90000"
-                    />
+                  <TouchableOpacity
+                    onPress={() => handleDeleteButton(income._id)}
+                  >
+                    <FontAwesome5 name="trash-alt" size={17} color="#D90000" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -158,8 +161,7 @@ export default function IncomeList({ data, refreshTrigger }: IncomeProps) {
                 onSuccessUpdate={() => {
                   setIsUpdating(false);
                   setSelectedIncome(null);
-                  // SUCCESS! Tell Parent to refresh everything
-                  refreshTrigger(); 
+                  refreshTrigger();
                 }}
                 onClose={() => setIsUpdating(false)}
               />
