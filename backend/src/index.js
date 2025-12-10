@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import incomeRoutes from "./routes/incomeRoutes.js";
 import expensesRoutes from "./routes/expensesRoutes.js";
 import historyRoutes from "./routes/HistroyRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import { connectDB } from "./lib/db.js";
 
 const app = express();
@@ -16,7 +17,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/income", incomeRoutes);
 app.use("/api/expenses", expensesRoutes);
 app.use("/api/history", historyRoutes);
-
+app.use("/api/ai", aiRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();

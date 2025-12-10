@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,133 +6,86 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import axios from "axios";
 import config from "../../../api/config";
 import { SYSTEM_PROMPT } from "../../../api/aiRules";
+import api from "../../../api/api"; // Import your configured axios instance
 
 // --- 1. Define Interface for Financial Data ---
+// This matches the structure sent by your aiController.js
 type FinancialData = {
-  budgetStatus: any[];
-  expenses: any[];
-  income: any[];
-  balance: any[];
+  userProfile: {
+    username: string;
+    email: string;
+  };
+  summary: {
+    totalMonthlyIncome: number;
+    totalMonthlyExpenses: number;
+    estimatedSavings: number;
+    status: string;
+  };
+  budgetPlan: {
+    expenses: any[];
+    income: any[];
+  };
+  recentHistory: {
+    expenses: any[];
+    income: any[];
+  };
 };
 
 type Props = {
   onClose: () => void;
-  financialContext?: FinancialData; // Optional: Pass real data here later
 };
 
-// --- 2. Local Dummy Data (Replaces Convex Import) ---
-const dummyBudgetStatus = [
-  {
-    userCredentials: "user_001",
-    budgetStatusName: "Monthly Budget - October",
-    currentAmount: 15000,
-    totalAmount: 20000,
-  },
-  {
-    userCredentials: "user_002",
-    budgetStatusName: "Student Budget - October",
-    currentAmount: 3000,
-    totalAmount: 5000,
-  },
-];
-
-const dummyExpenses = [
-  {
-    userCredentialsID: "user_001",
-    expensesName: "Meralco Bill",
-    expensesCategory: "Bills",
-    amount: 1200,
-    datePaid: "2025-10-05",
-    frequency: "Monthly",
-  },
-  {
-    userCredentialsID: "user_001",
-    expensesName: "Groceries - Puregold",
-    expensesCategory: "Grocery",
-    amount: 3500,
-    datePaid: "2025-10-07",
-    frequency: "Weekly",
-  },
-  {
-    userCredentialsID: "user_002",
-    expensesName: "Steam Game Purchase",
-    expensesCategory: "Game",
-    amount: 600,
-    datePaid: "2025-10-09",
-    frequency: "OneTime",
-  },
-];
-
-const dummyIncome = [
-  {
-    userCredentialsID: "user_001",
-    incomeName: "Monthly Salary",
-    incomeCategory: "Work",
-    amount: 25000,
-    expectedPayOut: "2025-10-15",
-    frequency: "Monthly",
-  },
-  {
-    userCredentialsID: "user_002",
-    incomeName: "Freelance Art Commission",
-    incomeCategory: "Side Hustle",
-    amount: 1200,
-    expectedPayOut: "2025-10-10",
-    frequency: "OneTime",
-  },
-];
-
-const dummyBalance = [
-  {
-    userCredentialsID: "user_001",
-    currentBalance: 18000,
-    lastUpdate: "2025-10-13",
-  },
-  {
-    userCredentialsID: "user_002",
-    currentBalance: 2900,
-    lastUpdate: "2025-10-13",
-  },
-];
-
-// -------------------------------------------------
-
-export default function BudgetAssistant({ onClose, financialContext }: Props) {
+export default function BudgetAssistant({ onClose }: Props) {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingResponse, setLoadingResponse] = useState(false);
+  
+  // State for fetching context
+  const [loadingContext, setLoadingContext] = useState(true);
+  const [financialContext, setFinancialContext] = useState<FinancialData | null>(null);
 
   const GEMINI_API_KEY = config.GOOGLE_API_KEY;
   const MODEL_NAME = config.MODEL_NAME;
 
-  // Use passed data or fallback to local dummy data
-  const context = financialContext || {
-    budgetStatus: dummyBudgetStatus,
-    expenses: dummyExpenses,
-    income: dummyIncome,
-    balance: dummyBalance,
-  };
+  // --- 2. Fetch Real Financial Data on Mount ---
+  useEffect(() => {
+    const fetchContext = async () => {
+      try {
+        setLoadingContext(true);
+        // This calls your new backend endpoint: GET /api/ai/context
+        const response = await api.get("/ai/context");
+        
+        if (response.status === 200) {
+          setFinancialContext(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to load financial context:", error);
+        setResult("⚠️ Warning: I couldn't load your financial data. I can only answer general questions.");
+      } finally {
+        setLoadingContext(false);
+      }
+    };
 
+    fetchContext();
+  }, []);
+
+  // --- 3. Call Gemini API ---
   const callGemini = async () => {
     if (!prompt.trim()) return;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
 
-    // Construct prompt with the context data
+    // Construct prompt with the REAL context data
     const finalPrompt = `
       ${SYSTEM_PROMPT}
       
       CONTEXT:
-      Here is the user's current financial data:
-      - Budget Status: ${JSON.stringify(context.budgetStatus, null, 2)}
-      - Expenses: ${JSON.stringify(context.expenses, null, 2)}
-      - Income: ${JSON.stringify(context.income, null, 2)}
-      - Balance: ${JSON.stringify(context.balance, null, 2)}
+      Here is the user's current financial data (JSON format):
+      ${financialContext ? JSON.stringify(financialContext, null, 2) : "No financial data available."}
 
       USER QUESTION: "${prompt}"
     `;
@@ -147,7 +100,7 @@ export default function BudgetAssistant({ onClose, financialContext }: Props) {
     };
 
     try {
-      setLoading(true);
+      setLoadingResponse(true);
 
       const res = await axios.post(url, body, {
         headers: { "Content-Type": "application/json" },
@@ -166,7 +119,7 @@ export default function BudgetAssistant({ onClose, financialContext }: Props) {
         setResult("❌ Sorry, something went wrong. Check your connection.");
       }
     } finally {
-      setLoading(false);
+      setLoadingResponse(false);
     }
   };
 
@@ -175,31 +128,41 @@ export default function BudgetAssistant({ onClose, financialContext }: Props) {
       <Text className="text-2xl font-bold text-[#1E4E45] text-center mb-2">
         Budget Assistant
       </Text>
-      <Text className="text-sm text-gray-700 text-center mb-5">
-        Ask me anything about budgeting or saving money!
-      </Text>
+      
+      {/* Show loading state while fetching context */}
+      {loadingContext ? (
+         <View className="py-4">
+             <ActivityIndicator size="small" color="#36978C" />
+             <Text className="text-center text-gray-500 text-xs mt-2">Loading your financial data...</Text>
+         </View>
+      ) : (
+        <Text className="text-sm text-gray-700 text-center mb-5">
+           Hi {financialContext?.userProfile?.username || "there"}! I've analyzed your budget. Ask me anything!
+        </Text>
+      )}
 
       <TextInput
         className="border border-gray-400 rounded-xl bg-white p-3 h-24 mb-3 text-base"
-        placeholder="Type your question here..."
+        placeholder={loadingContext ? "Please wait..." : "Type your question here..."}
         value={prompt}
         onChangeText={setPrompt}
         multiline
+        editable={!loadingContext} // Disable input until context loads
       />
 
       <TouchableOpacity
         onPress={callGemini}
-        disabled={loading}
+        disabled={loadingResponse || loadingContext}
         className={`w-full py-3 rounded-xl ${
-          loading ? "bg-gray-400" : "bg-[#36978C]"
+          (loadingResponse || loadingContext) ? "bg-gray-400" : "bg-[#36978C]"
         }`}
       >
         <Text className="text-center text-white font-semibold text-base">
-          {loading ? "Thinking..." : "Ask BudgetBot"}
+          {loadingResponse ? "Thinking..." : "Ask BudgetBot"}
         </Text>
       </TouchableOpacity>
 
-      {loading && <ActivityIndicator size="large" className="mt-4" />}
+      {loadingResponse && <ActivityIndicator size="large" className="mt-4" />}
 
       <ScrollView className="mt-4 bg-white rounded-xl p-3 max-h-60">
         <Text className="text-base text-gray-800">
