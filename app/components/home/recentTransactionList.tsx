@@ -1,7 +1,9 @@
 import { View, Text, FlatList, Image } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import React from "react";
 import api from "../../../api/api";
+
 import "../../../assets/images/add_income_icon.png";
 import "../../../assets/images/add_expenses_icon.png";
 
@@ -38,33 +40,43 @@ export default function RecentTransactionList() {
   const defaultIncomeIcon = require("../../../assets/images/add_income_icon.png");
   const defaultExpenseIcon = require("../../../assets/images/add_expenses_icon.png");
 
-  const [expensesHistory, setExpensesHistory] = useState<ExpensesHistoryItem[]>(
-    []
-  );
+  const [expensesHistory, setExpensesHistory] = useState<ExpensesHistoryItem[]>([]);
   const [incomeHistory, setIncomeHistory] = useState<IncomeHistoryItem[]>([]);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const [expensesRes, incomeRes] = await Promise.all([
-          api.get("/history/readExpensesHistory"),
-          api.get("/history/readIncomeHistory"),
-        ]);
+  // useFocusEffect refreshes data on tab focus
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true; // Prevents state updates if component unmounts mid-request
 
-        if (expensesRes.status === 200) {
-          setExpensesHistory(expensesRes.data.history);
+      const fetchHistory = async () => {
+        try {
+          const [expensesRes, incomeRes] = await Promise.all([
+            api.get("/history/readExpensesHistory"),
+            api.get("/history/readIncomeHistory"),
+          ]);
+
+          if (isActive) {
+            if (expensesRes.status === 200) {
+              setExpensesHistory(expensesRes.data.history);
+            }
+            if (incomeRes.status === 200) {
+              setIncomeHistory(incomeRes.data.history);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch transaction history", error);
         }
-        if (incomeRes.status === 200) {
-          setIncomeHistory(incomeRes.data.history);
-        }
-      } catch (error) {
-        console.error("Failed to fetch transaction history", error);
-      }
-    };
+      };
 
-    fetchHistory();
-  }, []);
+      fetchHistory();
 
+      return () => {
+        isActive = false; // Cleanup function
+      };
+    }, [])
+  );
+
+  // Formatting and Sorting Logic
   const formattedTransactions: FormattedTransaction[] = [
     ...expensesHistory.map((item) => ({
       _id: item._id,
@@ -91,6 +103,7 @@ export default function RecentTransactionList() {
     const amountColor = isIncome ? "text-green-800" : "text-red-700";
     const sign = isIncome ? "+" : "-";
     const iconSource = isIncome ? defaultIncomeIcon : defaultExpenseIcon;
+    
     return (
       <View className="flex-row w-full items-center justify-between py-3.5">
         {/* Left Side */}
