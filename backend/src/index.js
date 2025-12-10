@@ -17,7 +17,6 @@ app.use("/api/income", incomeRoutes);
 app.use("/api/expenses", expensesRoutes);
 app.use("/api/history", historyRoutes);
 
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();

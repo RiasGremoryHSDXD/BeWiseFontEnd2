@@ -1,7 +1,7 @@
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { useAuth } from "./context/authContext"; // Adjust path if needed
+import { useAuth } from "./context/authContext";
 
 export default function LogOutBotton() {
   // Destructure the logout function directly from the context
@@ -10,7 +10,7 @@ export default function LogOutBotton() {
   return (
     <TouchableOpacity
       className="bg-white self-start rounded-full p-2"
-      onPress={logout} // Call the context function directly
+      onPress={logout}
     >
       <Ionicons name="person-circle-outline" size={35} />
     </TouchableOpacity>

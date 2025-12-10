@@ -13,7 +13,6 @@ type IncomeCategory =
   | "Other";
 type Frequency = "OneTime" | "Monthly";
 
-// Updated Props Interface (No Convex Types)
 type UpdateIncomeProps = {
   incomeID: string;
   incomeName: string;
@@ -35,7 +34,6 @@ export default function UpdateIncome({
   onSuccessUpdate,
   onClose,
 }: UpdateIncomeProps) {
-  // Initialize state with props
   const [newIncomeName, setNewIncomeName] = useState<string>(incomeName);
   const [newIncomeCategory, setNewIncomeCategory] = useState<IncomeCategory>(
     incomeCategory as IncomeCategory
@@ -51,7 +49,6 @@ export default function UpdateIncome({
   const [loading, setLoading] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Sync state if props change (optional, but good for modals)
   useEffect(() => {
     setNewIncomeName(incomeName);
     setNewIncomeCategory(incomeCategory as IncomeCategory);
@@ -96,7 +93,7 @@ export default function UpdateIncome({
 
       if (response.status === 200) {
         Alert.alert("Success", "Income updated successfully.");
-        onSuccessUpdate(); // Trigger parent refresh
+        onSuccessUpdate();
       }
     } catch (error: any) {
       console.error(error);

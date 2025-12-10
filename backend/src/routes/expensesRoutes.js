@@ -5,11 +5,11 @@ import { deleteExpenses } from "../controllers/expensesControllers/deleteExpense
 import { updateExpense } from "../controllers/expensesControllers/updateExpensesControllers.js";
 import { protect } from "../middleware/authMiddleWare.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/addExpense', protect, addExpense)
-router.get('/readExpense', protect, readExpenses)
-router.delete('/deleteExpense/:id', protect, deleteExpenses)
-router.put('/updateExpense/:id', protect, updateExpense)
+router.post("/addExpense", protect, addExpense);
+router.get("/readExpense", protect, readExpenses);
+router.delete("/deleteExpense/:id", protect, deleteExpenses);
+router.put("/updateExpense/:id", protect, updateExpense);
 
 export default router;

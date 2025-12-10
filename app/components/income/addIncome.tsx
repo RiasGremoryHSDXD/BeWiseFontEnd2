@@ -8,8 +8,6 @@ import LoadingScreen from "../Loading";
 import api from "../../../api/api";
 import useAsyncStorage from "../../hooks/asyncStorageData";
 
-
-
 type IncomeCategory =
   | "Work"
   | "Investment"
@@ -22,10 +20,10 @@ type Props = {
   onSuccess: () => void;
 };
 
-
-export default function addIncome({onClose, onSuccess} : Props) {
-  const [userCredentialsID, setUserCredentialsID] =
-    useState<string | null>(null);
+export default function addIncome({ onClose, onSuccess }: Props) {
+  const [userCredentialsID, setUserCredentialsID] = useState<string | null>(
+    null
+  );
   const [incomeName, setIncomeName] = useState<string>("");
   const [incomeCategoryValue, setIncomeCategoryValue] =
     useState<IncomeCategory>("Other");
@@ -37,13 +35,13 @@ export default function addIncome({onClose, onSuccess} : Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const navigation = useNavigation();
 
-  const userDetails = useAsyncStorage()
+  const userDetails = useAsyncStorage();
 
   useEffect(() => {
-    if(userDetails && userDetails._id){
-      setUserCredentialsID(userDetails._id)
+    if (userDetails && userDetails._id) {
+      setUserCredentialsID(userDetails._id);
     }
-  }, [userDetails])
+  }, [userDetails]);
 
   const handleNewIncomeRecord = async () => {
     if (loading || isProcessing) return;
@@ -59,22 +57,25 @@ export default function addIncome({onClose, onSuccess} : Props) {
 
       const response = await api.post("/income/addIncome", {
         userCredentialsID,
-        incomeName, 
-        incomeCategory: incomeCategoryValue, 
-        amount, 
-        expectedPayOut: expectedPayOut.toString(), 
-        frequency
-      })
+        incomeName,
+        incomeCategory: incomeCategoryValue,
+        amount,
+        expectedPayOut: expectedPayOut.toString(),
+        frequency,
+      });
 
-      if(response.status === 200){
-          setLoading(false);
-          Alert.alert("Success", "Income record added successfully!");
-          onSuccess();
+      if (response.status === 200) {
+        setLoading(false);
+        Alert.alert("Success", "Income record added successfully!");
+        onSuccess();
       }
 
       setLoading(false);
-    } catch (error : any) {
-      Alert.alert("Error", error.response.data.message || "Failed to add income");
+    } catch (error: any) {
+      Alert.alert(
+        "Error",
+        error.response.data.message || "Failed to add income"
+      );
     } finally {
       setLoading(false);
       setIsProcessing(false);

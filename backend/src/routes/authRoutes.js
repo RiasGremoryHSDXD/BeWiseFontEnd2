@@ -1,6 +1,8 @@
 import express from "express";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 const router = express.Router();
 
@@ -62,7 +64,8 @@ router.post("/register", async (request, response) => {
       message: "User created successfully",
     });
   } catch (error) {
-    if(error.name === "ValidationError") return response.status(400).json({message: error.message})
+    if (error.name === "ValidationError")
+      return response.status(400).json({ message: error.message });
 
     // console.error("Registration Error: ", error);
     // return response.status(500).json({message: "Internal Server Error"})

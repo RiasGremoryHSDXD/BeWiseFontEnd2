@@ -1,74 +1,189 @@
-import {
-  Foundation,
-  MaterialCommunityIcons,
-  Octicons,
-} from "@expo/vector-icons";
-import React, { useState } from "react";
-import { Text, View, TouchableOpacity, Modal } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import EditTotalBudget from "../components/budgetStatus/editTotalBudget";
-import SetNewBudget from "../components/budgetStatus/setNewBudget";
-import ReusableModal from "../components/reusableModal";
-import ShowBudget from "../components/budgetStatus/showBudget";
-import { CategoryType } from "../types/categoryType";
+import { useFocusEffect } from "@react-navigation/native";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
-const currentBudget = 25000;
-const currentSpent = 8000;
-const expenses = 4000;
-const remaining = currentBudget - currentSpent;
-const percentageSpent = Math.round((currentSpent / currentBudget) * 100);
+// CUSTOM IMPORTS
+import api from "../../api/api";
+import ShowCategory from "../components/budgetStatus/showCategory";
 
-// Category Data
-const categories = [
-  { name: "Insurance", spent: 5000, budget: 10000, color: "purple" },
-  { name: "Bills", spent: 2000, budget: 6000, color: "green" },
-  { name: "Other", spent: 1000, budget: 4000, color: "gray" },
-  { name: "Hobbies", spent: 300, budget: 2000, color: "blue" },
-  { name: "Daily Need", spent: 2000, budget: 3000, color: "orange" },
-];
+interface Expense {
+  _id: string;
+  expensesName: string;
+  expenseCategory: "Insurance" | "Bills" | "Hobby" | "Daily Need" | "Other";
+  amount: number;
+  frequency: string;
+  datePaid: string;
+}
+
+interface Income {
+  _id: string;
+  incomeName: string;
+  incomeCategory: "Work" | "Investment" | "Savings" | "Side Hustle" | "Other";
+  amount: number;
+  frequency: string;
+  expectedPayOut: string;
+}
 
 export default function BudgetStatus() {
-  const [clickEditTotalBudget, setClickEditTotalBudget] =
-    useState<boolean>(false);
-  const [clickSetNewBudget, setClickSetNewBudget] = useState<boolean>(false);
-  const [clickViewCategory, setClickViewCategory] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
-    null
-  );
-  return (
-    <SafeAreaView className="flex justify-start items-center w-full h-full bg-[#81D8D0] pt-5">
-      {/* Edit button */}
-      <View className="w-[90%] flex flex-row justify-end mb-2">
-        <TouchableOpacity
-          activeOpacity={0.7}
-          className="flex-row items-center gap-2 px-4 py-2 bg-gray-200 border border-black/20 rounded-full shadow-sm"
-          onPress={() => setClickEditTotalBudget(true)}
-        >
-          <MaterialCommunityIcons
-            name="rename-box-outline"
-            size={18}
-            color="#676565"
-          />
-          <Text className="text-sm font-medium text-[#676565]">
-            Edit Total Budget
-          </Text>
-        </TouchableOpacity>
-      </View>
+  // --- DATA STATE ---
+  const [expensesList, setExpensesList] = useState<Expense[]>([]);
+  const [incomeList, setIncomeList] = useState<Income[]>([]);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
-      {/* Budget board */}
-      <View className="w-[90%] py-6 px-6 flex-col gap-y-4 items-center bg-[#FFFB82]/20 border border-[#FFFB82]/60 rounded-3xl">
+  // --- CALCULATION STATE ---
+  const [totalMonthlyExpenses, setTotalMonthlyExpenses] = useState<number>(0);
+  const [totalMonthlyIncome, setTotalMonthlyIncome] = useState<number>(0);
+
+  const [categoriesData, setCategoriesData] = useState([
+    { label: "Insurance", amount: 0 },
+    { label: "Bills", amount: 0 },
+    { label: "Hobby", amount: 0 },
+    { label: "Daily Need", amount: 0 },
+    { label: "Other", amount: 0 },
+  ]);
+
+  // 1. REFRESH TRIGGER
+  const triggerRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  // 2. FETCH EXPENSES
+  const fetchExpenses = async () => {
+    try {
+      const response = await api.get("/expenses/readExpense");
+      if (response.status === 200) {
+        setExpensesList(response.data.expenses);
+      }
+    } catch (error) {
+      console.error("Failed to fetch expenses", error);
+    }
+  };
+
+  // 3. FETCH INCOME (NEW!)
+  const fetchIncome = async () => {
+    try {
+      const response = await api.get("/income/readIncome");
+      if (response.status === 200) {
+        setIncomeList(response.data.income);
+      }
+    } catch (error) {
+      console.error("Failed to fetch income", error);
+    }
+  };
+
+  // 4. FETCH ON TAB FOCUS
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpenses();
+      fetchIncome(); // Fetch income too!
+    }, [])
+  );
+
+  // 5. FETCH ON TRIGGER (Add/Delete/Update)
+  useEffect(() => {
+    if (refreshKey > 0) {
+      fetchExpenses();
+      fetchIncome();
+    }
+  }, [refreshKey]);
+
+  // 6. CALCULATE EXPENSE TOTALS
+  useEffect(() => {
+    let total = 0;
+    let insurance = 0,
+      bills = 0,
+      hobby = 0,
+      dailyNeed = 0,
+      other = 0;
+
+    expensesList.forEach((item) => {
+      if (item.frequency !== "Monthly") return;
+
+      const amt = Number(item.amount) || 0;
+      total += amt;
+
+      switch (item.expenseCategory) {
+        case "Insurance":
+          insurance += amt;
+          break;
+        case "Bills":
+          bills += amt;
+          break;
+        case "Hobby":
+          hobby += amt;
+          break;
+        case "Daily Need":
+          dailyNeed += amt;
+          break;
+        case "Other":
+          other += amt;
+          break;
+      }
+    });
+
+    setTotalMonthlyExpenses(total);
+    setCategoriesData([
+      { label: "Insurance", amount: insurance },
+      { label: "Bills", amount: bills },
+      { label: "Hobby", amount: hobby },
+      { label: "Daily Need", amount: dailyNeed },
+      { label: "Other", amount: other },
+    ]);
+  }, [expensesList]);
+
+  // 7. CALCULATE INCOME TOTAL (NEW!)
+  useEffect(() => {
+    let total = 0;
+
+    incomeList.forEach((item) => {
+      if (item.frequency !== "Monthly") return;
+      const amt = Number(item.amount) || 0;
+      total += amt;
+    });
+
+    setTotalMonthlyIncome(total);
+  }, [incomeList]);
+
+  const monthlyExpenses = expensesList.filter(
+    (item) => item.frequency === "Monthly"
+  );
+
+  const remaining = totalMonthlyIncome - totalMonthlyExpenses;
+  const percentageSpent =
+    totalMonthlyIncome > 0
+      ? Math.round((totalMonthlyExpenses / totalMonthlyIncome) * 100)
+      : 0;
+
+  return (
+    <SafeAreaView className="flex w-full h-full bg-[#81D8D0] p-3 gap-y-[1%]">
+      {/* --- TOTAL EXPENSES CARD --- */}
+      <View className="py-6 px-8 flex-col gap-y-4 items-center bg-[#FFFB82]/20 border border-[#FFFB82]/60 rounded-3xl mt-5">
         <View className="flex flex-row justify-between items-center w-full">
-          <View className="flex flex-col">
-            <Text>Total Budget</Text>
-            <Text className="font-semibold">₱ {currentBudget}</Text>
+          <View className="flex flex-col justify-center items-center">
+            <Text className="text-base font-semibold text-[#777777]">
+              Total Budget
+            </Text>
+            <Text className="text-xl font-medium">
+              ₱ {totalMonthlyIncome.toLocaleString()}
+            </Text>
           </View>
-          <View className="flex flex-col">
-            <Text>Total Spent</Text>
-            <Text className="font-semibold">₱ {expenses}</Text>
+          <View className="flex flex-col justify-center items-center">
+            <Text className="text-base font-semibold text-[#777777]">
+              Total Spent
+            </Text>
+            <Text className="text-xl font-medium ">
+              ₱ {totalMonthlyExpenses.toLocaleString()}
+            </Text>
           </View>
-          <View className="flex flex-col">
-            <Text>Remaining</Text>
-            <Text className="font-semibold">₱ {remaining}</Text>
+          <View className="flex flex-col justify-center items-center">
+            <Text className="text-base font-semibold text-[#777777] ">
+              Remaining
+            </Text>
+            <Text className=" text-xl font-medium ">
+              ₱ {remaining.toLocaleString()}
+            </Text>
           </View>
         </View>
 
@@ -76,97 +191,20 @@ export default function BudgetStatus() {
         <View className="bg-gray-200 rounded-full h-3 w-full">
           <View
             className="bg-[#36978C] h-full rounded-full"
-            style={{ width: `${percentageSpent}%` }}
+            style={{ width: `${Math.min(percentageSpent, 100)}%` }}
           />
         </View>
 
-        <Text className="text-sm">Total budget used: {percentageSpent}%</Text>
+        <Text className="text-base">Total budget used: {percentageSpent}%</Text>
       </View>
 
-      <View className="flex flex-col bg-[#FAF7F0] gap-y-6 p-6 rounded-3xl w-[90%] mt-5">
-        <View className="flex flex-row gap-2 mb-2 items-center">
-          <Foundation name="target" size={30} color="black" />
-          <Text className="text-xl font-semibold">Budget Status</Text>
-        </View>
-
-        {/* Budget Categories */}
-        <View className="flex flex-col gap-y-5">
-          {categories.map((cat, index) => {
-            const percent = Math.round((cat.spent / cat.budget) * 100);
-
-            return (
-              <TouchableOpacity
-                key={index}
-                className="flex w-full"
-                onPress={() => {
-                  setSelectedCategory(cat);
-                  setClickViewCategory(true);
-                }}
-              >
-                {/* Row Title */}
-                <View className="flex flex-row justify-between">
-                  <View className="flex flex-row gap-x-2">
-                    <Octicons name="dot-fill" size={22} color={cat.color} />
-                    <Text className="text-base font-medium">{cat.name}</Text>
-                  </View>
-                  <View className="flex flex-row gap-x-1">
-                    <Text className="text-sm font-medium">₱{cat.spent} /</Text>
-                    <Text className="text-sm font-medium">₱{cat.budget}</Text>
-                  </View>
-                </View>
-
-                {/* Percentage */}
-                <View className="items-end">
-                  <Text className="text-xs">{percent}%</Text>
-                </View>
-
-                {/* Progress bar (taller) */}
-                <View className="bg-gray-200 rounded-full h-3.5 w-full">
-                  <View
-                    className="bg-[#36978C] h-full rounded-full"
-                    style={{ width: `${percent}%` }}
-                  />
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
-
-      {/* Budget buttons (bigger) */}
-      <View className="flex w-[90%] gap-5 mt-5">
-        <TouchableOpacity
-          activeOpacity={0.7}
-          className="flex-row items-center justify-center gap-3 py-4 px-5 border border-black/50 bg-[#FFFDC2] rounded-3xl"
-          onPress={() => setClickSetNewBudget(true)}
-        >
-          <Foundation name="target" size={22} color="black" />
-          <Text className="text-base font-medium">Set New Budget</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/*Click Edit Total Budget Button Modal */}
-      <ReusableModal
-        visible={clickEditTotalBudget}
-        onRequestClose={() => setClickEditTotalBudget(false)}
-      >
-        <EditTotalBudget closeModal={() => setClickEditTotalBudget(false)} />
-      </ReusableModal>
-
-      {/* Click Set New Budget Button Modal */}
-      <ReusableModal
-        visible={clickSetNewBudget}
-        onRequestClose={() => setClickSetNewBudget(false)}
-      >
-        <SetNewBudget closeModal={() => setClickSetNewBudget(false)} />
-      </ReusableModal>
-
-      {/* Click Category */}
-      <ShowBudget
-        visible={clickViewCategory}
-        onRequestClose={() => setClickViewCategory(false)}
-        category={selectedCategory}
-      ></ShowBudget>
+      {/* --- CATEGORIES CHART --- */}
+      <ShowCategory
+        title="Budget Status"
+        categories={categoriesData}
+        allItems={monthlyExpenses}
+        totalBudget={totalMonthlyIncome}
+      />
     </SafeAreaView>
   );
 }

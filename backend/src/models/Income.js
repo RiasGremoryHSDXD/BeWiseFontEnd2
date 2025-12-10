@@ -1,52 +1,51 @@
 import mongoose from "mongoose";
 import ToTitleCase from "../helper/toTitleCase.js";
 
-
-const IncomeSchema = new mongoose.Schema
-({
+const IncomeSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        index: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
 
     incomeName: {
-        type: String,
-        required: true,
-        trim: true,
-        set: ToTitleCase
+      type: String,
+      required: true,
+      trim: true,
+      set: ToTitleCase,
     },
 
     incomeCategory: {
-        type: String,
-        required: true,
-        trim: true,
-        enum: ["Work", "Investment", "Savings", "Side Hustle", "Other"],
+      type: String,
+      required: true,
+      trim: true,
+      enum: ["Work", "Investment", "Savings", "Side Hustle", "Other"],
     },
 
     amount: {
-        type: Number,
-        required: true,
-        min: 1
+      type: Number,
+      required: true,
+      min: 1,
     },
 
     expectedPayOut: {
-        type: Date,
-        required: true,
+      type: Date,
+      required: true,
     },
 
-    frequency:{
-        type: String,
-        required: true,
-        enum: ['OneTime', 'Monthly'],
+    frequency: {
+      type: String,
+      required: true,
+      enum: ["OneTime", "Monthly"],
     },
-},
-    {
-        timestamps: true
-    }
-)
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Income = mongoose.model('Income', IncomeSchema)
+const Income = mongoose.model("Income", IncomeSchema);
 
 export default Income;

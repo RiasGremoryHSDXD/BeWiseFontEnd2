@@ -4,32 +4,29 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateUserNameModal from "../components/updateUserName/updateName";
-import BudgetAssistance from "../components/budgetAssistant/budgetAssistant"
+import BudgetAssistance from "../components/budgetAssistant/budgetAssistant";
 import Analytics from "../components/analytics/analytics";
 import ReusableModal from "../components/reusableModal";
-import { useAuth } from "../context/authContext"; 
+import { useAuth } from "../context/authContext";
 
 export default function LogOutButton() {
   const router = useRouter();
 
   const [showUpdateUserName, setShowUpdateUsername] = useState(false);
-  const [clickBudgetAssistance, setClickBudgetAssistance] = useState<boolean>(false)
-  const [clickAnalytics, setClickAnalytics] = useState<boolean>(false)
+  const [clickBudgetAssistance, setClickBudgetAssistance] =
+    useState<boolean>(false);
+  const [clickAnalytics, setClickAnalytics] = useState<boolean>(false);
 
   const { user, logout } = useAuth();
-    
 
   const handleUsernameUpdate = (newUsername: string) => {
     setShowUpdateUsername(false);
   };
 
   const LogOutAccount = async () => {
-    try
-    {
-      await logout(); 
-    }
-    catch(error)
-    {
+    try {
+      await logout();
+    } catch (error) {
       console.error("Logout failed:", error);
     }
   };
@@ -45,35 +42,42 @@ export default function LogOutButton() {
       {/* Profile Section */}
       <View className="flex-1 w-[90%] items-center justify-between flex-col p-2">
         <View className="flex flex-col w-full items-center justify-center gap-5">
-          {/* <MaterialCommunityIcons
-            name="account-circle"
-            size={120}
-            color="black"
-          /> */}
           <Image
-            source={{ uri: user?.profileImage}}
+            source={{ uri: user?.profileImage }}
             style={{ width: 120, height: 120 }}
           />
-        
+
           <Text className="text-xl font-medium">{user?.username}</Text>
         </View>
 
         {/* Menu Buttons */}
         <View className="w-full gap-4 mb-8">
-          <TouchableOpacity 
+          <TouchableOpacity
             className="bg-white/90 w-full rounded-2xl p-4 flex-row items-center gap-4 shadow"
             onPress={() => setClickBudgetAssistance(true)}
           >
-            <MaterialCommunityIcons name="chat-processing" size={28} color="#36978C" />
-            <Text className="text-base font-medium text-gray-800">Chat Assistance</Text>
+            <MaterialCommunityIcons
+              name="chat-processing"
+              size={28}
+              color="#36978C"
+            />
+            <Text className="text-base font-medium text-gray-800">
+              Chat Assistance
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             className="bg-white/90 w-full rounded-2xl p-4 flex-row items-center gap-4 shadow"
-            onPress={() => setClickAnalytics(true)}  
+            onPress={() => setClickAnalytics(true)}
           >
-            <MaterialCommunityIcons name="chart-box" size={28} color="#36978C" />
-            <Text className="text-base font-medium text-gray-800">Analytics</Text>
+            <MaterialCommunityIcons
+              name="chart-box"
+              size={28}
+              color="#36978C"
+            />
+            <Text className="text-base font-medium text-gray-800">
+              Analytics
+            </Text>
           </TouchableOpacity>
 
           {/* Log Out Button */}
@@ -92,34 +96,33 @@ export default function LogOutButton() {
         visible={showUpdateUserName}
         onRequestClose={() => setShowUpdateUsername(false)}
       >
-        <View className="flex w-full items-end">  
+        <View className="flex w-full items-end">
           <TouchableOpacity onPress={() => setShowUpdateUsername(false)}>
             <Text className="text-2xl font-bold text-gray-600">✕</Text>
           </TouchableOpacity>
         </View>
 
-        <UpdateUserNameModal onUsernameUpdated={handleUsernameUpdate} /> 
+        <UpdateUserNameModal onUsernameUpdated={handleUsernameUpdate} />
       </ReusableModal>
 
-      {/**Click Budget Assistance Button Modal */}  
+      {/**Click Budget Assistance Button Modal */}
       <ReusableModal
         visible={clickBudgetAssistance}
         onRequestClose={() => setClickBudgetAssistance(false)}
         reusableModalDesign="flex-1 bg-black/50 justify-center items-center"
-        reuseableModalContainerDesign = 'flex justify-center items-center bg-white w-[85%] py-6 rounded-2xl shadow-lg'
+        reuseableModalContainerDesign="flex justify-center items-center bg-white w-[85%] py-6 rounded-2xl shadow-lg"
       >
-        <BudgetAssistance onClose={() => setClickBudgetAssistance(false)}/>
+        <BudgetAssistance onClose={() => setClickBudgetAssistance(false)} />
       </ReusableModal>
 
-      {/**Click Analytics Button Modal */}  
+      {/**Click Analytics Button Modal */}
       <ReusableModal
         visible={clickAnalytics}
         onRequestClose={() => setClickAnalytics(false)}
         reuseableModalContainerDesign="flex-1 bg-black/50 justify-center items-center"
       >
-        <Analytics onClose={() => setClickAnalytics(false)}/>
+        <Analytics onClose={() => setClickAnalytics(false)} />
       </ReusableModal>
-
     </SafeAreaView>
   );
 }
